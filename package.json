@@ -9,10 +9,14 @@
     "shared"
   ],
   "scripts": {
-    "dev": "pnpm --filter ftlos-react-frontend dev & pnpm --filter ftlos-express-backend dev",
-    "dev:frontend": "pnpm --filter ftlos-react-frontend dev",
-    "dev:backend": "pnpm --filter ftlos-express-backend dev",
     "build": "pnpm --filter ftlos-react-frontend build & pnpm --filter ftlos-express-backend build",
+    "dev": "pnpm --filter ftlos-react-frontend dev & pnpm --filter ftlos-express-backend dev",
+    "dev:backend": "pnpm --filter ftlos-express-backend dev",
+    "dev:frontend": "pnpm --filter ftlos-react-frontend dev",
+    "format": "pnpm --filter ftlos-react-frontend format && pnpm --filter ftlos-express-backend format",
+    "format:check": "pnpm --filter ftlos-react-frontend format:check && pnpm --filter ftlos-express-backend format:check",
+    "lint": "pnpm --filter ftlos-react-frontend lint && pnpm --filter ftlos-express-backend lint",
+    "lint:fix": "pnpm --filter ftlos-react-frontend lint:fix && pnpm --filter ftlos-express-backend lint:fix",
     "test": "pnpm --filter ftlos-react-frontend test & pnpm --filter ftlos-express-backend test"
   }
 }

@@ -3,9 +3,11 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
 import { Home } from "./components/Home";
-import { About } from "./components/About";
 import { Navbar } from "./components/Navbar";
-import { SpotifyPage } from "./components/SpotifyPage";
+import { Fans } from "./components/Fans";
+import { Rankings } from "./components/Rankings";
+import { Sweepstakes } from "./components/Sweepstakes";
+import { Profile } from "./components/Profile";
 
 function App() {
   return (
@@ -13,8 +15,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
-        <Route path="about" element={<About />} />
-        <Route path="spotify" element={<SpotifyPage />} />
+        <Route path="fans" element={<Fans />} />
+        <Route path="leaderboard" element={<Rankings />} />
+        <Route path="sweepstakes" element={<Sweepstakes />} />
+        <Route path="profile" element={<Profile />} />
       </Routes>
     </div>
   );
