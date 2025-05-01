@@ -1,7 +1,7 @@
 ## NOW
 
-- [ ] add shadcn to frontend
-- [ ] setup theming with shadcn and tailwind (no dark mode yet)
+- [x] setup theming with shadcn and tailwind (no dark mode yet)
+- [x] add shadcn to frontend
 - [x] add linting to frontend and backend (prettier)
 - [x] add formatting to frontend and backend (eslint)
 
