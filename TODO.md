@@ -1,5 +1,7 @@
 ## NOW
 
+- [ ] finish basic home page
+- [x] add lucide react icons
 - [x] setup theming with shadcn and tailwind (no dark mode yet)
 - [x] add shadcn to frontend
 - [x] add linting to frontend and backend (prettier)
