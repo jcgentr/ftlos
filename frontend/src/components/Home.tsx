@@ -1,15 +1,30 @@
 import { NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
-import { TableDemo } from "./RateTable";
+import { RatingTable } from "./RatingTable";
 
 export function Home() {
   return (
     <div className="p-8 max-w-5xl ml-auto mr-auto">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
-      <p>You aren't alone anymore! Find your new best friend here!</p>
+      <div className="text-center space-y-2 my-4">
+        <p>
+          <span className="font-bold text-primary">supports</span> Real Betis
+        </p>
+        <p>
+          <span className="font-bold text-primary">hates</span> Golden State Warriors
+        </p>
+        <p>
+          <span className="font-bold text-primary">loves</span> Phil Mickelson
+        </p>
+        <p>
+          <span className="font-bold text-primary">watches</span> Field Hockey
+        </p>
+        <p>You aren't alone anymore! Find your new best friend here!</p>
+      </div>
+
       {/* Connect with Fans */}
-      <div className="border border-accent mt-8">
+      <div className="border border-accent mt-8 rounded-lg">
         <div className="flex justify-between items-center p-4 border-b border-accent">
           <h2 className="text-2xl font-bold">Connect with Fans</h2>
           <NavLink to="/fans">
@@ -30,13 +45,13 @@ export function Home() {
         </div>
       </div>
       {/* Rate These Sports Entities */}
-      <div className="border border-accent mt-8">
+      <div className="border border-accent mt-8 rounded-lg">
         <div className="p-4 border-b border-accent">
           <h2 className="text-2xl font-bold">Rate These Sports Entities</h2>
           <p>Help us learn your preferences! Rate from 1 (strongly dislike) to 5 (strongly like)</p>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center py-4">
-          <TableDemo />
+          <RatingTable />
           <Button className="mt-4">Get New Entitites to Rate</Button>
         </div>
       </div>
