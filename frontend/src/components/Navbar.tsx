@@ -13,22 +13,22 @@ export function Navbar() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/fans" className={({ isActive }) => (isActive ? "text-primary" : "")}>
-              <Button variant="link" className="text-inherit text-base">
+            <NavLink to="/fans" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <Users /> Find A Fan
               </Button>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/leaderboard" className={({ isActive }) => (isActive ? "text-primary" : "")}>
-              <Button variant="link" className="text-inherit text-base">
+            <NavLink to="/leaderboard" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <Trophy /> Rankings
               </Button>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/sweepstakes" className={({ isActive }) => (isActive ? "text-primary" : "")}>
-              <Button variant="link" className="text-inherit text-base">
+            <NavLink to="/sweepstakes" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <Ticket /> Sweepstakes
               </Button>
             </NavLink>
@@ -37,15 +37,15 @@ export function Navbar() {
 
         <div className="flex gap-2 items-center">
           <li>
-            <NavLink to="/profile" className={({ isActive }) => (isActive ? "text-primary" : "")}>
-              <Button variant="link" className="text-inherit text-base">
+            <NavLink to="/profile" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <User /> Profile
               </Button>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/logout">
-              <Button variant="link" className="text-inherit text-base">
+            <NavLink to="/logout" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <LogOut /> Logout
               </Button>
             </NavLink>
