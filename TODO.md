@@ -1,6 +1,12 @@
 ## NOW
 
-- [ ] finish basic home page
+- [ ] research design improvements (re-read email)
+- [ ] deploy to linode server
+- [ ] hamburger menu on mobile view
+- [ ] add in Logo and favicon
+- [ ] work on max width for pages
+- [x] finish dynamic sweepstake page
+- [x] finish pages
 - [x] add lucide react icons
 - [x] setup theming with shadcn and tailwind (no dark mode yet)
 - [x] add shadcn to frontend

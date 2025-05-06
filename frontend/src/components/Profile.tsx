@@ -29,17 +29,17 @@ export function Profile() {
             <span className="font-bold">Favorite Sports:</span> Football, Basketball, Baseball
           </p>
         </div>
-      </div>
-
-      <div className="max-w-[1000px] m-auto">
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Rate Teams & Players</h2>
-        <RatingTable />
-        <div className="flex justify-end items-center my-8 gap-4">
+        <div className="flex justify-end items-center mt-8 gap-4">
           <Button className="bg-green-600 hover:bg-green-500">Stop Connecting</Button>
           <NavLink to="/profile/edit">
             <Button>Edit Profile</Button>
           </NavLink>
         </div>
+      </div>
+
+      <div className="max-w-[1000px] m-auto">
+        <h2 className="text-2xl font-semibold mt-8 mb-4">Rate Teams & Players</h2>
+        <RatingTable />
       </div>
     </div>
   );

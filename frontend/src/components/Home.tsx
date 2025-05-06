@@ -5,7 +5,7 @@ import { RatingTable } from "./RatingTable";
 
 export function Home() {
   return (
-    <div className="p-8 max-w-5xl ml-auto mr-auto">
+    <div className="p-8">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
       <div className="text-center space-y-2 my-10">
         <p>

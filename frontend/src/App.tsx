@@ -9,6 +9,7 @@ import { Rankings } from "./components/Rankings";
 import { Sweepstakes } from "./components/Sweepstakes";
 import { Profile } from "./components/Profile";
 import { ProfileEdit } from "./components/ProfileEdit";
+import { Sweepstake } from "./components/Sweepstake";
 
 function App() {
   return (
@@ -18,7 +19,10 @@ function App() {
         <Route index element={<Home />} />
         <Route path="fans" element={<Fans />} />
         <Route path="leaderboard" element={<Rankings />} />
-        <Route path="sweepstakes" element={<Sweepstakes />} />
+        <Route path="sweepstakes">
+          <Route index element={<Sweepstakes />} />
+          <Route path=":sweepstakeId" element={<Sweepstake />} />
+        </Route>
         <Route path="profile">
           <Route index element={<Profile />} />
           <Route path="edit" element={<ProfileEdit />} />
