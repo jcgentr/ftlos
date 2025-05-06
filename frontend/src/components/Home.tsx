@@ -7,24 +7,24 @@ export function Home() {
   return (
     <div className="p-8 max-w-5xl ml-auto mr-auto">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
-      <div className="text-center space-y-2 my-4">
+      <div className="text-center space-y-2 my-10">
         <p>
-          <span className="font-bold text-primary">supports</span> Real Betis
+          <span className="font-bold text-primary">supports</span> <span className="font-bold">Real Betis</span>
         </p>
         <p>
-          <span className="font-bold text-primary">hates</span> Golden State Warriors
+          <span className="font-bold text-primary">hates</span> <span className="font-bold">Golden State Warriors</span>
         </p>
         <p>
-          <span className="font-bold text-primary">loves</span> Phil Mickelson
+          <span className="font-bold text-primary">loves</span> <span className="font-bold">Phil Mickelson</span>
         </p>
         <p>
-          <span className="font-bold text-primary">watches</span> Field Hockey
+          <span className="font-bold text-primary">watches</span> <span className="font-bold">Field Hockey</span>
         </p>
-        <p>You aren't alone anymore! Find your new best friend here!</p>
+        <p className="mt-8 text-2xl">You aren't alone anymore! Find your new best friend here!</p>
       </div>
 
       {/* Connect with Fans */}
-      <div className="border border-accent mt-8 rounded-lg">
+      <div className="border border-accent mt-12 rounded-lg">
         <div className="flex justify-between items-center p-4 border-b border-accent">
           <h2 className="text-2xl font-bold">Connect with Fans</h2>
           <NavLink to="/fans">

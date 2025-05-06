@@ -1,4 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface Athlete {
   name: string;
@@ -34,10 +37,40 @@ export function RatingTable() {
             <TableCell className="font-medium">{athlete.name}</TableCell>
             <TableCell>{athlete.category}</TableCell>
             <TableCell>{athlete.sport}</TableCell>
-            <TableCell className="text-right">{athlete.rating}</TableCell>
+            <TableCell className="flex justify-end">
+              <RatingButtons />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
+  );
+}
+
+function RatingButtons() {
+  const [selectedRating, setSelectedRating] = useState<number>(0);
+
+  const handleRatingClick = (rating: number) => {
+    setSelectedRating(rating);
+  };
+
+  return (
+    <div className="flex gap-2">
+      {[1, 2, 3, 4, 5].map((rating) => (
+        <Button
+          key={rating}
+          onClick={() => handleRatingClick(rating)}
+          className={cn(
+            "h-10 w-10 rounded-md border text-center text-sm transition-colors",
+            selectedRating === rating
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-input bg-background text-foreground hover:bg-primary/10"
+          )}
+          aria-label={`Rate ${rating} out of 5`}
+        >
+          {rating}
+        </Button>
+      ))}
+    </div>
   );
 }

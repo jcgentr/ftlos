@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { LogOut, Ticket, Trophy, User, Users } from "lucide-react";
 
@@ -44,11 +44,11 @@ export function Navbar() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/logout" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
+            <Link to="/logout" className="text-gray-500">
               <Button variant="link" className="text-inherit text-base hover:text-primary">
                 <LogOut /> Logout
               </Button>
-            </NavLink>
+            </Link>
           </li>
         </div>
       </ul>
