@@ -8,10 +8,10 @@ export function Sweepstake() {
   console.log({ sweepstakeId });
 
   return (
-    <div className="p-8 ">
+    <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">All Sports Sweepstake</h1>
-        <div className="border border-accent p-8">
+        <div className="border border-gray-300 bg-white rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-4">Contest Details</h2>
           <div>
             <p>
@@ -32,10 +32,10 @@ export function Sweepstake() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="border border-accent p-8">
+          <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Baseball</h2>
-              <span>April 24, 2025, 5:20 PM</span>
+              <span className="text-gray-500">April 24, 2025, 5:20 PM</span>
             </div>
             <Tabs defaultValue="new-york-yankees" className="w-full my-4">
               <TabsList className="w-full h-12">
@@ -57,10 +57,10 @@ export function Sweepstake() {
               Submit Pick
             </Button>
           </div>
-          <div className="border border-accent p-8">
+          <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold">Basketball</h2>
-              <span>April 25, 2025, 5:20 PM</span>
+              <span className="text-gray-500">April 25, 2025, 5:20 PM</span>
             </div>
             <Tabs defaultValue="la-lakers" className="w-full my-4">
               <TabsList className="w-full h-12">
@@ -82,10 +82,10 @@ export function Sweepstake() {
               Submit Pick
             </Button>
           </div>
-          <div className="border border-accent p-8">
+          <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Football</h2>
-              <span>April 26, 2025, 5:20 PM</span>
+              <span className="text-gray-500">April 26, 2025, 5:20 PM</span>
             </div>
             <Tabs defaultValue="green-bay-packers" className="w-full my-4">
               <TabsList className="w-full h-12">
@@ -110,10 +110,10 @@ export function Sweepstake() {
         </div>
         <div>
           <h2 className="text-3xl font-bold mt-8 mb-4">Final Game (Mandatory)</h2>
-          <div className="border border-accent p-8">
+          <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Football</h2>
-              <span>May 1, 2025, 7:30 PM</span>
+              <span className="text-gray-500">May 1, 2025, 7:30 PM</span>
             </div>
             <Tabs defaultValue="dallas-cowboys" className="w-full my-4">
               <TabsList className="w-full h-12">

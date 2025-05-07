@@ -19,9 +19,9 @@ export function ProfileEdit() {
   };
 
   return (
-    <div className="p-8">
-      <div className="m-auto p-8 max-w-[700px] border border-accent rounded-lg">
-        <h1 className="text-4xl font-bold mb-4">Edit Profile</h1>
+    <div className="p-8 max-w-3xl w-full mx-auto">
+      <div className="bg-white p-8 border border-gray-300 rounded-lg">
+        <h1 className="text-4xl font-bold mb-6">Edit Profile</h1>
         <Label className="mb-2" htmlFor="first-name">
           First Name
         </Label>
@@ -59,7 +59,7 @@ export function ProfileEdit() {
           </div>
         )}
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-6">
           <NavLink to="/profile">
             <Button variant="outline">Cancel</Button>
           </NavLink>

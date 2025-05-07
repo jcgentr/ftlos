@@ -13,7 +13,7 @@ import { Sweepstake } from "./components/Sweepstake";
 
 function App() {
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full flex-1 flex flex-col bg-accent">
       <Navbar />
       <Routes>
         <Route index element={<Home />} />

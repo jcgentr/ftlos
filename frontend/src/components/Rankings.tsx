@@ -5,10 +5,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 
 export function Rankings() {
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Search Rankings</h1>
-        <div className="flex items-center gap-2 p-8 border border-accent rounded-lg">
+        <div className="flex items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg">
           <Input type="text" placeholder="Search for team or player" />
           <div className="w-[300px]">
             <Select defaultValue="all-categories">
@@ -50,48 +50,56 @@ export function Rankings() {
           <Button>Search</Button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <div className="border border-accent rounded-lg">
-            <div className="flex justify-between items-center p-4 border-b border-accent">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+          <div className="border border-gray-300 bg-white rounded-lg">
+            <div className="flex justify-between items-center p-4 border-b border-gray-300">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <ThumbsUp className="flex-none" /> Most Popular Teams
               </h2>
-              <div className="bg-green-600 text-white px-3 py-1 w-fit rounded-lg text-sm">Top 5</div>
+              <div className="bg-green-100 text-green-700 border border-green-700 px-3 py-1 w-fit rounded-lg text-sm">
+                Top 5
+              </div>
             </div>
             <div className="text-center">
               <p className="p-8">No teams rated yet.</p>
             </div>
           </div>
 
-          <div className="border border-accent rounded-lg">
-            <div className="flex justify-between items-center p-4 border-b border-accent">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+          <div className="border border-gray-300 bg-white rounded-lg">
+            <div className="flex justify-between items-center p-4 border-b border-gray-300">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <ThumbsUp className="flex-none" /> Most Popular Players
               </h2>
-              <div className="bg-green-600 text-white px-3 py-1 w-fit rounded-lg text-sm">Top 5</div>
+              <div className="bg-green-100 text-green-700 border border-green-700 px-3 py-1 w-fit rounded-lg text-sm">
+                Top 5
+              </div>
             </div>
             <div className="text-center">
               <p className="p-8">No players rated yet.</p>
             </div>
           </div>
 
-          <div className="border border-accent rounded-lg">
-            <div className="flex justify-between items-center p-4 border-b border-accent">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+          <div className="border border-gray-300 bg-white rounded-lg">
+            <div className="flex justify-between items-center p-4 border-b border-gray-300">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <ThumbsDown className="flex-none" /> Least Popular Teams
               </h2>
-              <div className="bg-red-600 text-white px-3 py-1 w-fit rounded-lg text-sm">Bottom 5</div>
+              <div className="bg-red-100 text-red-700 border border-red-700 px-3 py-1 w-fit rounded-lg text-sm">
+                Bottom 5
+              </div>
             </div>
             <div className="text-center">
               <p className="p-8">No teams rated yet.</p>
             </div>
           </div>
 
-          <div className="border border-accent rounded-lg">
-            <div className="flex justify-between items-center p-4 border-b border-accent">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+          <div className="border border-gray-300 bg-white rounded-lg">
+            <div className="flex justify-between items-center p-4 border-b border-gray-300">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <ThumbsDown className="flex-none" /> Least Popular Players
               </h2>
-              <div className="bg-red-600 text-white px-3 py-1 w-fit rounded-lg text-sm">Bottom 5</div>
+              <div className="bg-red-100 text-red-700 border border-red-700 px-3 py-1 w-fit rounded-lg text-sm">
+                Bottom 5
+              </div>
             </div>
             <div className="text-center">
               <p className="p-8">No players rated yet.</p>

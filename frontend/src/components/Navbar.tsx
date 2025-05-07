@@ -4,7 +4,7 @@ import { LogOut, Ticket, Trophy, User, Users } from "lucide-react";
 
 export function Navbar() {
   return (
-    <nav className="bg-background text-foreground p-4">
+    <nav className="bg-background text-foreground p-6">
       <ul className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
           <li className="font-bold">

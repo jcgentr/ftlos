@@ -4,12 +4,16 @@ import { Button } from "./ui/button";
 
 export function Profile() {
   return (
-    <div className="p-8">
-      <div className="m-auto p-8 max-w-[700px] border border-accent rounded-lg">
+    <div className="p-8 max-w-3xl w-full mx-auto">
+      <div className="bg-white p-8 border border-gray-300 rounded-lg">
         <h1 className="text-4xl font-bold mb-4">Patrick's Profile</h1>
         <div className="flex justify-between items-center">
-          <div className="bg-black text-white px-3 py-1 rounded-lg text-sm">New York, USA</div>
-          <div className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm">Connecting</div>
+          <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
+            New York, USA
+          </div>
+          <div className="bg-green-100 text-green-700 border border-green-700 px-3 py-1 rounded-lg text-sm">
+            Connecting
+          </div>
         </div>
         <div className="w-52 h-auto m-auto mt-4">
           <img
@@ -37,8 +41,8 @@ export function Profile() {
         </div>
       </div>
 
-      <div className="max-w-[1000px] m-auto">
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Rate Teams & Players</h2>
+      <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
+        <h2 className="text-2xl font-semibold mb-4">Rate Teams & Players</h2>
         <RatingTable />
       </div>
     </div>

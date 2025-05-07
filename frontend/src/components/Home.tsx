@@ -5,7 +5,7 @@ import { RatingTable } from "./RatingTable";
 
 export function Home() {
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-5xl w-full mx-auto">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
       <div className="text-center space-y-2 my-10">
         <p>
@@ -24,8 +24,8 @@ export function Home() {
       </div>
 
       {/* Connect with Fans */}
-      <div className="border border-accent mt-12 rounded-lg">
-        <div className="flex justify-between items-center p-4 border-b border-accent">
+      <div className="border border-gray-300 mt-12 rounded-lg bg-white">
+        <div className="flex justify-between items-center p-4 border-b border-gray-300">
           <h2 className="text-2xl font-bold">Connect with Fans</h2>
           <NavLink to="/fans">
             <Button variant="outline">Find More Fans</Button>
@@ -45,13 +45,15 @@ export function Home() {
         </div>
       </div>
       {/* Rate These Sports Entities */}
-      <div className="border border-accent mt-8 rounded-lg">
-        <div className="p-4 border-b border-accent">
+      <div className="border border-gray-300 mt-8 rounded-lg bg-white">
+        <div className="p-4 border-b border-gray-300">
           <h2 className="text-2xl font-bold">Rate These Sports Entities</h2>
           <p>Help us learn your preferences! Rate from 1 (strongly dislike) to 5 (strongly like)</p>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center py-4">
-          <RatingTable />
+          <div className="w-full px-4">
+            <RatingTable />
+          </div>
           <Button className="mt-4">Get New Entitites to Rate</Button>
         </div>
       </div>

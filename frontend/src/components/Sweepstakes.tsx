@@ -3,11 +3,11 @@ import { Button } from "./ui/button";
 
 export function Sweepstakes() {
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Active Sweepstakes</h1>
 
-        <div className="border border-accent rounded-lg max-w-[420px]">
+        <div className="border border-gray-300 bg-white rounded-lg max-w-[420px]">
           <div className="flex justify-between items-center p-4 border-b border-accent">
             <h2 className="text-xl font-semibold flex items-center gap-2">All Sports Sweepstake</h2>
           </div>
@@ -28,8 +28,8 @@ export function Sweepstakes() {
         </div>
       </div>
 
-      <div>
-        <h2 className="text-2xl font-semibold mt-8">Past Sweepstakes</h2>
+      <div className="mt-8 border border-gray-300 bg-white rounded-lg p-8">
+        <h2 className="text-2xl font-semibold">Past Sweepstakes</h2>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 my-4">
           <p className="text-blue-600">No past sweepstakes available.</p>
         </div>

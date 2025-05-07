@@ -4,7 +4,8 @@
 - [ ] deploy to linode server
 - [ ] hamburger menu on mobile view
 - [ ] add in Logo and favicon
-- [ ] work on max width for pages
+- [ ] add in correct primary and green accent (see email)
+- [x] work on max width for pages
 - [x] finish dynamic sweepstake page
 - [x] finish pages
 - [x] add lucide react icons
