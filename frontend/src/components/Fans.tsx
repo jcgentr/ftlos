@@ -51,10 +51,10 @@ export function Fans() {
             </Select>
           </div>
           {/* Improve this blue coloring */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
-            <h1 className="text-2xl font-bold text-blue-700 mb-2">Welcome to Find a Fan!</h1>
-            <p className="text-blue-600">We'll show personalized fan recommendations here once you:</p>
-            <ul className="list-disc list-inside text-blue-600 mt-4 space-y-1">
+          <div className="bg-primary-foreground border border-primary rounded-lg p-6 my-6">
+            <h1 className="text-2xl font-bold text-primary mb-2">Welcome to Find a Fan!</h1>
+            <p className="text-primary">We'll show personalized fan recommendations here once you:</p>
+            <ul className="list-disc list-inside text-primary mt-4 space-y-1">
               <li>Complete your profile with your favorite teams and players</li>
               <li>Connect with other fans</li>
             </ul>

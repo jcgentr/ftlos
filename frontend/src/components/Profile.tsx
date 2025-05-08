@@ -1,8 +1,11 @@
 import { NavLink } from "react-router";
 import { RatingTable } from "./RatingTable";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 export function Profile() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className="p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
@@ -15,10 +18,17 @@ export function Profile() {
             Connecting
           </div>
         </div>
-        <div className="w-52 h-auto m-auto mt-4">
+        <div className="w-52 h-52 m-auto mt-4 relative bg-gray-200 overflow-hidden rounded-full">
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center animate-pulse">
+              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+            </div>
+          )}
           <img
             src="https://images.unsplash.com/photo-1627796795540-18e2db6d3908?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="profile image"
+            className="w-full h-full object-cover"
+            onLoad={() => setIsLoading(false)}
           />
         </div>
         <div className="space-y-4">
@@ -34,7 +44,7 @@ export function Profile() {
           </p>
         </div>
         <div className="flex justify-end items-center mt-8 gap-4">
-          <Button className="bg-green-600 hover:bg-green-500">Stop Connecting</Button>
+          <Button className="bg-success hover:bg-success-lighter">Stop Connecting</Button>
           <NavLink to="/profile/edit">
             <Button>Edit Profile</Button>
           </NavLink>

@@ -1,35 +1,36 @@
 import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { LogOut, Ticket, Trophy, User, Users } from "lucide-react";
+import logoImage from "/logo.png";
 
 export function Navbar() {
   return (
-    <nav className="bg-background text-foreground p-6">
+    <nav className="bg-white text-primary p-6">
       <ul className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
-          <li className="font-bold">
+          <li className="flex-none mt-1">
             <NavLink to="/" end>
-              FTLOS
+              <img src={logoImage} alt="FTLOS Logo" width={100} height={100} className="h-auto" />
             </NavLink>
           </li>
           <li>
             <NavLink to="/fans" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
               <Button variant="link" className="text-inherit text-base hover:text-primary">
-                <Users /> Find A Fan
+                <Users /> <span>Find A Fan</span>
               </Button>
             </NavLink>
           </li>
           <li>
             <NavLink to="/leaderboard" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
               <Button variant="link" className="text-inherit text-base hover:text-primary">
-                <Trophy /> Rankings
+                <Trophy /> <span>Rankings</span>
               </Button>
             </NavLink>
           </li>
           <li>
             <NavLink to="/sweepstakes" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
               <Button variant="link" className="text-inherit text-base hover:text-primary">
-                <Ticket /> Sweepstakes
+                <Ticket /> <span>Sweepstakes</span>
               </Button>
             </NavLink>
           </li>
@@ -39,14 +40,14 @@ export function Navbar() {
           <li>
             <NavLink to="/profile" className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}>
               <Button variant="link" className="text-inherit text-base hover:text-primary">
-                <User /> Profile
+                <User /> <span>Profile</span>
               </Button>
             </NavLink>
           </li>
           <li>
             <Link to="/logout" className="text-gray-500">
               <Button variant="link" className="text-inherit text-base hover:text-primary">
-                <LogOut /> Logout
+                <LogOut /> <span>Logout</span>
               </Button>
             </Link>
           </li>

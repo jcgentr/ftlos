@@ -2,9 +2,12 @@
 
 - [ ] research design improvements (re-read email)
 - [ ] deploy to linode server
+- [ ] mobile responsiveness
+- [ ] switching out fan text on home page
 - [ ] hamburger menu on mobile view
-- [ ] add in Logo and favicon
-- [ ] add in correct primary and green accent (see email)
+- [x] add in Logo and favicon
+- [x] add in correct primary and green accent (see email)
+- [x] try out primary for nav bg
 - [x] work on max width for pages
 - [x] finish dynamic sweepstake page
 - [x] finish pages

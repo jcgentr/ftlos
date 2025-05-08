@@ -21,14 +21,14 @@ export function Sweepstake() {
               <span className="font-bold">End Date:</span> April 30, 2025
             </p>
             <p>
-              <span className="font-bold">Prize Pool:</span> <span className="text-green-600">$10,000.00</span>
+              <span className="font-bold">Prize Pool:</span> <span className="text-success">$10,000.00</span>
             </p>
           </div>
         </div>
         <div>
           <h2 className="text-3xl font-bold mt-8">Regular Games</h2>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 my-4">
-            <p className="text-blue-600">Pick winners for up to 10 regular games plus the mandatory final game.</p>
+          <div className="bg-primary-foreground border border-primary rounded-lg p-6 my-4">
+            <p className="text-primary">Pick winners for up to 10 regular games plus the mandatory final game.</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -53,7 +53,7 @@ export function Sweepstake() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button className="w-full bg-green-600 hover:bg-green-500 text-lg" size="lg">
+            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
           </div>
@@ -78,7 +78,7 @@ export function Sweepstake() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button className="w-full bg-green-600 hover:bg-green-500 text-lg" size="lg">
+            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
           </div>
@@ -103,7 +103,7 @@ export function Sweepstake() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button className="w-full bg-green-600 hover:bg-green-500 text-lg" size="lg">
+            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
           </div>
@@ -131,7 +131,7 @@ export function Sweepstake() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button className="w-full bg-green-600 hover:bg-green-500 text-lg" size="lg">
+            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Final Pick
             </Button>
           </div>
