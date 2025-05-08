@@ -25,13 +25,13 @@ export function Home() {
 
       {/* Connect with Fans */}
       <div className="border border-gray-300 mt-12 rounded-lg bg-white">
-        <div className="flex justify-between items-center p-4 border-b border-gray-300">
+        <div className="flex flex-wrap gap-2 justify-between items-center p-4 border-b border-gray-300">
           <h2 className="text-2xl font-bold">Connect with Fans</h2>
           <NavLink to="/fans">
             <Button variant="outline">Find More Fans</Button>
           </NavLink>
         </div>
-        <div className="flex flex-col gap-2 justify-center items-center py-4">
+        <div className="flex flex-col gap-2 justify-center items-center p-4">
           <p>We'll show personalized fan recommendations here once you:</p>
           <p className="flex items-center gap-2 mt-4">
             <UserPen /> Complete your profile with interests

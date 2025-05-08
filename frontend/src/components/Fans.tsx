@@ -7,11 +7,11 @@ export function Fans() {
     <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Find a Fan</h1>
-        <div className="flex items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg">
+        <div className="flex flex-col sm:flex-row items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg">
           <Input type="text" placeholder="Search by name" />
           <Input type="text" placeholder="City, Country" />
           <Select defaultValue="any-sport">
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Any Sport" />
             </SelectTrigger>
 
@@ -31,11 +31,11 @@ export function Fans() {
             </SelectContent>
           </Select>
           <Input type="text" placeholder="Search by team" />
-          <Button>Search</Button>
+          <Button className="w-full sm:w-fit">Search</Button>
         </div>
 
         <div className="mt-8 p-8 border border-gray-300 bg-white rounded-lg">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-2xl font-semibold">Fans For You</h2>
             <Select>
               <SelectTrigger>
