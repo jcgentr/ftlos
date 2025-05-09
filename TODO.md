@@ -2,8 +2,7 @@
 
 - [ ] research design improvements (re-read email)
 - [ ] deploy to linode server
-- [ ] switching out fan text on home page
-
+- [x] switching out fan text on home page
 - [x] mobile responsiveness
 - [x] hamburger menu on mobile view
 - [x] add in Logo and favicon

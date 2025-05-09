@@ -2,24 +2,67 @@ import { NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
 import { RatingTable } from "./RatingTable";
+import { useEffect, useState } from "react";
+
+// Define our entities to rotate through, keeping actions constant
+const entitySets = [
+  [
+    { entity: "Real Betis" },
+    { entity: "Golden State Warriors" },
+    { entity: "Phil Mickelson" },
+    { entity: "Field Hockey" },
+  ],
+  [{ entity: "Arsenal FC" }, { entity: "Los Angeles Lakers" }, { entity: "Serena Williams" }, { entity: "Formula 1" }],
+  [
+    { entity: "Chicago Cubs" },
+    { entity: "New York Yankees" },
+    { entity: "Lewis Hamilton" },
+    { entity: "Rugby matches" },
+  ],
+  [
+    { entity: "Manchester United" },
+    { entity: "Dallas Cowboys" },
+    { entity: "Simone Biles" },
+    { entity: "Cricket tournaments" },
+  ],
+  [{ entity: "Liverpool FC" }, { entity: "Tottenham Hotspur" }, { entity: "Tiger Woods" }, { entity: "Ice Hockey" }],
+];
+
+// Fixed actions that don't change
+const actions = ["supports", "hates", "loves", "watches"];
 
 export function Home() {
+  const [currentSetIndex, setCurrentSetIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+
+      setTimeout(() => {
+        setCurrentSetIndex((prev) => (prev + 1) % entitySets.length);
+        setIsAnimating(false);
+      }, 500); // Half the transition time for switching content
+    }, 3650);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentSet = entitySets[currentSetIndex];
+
   return (
     <div className="p-8 max-w-5xl w-full mx-auto">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
       <div className="text-center space-y-2 my-10">
-        <p>
-          <span className="font-bold text-primary">supports</span> <span className="font-bold">Real Betis</span>
-        </p>
-        <p>
-          <span className="font-bold text-primary">hates</span> <span className="font-bold">Golden State Warriors</span>
-        </p>
-        <p>
-          <span className="font-bold text-primary">loves</span> <span className="font-bold">Phil Mickelson</span>
-        </p>
-        <p>
-          <span className="font-bold text-primary">watches</span> <span className="font-bold">Field Hockey</span>
-        </p>
+        {actions.map((action, index) => (
+          <p
+            key={index}
+            className={`transition-all duration-500 ${isAnimating ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
+          >
+            <span className="font-bold text-primary text-lg">{action}</span>{" "}
+            <span className="font-bold text-lg">{currentSet[index].entity}</span>
+          </p>
+        ))}
         <p className="mt-8 text-2xl">You aren't alone anymore! Find your new best friend here!</p>
       </div>
 
