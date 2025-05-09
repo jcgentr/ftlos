@@ -1,9 +1,13 @@
 import { useParams } from "react-router";
 import { Button } from "./ui/button";
-import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { useState } from "react";
 
 export function Sweepstake() {
   const { sweepstakeId } = useParams();
+  const [baseballSelection, setBaseballSelection] = useState("new-york-yankees");
+  const [basketballSelection, setBasketballSelection] = useState("la-lakers");
+  const [footballSelection, setFootballSelection] = useState("green-bay-packers");
+  const [finalSelection, setFinalSelection] = useState("dallas-cowboys");
 
   console.log({ sweepstakeId });
 
@@ -33,76 +37,76 @@ export function Sweepstake() {
         </div>
         <div className="space-y-4">
           <div className="border border-gray-300 bg-white rounded-lg p-8">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-xl font-bold">Baseball</h2>
               <span className="text-gray-500">April 24, 2025, 5:20 PM</span>
             </div>
-            <Tabs defaultValue="new-york-yankees" className="w-full my-4">
-              <TabsList className="w-full h-12">
-                <TabsTrigger
-                  value="new-york-yankees"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  New York Yankees
-                </TabsTrigger>
-                <TabsTrigger
-                  value="boston-red-sox"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  Boston Red Sox
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+              <Button
+                variant={baseballSelection === "new-york-yankees" ? "default" : "outline"}
+                className={`flex-1 text-lg ${baseballSelection === "new-york-yankees" ? "shadow-md" : ""}`}
+                onClick={() => setBaseballSelection("new-york-yankees")}
+              >
+                New York Yankees
+              </Button>
+              <Button
+                variant={baseballSelection === "boston-red-sox" ? "default" : "outline"}
+                className={`flex-1 text-lg ${baseballSelection === "boston-red-sox" ? "shadow-md" : ""}`}
+                onClick={() => setBaseballSelection("boston-red-sox")}
+              >
+                Boston Red Sox
+              </Button>
+            </div>
             <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
           </div>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-lg font-bold">Basketball</h2>
               <span className="text-gray-500">April 25, 2025, 5:20 PM</span>
             </div>
-            <Tabs defaultValue="la-lakers" className="w-full my-4">
-              <TabsList className="w-full h-12">
-                <TabsTrigger
-                  value="la-lakers"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  LA Lakers
-                </TabsTrigger>
-                <TabsTrigger
-                  value="chicago-bulls"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  Chicago Bulls
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+              <Button
+                variant={basketballSelection === "la-lakers" ? "default" : "outline"}
+                className={`flex-1 text-lg ${basketballSelection === "la-lakers" ? "shadow-md" : ""}`}
+                onClick={() => setBasketballSelection("la-lakers")}
+              >
+                LA Lakers
+              </Button>
+              <Button
+                variant={basketballSelection === "chicago-bulls" ? "default" : "outline"}
+                className={`flex-1 text-lg ${basketballSelection === "chicago-bulls" ? "shadow-md" : ""}`}
+                onClick={() => setBasketballSelection("chicago-bulls")}
+              >
+                Chicago Bulls
+              </Button>
+            </div>
             <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
           </div>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-xl font-bold">Football</h2>
               <span className="text-gray-500">April 26, 2025, 5:20 PM</span>
             </div>
-            <Tabs defaultValue="green-bay-packers" className="w-full my-4">
-              <TabsList className="w-full h-12">
-                <TabsTrigger
-                  value="green-bay-packers"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  Green Bay Packers
-                </TabsTrigger>
-                <TabsTrigger
-                  value="new-england-patriots"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  New England Patriots
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+              <Button
+                variant={footballSelection === "green-bay-packers" ? "default" : "outline"}
+                className={`flex-1 text-lg ${footballSelection === "green-bay-packers" ? "shadow-md" : ""}`}
+                onClick={() => setFootballSelection("green-bay-packers")}
+              >
+                Green Bay Packers
+              </Button>
+              <Button
+                variant={footballSelection === "new-england-patriots" ? "default" : "outline"}
+                className={`flex-1 text-lg ${footballSelection === "new-england-patriots" ? "shadow-md" : ""}`}
+                onClick={() => setFootballSelection("new-england-patriots")}
+              >
+                New England Patriots
+              </Button>
+            </div>
             <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Pick
             </Button>
@@ -111,26 +115,26 @@ export function Sweepstake() {
         <div>
           <h2 className="text-3xl font-bold mt-8 mb-4">Final Game (Mandatory)</h2>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-xl font-bold">Football</h2>
               <span className="text-gray-500">May 1, 2025, 7:30 PM</span>
             </div>
-            <Tabs defaultValue="dallas-cowboys" className="w-full my-4">
-              <TabsList className="w-full h-12">
-                <TabsTrigger
-                  value="dallas-cowboys"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  Dallas Cowboys
-                </TabsTrigger>
-                <TabsTrigger
-                  value="san-francisco-49ers"
-                  className="text-lg data-[state=active]:bg-primary data-[state=active]:shadow-md data-[state=active]:text-white transition-colors cursor-pointer"
-                >
-                  San Francisco 49ers
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+              <Button
+                variant={finalSelection === "dallas-cowboys" ? "default" : "outline"}
+                className={`flex-1 text-lg ${finalSelection === "dallas-cowboys" ? "shadow-md" : ""}`}
+                onClick={() => setFinalSelection("dallas-cowboys")}
+              >
+                Dallas Cowboys
+              </Button>
+              <Button
+                variant={finalSelection === "san-francisco-49ers" ? "default" : "outline"}
+                className={`flex-1 text-lg ${finalSelection === "san-francisco-49ers" ? "shadow-md" : ""}`}
+                onClick={() => setFinalSelection("san-francisco-49ers")}
+              >
+                San Francisco 49ers
+              </Button>
+            </div>
             <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
               Submit Final Pick
             </Button>

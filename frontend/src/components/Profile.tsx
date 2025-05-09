@@ -43,7 +43,7 @@ export function Profile() {
             <span className="font-bold">Favorite Sports:</span> Football, Basketball, Baseball
           </p>
         </div>
-        <div className="flex justify-end items-center mt-8 gap-4">
+        <div className="flex justify-end items-center mt-8 gap-4 flex-wrap">
           <Button className="bg-success hover:bg-success-lighter">Stop Connecting</Button>
           <NavLink to="/profile/edit">
             <Button>Edit Profile</Button>
