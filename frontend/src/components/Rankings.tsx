@@ -31,15 +31,10 @@ export function Rankings() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="all-sports">All Sports</SelectItem>
+                <SelectItem value="american-football">American Football</SelectItem>
+                <SelectItem value="football-soccer">Football (Soccer)</SelectItem>
+                <SelectItem value="tennis">Tennis</SelectItem>
                 <SelectItem value="baseball">Baseball</SelectItem>
-                <SelectItem value="basketball">Basketball</SelectItem>
-                <SelectItem value="boston-red-sox">Boston Red Sox</SelectItem>
-                <SelectItem value="chicago-bulls">Chicago Bulls</SelectItem>
-                <SelectItem value="football">Football</SelectItem>
-                <SelectItem value="green-bay-packers">Green Bay Packers</SelectItem>
-                <SelectItem value="la-lakers">LA Lakers</SelectItem>
-                <SelectItem value="new-england-patriots">New England Patriots</SelectItem>
-                <SelectItem value="new-york-yankees">New York Yankees</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
