@@ -41,7 +41,7 @@ export function Sweepstake() {
               <h2 className="text-xl font-bold">Baseball</h2>
               <span className="text-gray-500">April 24, 2025, 5:20 PM</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+            <div className="flex flex-col sm:flex-row gap-2 w-full mt-4">
               <Button
                 variant={baseballSelection === "new-york-yankees" ? "default" : "outline"}
                 className={`flex-1 text-lg ${baseballSelection === "new-york-yankees" ? "shadow-md" : ""}`}
@@ -57,16 +57,13 @@ export function Sweepstake() {
                 Boston Red Sox
               </Button>
             </div>
-            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
-              Submit Pick
-            </Button>
           </div>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-lg font-bold">Basketball</h2>
               <span className="text-gray-500">April 25, 2025, 5:20 PM</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+            <div className="flex flex-col sm:flex-row gap-2 w-full mt-4">
               <Button
                 variant={basketballSelection === "la-lakers" ? "default" : "outline"}
                 className={`flex-1 text-lg ${basketballSelection === "la-lakers" ? "shadow-md" : ""}`}
@@ -82,16 +79,13 @@ export function Sweepstake() {
                 Chicago Bulls
               </Button>
             </div>
-            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
-              Submit Pick
-            </Button>
           </div>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
             <div className="flex justify-between items-center flex-wrap gap-1">
               <h2 className="text-xl font-bold">Football</h2>
               <span className="text-gray-500">April 26, 2025, 5:20 PM</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+            <div className="flex flex-col sm:flex-row gap-2 w-full mt-4">
               <Button
                 variant={footballSelection === "green-bay-packers" ? "default" : "outline"}
                 className={`flex-1 text-lg ${footballSelection === "green-bay-packers" ? "shadow-md" : ""}`}
@@ -107,11 +101,9 @@ export function Sweepstake() {
                 New England Patriots
               </Button>
             </div>
-            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
-              Submit Pick
-            </Button>
           </div>
         </div>
+        {/* final game */}
         <div>
           <h2 className="text-3xl font-bold mt-8 mb-4">Final Game (Mandatory)</h2>
           <div className="border border-gray-300 bg-white rounded-lg p-8">
@@ -119,7 +111,7 @@ export function Sweepstake() {
               <h2 className="text-xl font-bold">Football</h2>
               <span className="text-gray-500">May 1, 2025, 7:30 PM</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full my-4">
+            <div className="flex flex-col sm:flex-row gap-2 w-full mt-4">
               <Button
                 variant={finalSelection === "dallas-cowboys" ? "default" : "outline"}
                 className={`flex-1 text-lg ${finalSelection === "dallas-cowboys" ? "shadow-md" : ""}`}
@@ -135,8 +127,12 @@ export function Sweepstake() {
                 San Francisco 49ers
               </Button>
             </div>
-            <Button className="w-full bg-success hover:bg-success-lighter text-lg" size="lg">
-              Submit Final Pick
+          </div>
+        </div>
+        <div className="mt-8">
+          <div className="border border-gray-300 bg-white rounded-lg p-8">
+            <Button className="w-full bg-success hover:bg-success-lighter text-lg shadow-md" size="lg">
+              Submit picks
             </Button>
           </div>
         </div>
