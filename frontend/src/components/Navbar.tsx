@@ -35,7 +35,7 @@ export function Navbar() {
       <li>
         <NavLink
           to="/fans"
-          className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}
+          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
           onClick={() => setIsOpen(false)}
         >
           <Button variant="link" className="text-inherit text-base hover:text-primary">
@@ -46,7 +46,7 @@ export function Navbar() {
       <li>
         <NavLink
           to="/leaderboard"
-          className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}
+          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
           onClick={() => setIsOpen(false)}
         >
           <Button variant="link" className="text-inherit text-base hover:text-primary">
@@ -57,7 +57,7 @@ export function Navbar() {
       <li>
         <NavLink
           to="/sweepstakes"
-          className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}
+          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
           onClick={() => setIsOpen(false)}
         >
           <Button variant="link" className="text-inherit text-base hover:text-primary">
@@ -73,7 +73,7 @@ export function Navbar() {
       <li>
         <NavLink
           to="/profile"
-          className={({ isActive }) => (isActive ? "text-primary" : "text-gray-500")}
+          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
           onClick={() => setIsOpen(false)}
         >
           <Button variant="link" className="text-inherit text-base hover:text-primary">
@@ -82,7 +82,7 @@ export function Navbar() {
         </NavLink>
       </li>
       <li>
-        <Link to="/logout" className="text-gray-500" onClick={() => setIsOpen(false)}>
+        <Link to="/logout" className="text-muted-foreground" onClick={() => setIsOpen(false)}>
           <Button variant="link" className="text-inherit text-base hover:text-primary">
             <LogOut /> <span>Logout</span>
           </Button>

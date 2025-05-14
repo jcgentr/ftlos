@@ -1,7 +1,12 @@
 ## NOW
 
-- [ ] research design improvements (re-read email)
-- [ ] deploy to linode server
+- [ ] create a user on signup in database
+- [ ] user schema
+- [ ] setup database and ORM
+- [ ] setup supabase auth
+- [x] login and signup page (UI only)
+- [x] research design improvements (re-read email)
+- [x] deploy to linode server
 - [x] switching out fan text on home page
 - [x] mobile responsiveness
 - [x] hamburger menu on mobile view
