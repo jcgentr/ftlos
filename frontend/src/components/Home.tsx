@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
 import { RatingTable } from "./RatingTable";
@@ -70,9 +70,9 @@ export function Home() {
       <div className="border border-gray-300 mt-12 rounded-lg bg-white">
         <div className="flex flex-wrap gap-2 justify-between items-center p-4 border-b border-gray-300">
           <h2 className="text-2xl font-bold">Connect with Fans</h2>
-          <NavLink to="/fans">
+          <Link to="/fans">
             <Button variant="outline">Find More Fans</Button>
-          </NavLink>
+          </Link>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center p-4">
           <p>We'll show personalized fan recommendations here once you:</p>
@@ -82,9 +82,9 @@ export function Home() {
           <p className="flex items-center gap-2">
             <Star /> Rate some sports entities
           </p>
-          <NavLink to="/fans" className="mt-4">
+          <Link to="/fans" className="mt-4">
             <Button>Browse All Fans</Button>
-          </NavLink>
+          </Link>
         </div>
       </div>
       {/* Rate These Sports Entities */}

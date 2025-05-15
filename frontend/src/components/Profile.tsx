@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 import { RatingTable } from "./RatingTable";
 import { Button } from "./ui/button";
 import { useState } from "react";
@@ -45,9 +45,9 @@ export function Profile() {
         </div>
         <div className="flex justify-end items-center mt-8 gap-4 flex-wrap">
           <Button className="bg-success hover:bg-success-lighter">Stop Connecting</Button>
-          <NavLink to="/profile/edit">
+          <Link to="/profile/edit">
             <Button>Edit Profile</Button>
-          </NavLink>
+          </Link>
         </div>
       </div>
 

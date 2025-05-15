@@ -10,28 +10,40 @@ import { ProfileEdit } from "./components/ProfileEdit";
 import { Sweepstake } from "./components/Sweepstake";
 import { Login } from "./components/Login";
 import { Signup } from "./components/Signup";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedLayout } from "./components/ProtectedLayout";
+import { Toaster } from "sonner";
 
 function App() {
   return (
-    <div className="w-full flex-1 flex flex-col bg-accent">
-      <Navbar />
-      <Routes>
-        <Route index element={<Home />} />
-        {/* move to protected and public later */}
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="fans" element={<Fans />} />
-        <Route path="leaderboard" element={<Rankings />} />
-        <Route path="sweepstakes">
-          <Route index element={<Sweepstakes />} />
-          <Route path=":sweepstakeId" element={<Sweepstake />} />
-        </Route>
-        <Route path="profile">
-          <Route index element={<Profile />} />
-          <Route path="edit" element={<ProfileEdit />} />
-        </Route>
-      </Routes>
-    </div>
+    <AuthProvider>
+      <Toaster richColors />
+      <div className="w-full flex-1 flex flex-col bg-accent">
+        <Navbar />
+        <Routes>
+          {/* public routes */}
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+
+          {/* protected routes */}
+          <Route element={<ProtectedLayout />}>
+            <Route index element={<Home />} />
+            <Route path="fans" element={<Fans />} />
+            <Route path="leaderboard" element={<Rankings />} />
+
+            <Route path="sweepstakes">
+              <Route index element={<Sweepstakes />} />
+              <Route path=":sweepstakeId" element={<Sweepstake />} />
+            </Route>
+
+            <Route path="profile">
+              <Route index element={<Profile />} />
+              <Route path="edit" element={<ProfileEdit />} />
+            </Route>
+          </Route>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 

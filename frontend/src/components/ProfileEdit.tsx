@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 
 export function ProfileEdit() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -60,9 +60,9 @@ export function ProfileEdit() {
         )}
 
         <div className="flex justify-between items-center mt-6">
-          <NavLink to="/profile">
+          <Link to="/profile">
             <Button variant="outline">Cancel</Button>
-          </NavLink>
+          </Link>
           <Button>Save Changes</Button>
         </div>
       </div>

@@ -1,12 +1,16 @@
 import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
-import { LogOut, Menu, Ticket, Trophy, User, Users, X } from "lucide-react";
+import { LogIn, LogOut, Menu, Ticket, Trophy, User, UserPlus, Users, X } from "lucide-react";
 import logoImage from "/logo.png";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { user, signOut } = useAuth();
+
+  console.log({ user });
 
   // Handle screen resize
   useEffect(() => {
@@ -29,6 +33,11 @@ export function Navbar() {
   }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleLogout = () => {
+    setIsOpen(false);
+    signOut();
+  };
 
   const MainNavItems = () => (
     <>
@@ -70,24 +79,53 @@ export function Navbar() {
 
   const ProfileNavItems = () => (
     <>
-      <li>
-        <NavLink
-          to="/profile"
-          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
-          onClick={() => setIsOpen(false)}
-        >
-          <Button variant="link" className="text-inherit text-base hover:text-primary">
-            <User /> <span>Profile</span>
-          </Button>
-        </NavLink>
-      </li>
-      <li>
-        <Link to="/logout" className="text-muted-foreground" onClick={() => setIsOpen(false)}>
-          <Button variant="link" className="text-inherit text-base hover:text-primary">
-            <LogOut /> <span>Logout</span>
-          </Button>
-        </Link>
-      </li>
+      {user ? (
+        <>
+          <li>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
+              onClick={() => setIsOpen(false)}
+            >
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
+                <User /> <span>Profile</span>
+              </Button>
+            </NavLink>
+          </li>
+          <li>
+            <Link to="#" className="text-muted-foreground" onClick={handleLogout}>
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
+                <LogOut /> <span>Logout</span>
+              </Button>
+            </Link>
+          </li>
+        </>
+      ) : (
+        <>
+          <li>
+            <NavLink
+              to="/login"
+              className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
+              onClick={() => setIsOpen(false)}
+            >
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
+                <LogIn /> <span>Login</span>
+              </Button>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/signup"
+              className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
+              onClick={() => setIsOpen(false)}
+            >
+              <Button variant="link" className="text-inherit text-base hover:text-primary">
+                <UserPlus /> <span>Sign Up</span>
+              </Button>
+            </NavLink>
+          </li>
+        </>
+      )}
     </>
   );
 

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 import { Button } from "./ui/button";
 
 export function Sweepstakes() {
@@ -21,9 +21,9 @@ export function Sweepstakes() {
             <p>
               <span className="font-bold">Prize Pool:</span> <span className="text-success">$10,000.00</span>
             </p>
-            <NavLink to="/sweepstakes/1">
+            <Link to="/sweepstakes/1">
               <Button className="mt-4">Make Your Picks</Button>
-            </NavLink>
+            </Link>
           </div>
         </div>
       </div>
