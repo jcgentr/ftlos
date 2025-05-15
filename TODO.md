@@ -3,7 +3,7 @@
 - [ ] create a user on signup in database
 - [ ] user schema
 - [ ] setup database and ORM
-- [ ] setup supabase auth
+- [x] setup supabase auth (login and signup and protected routes)
 - [x] login and signup page (UI only)
 - [x] research design improvements (re-read email)
 - [x] deploy to linode server

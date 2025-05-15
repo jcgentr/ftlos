@@ -2,8 +2,10 @@ import { Link } from "react-router";
 import { RatingTable } from "./RatingTable";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Profile() {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -35,6 +37,9 @@ export function Profile() {
           <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
           <p>
             <span className="font-bold">Name:</span> Patrick Starr
+          </p>
+          <p>
+            <span className="font-bold">Email:</span> {user?.email}
           </p>
           <p>
             <span className="font-bold">Date of Birth:</span> Not set
