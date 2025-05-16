@@ -47,3 +47,4 @@ frontend/build
 
 # other
 FTLOS-Demo/
+docker-compose.yml
