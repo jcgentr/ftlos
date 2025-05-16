@@ -14,6 +14,7 @@ export function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (formError) {
@@ -33,20 +34,64 @@ export function Signup() {
     e.preventDefault();
     if (error) return;
     setFormError(null);
+    setLoading(true);
 
-    const { data, error: supabaseError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    try {
+      // sign up with supabase
+      const { data: authData, error: supabaseError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    console.log({ data });
+      console.log({ authData });
 
-    if (supabaseError) {
-      setFormError(supabaseError.message);
-      toast.error(supabaseError.message);
-    } else {
+      if (supabaseError) {
+        setFormError(supabaseError.message);
+        toast.error(supabaseError.message);
+        return;
+      }
+
+      if (!authData.user) {
+        setFormError("Failed to create user");
+        toast.error("Failed to create user");
+        return;
+      }
+
+      // get JWT token
+      const token = authData.session?.access_token;
+
+      if (!token) {
+        setFormError("Authentication failed");
+        toast.error("Authentication failed");
+        return;
+      }
+
+      // create user in FTLOS backend
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: authData.user.email,
+          supabaseId: authData.user.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create user in database");
+      }
+
       toast.success("Account created successfully!");
       navigate("/");
+    } catch (err) {
+      console.error("Error during signup:", err);
+      setFormError(err instanceof Error ? err.message : "An unexpected error occurred");
+      toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,8 +143,8 @@ export function Signup() {
                   />
                 </div>
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-                <Button type="submit" className="w-full" disabled={Boolean(error)}>
-                  Sign Up
+                <Button type="submit" className="w-full" disabled={Boolean(error) || loading}>
+                  {loading ? "Creating Account..." : "Sign Up"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
