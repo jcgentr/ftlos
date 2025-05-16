@@ -1,8 +1,8 @@
 ## NOW
 
-- [ ] create a user on signup in database
-- [ ] user schema
-- [ ] setup database and ORM
+- [x] create a user on signup in database
+- [x] user schema
+- [x] setup database and ORM (local dev)
 - [x] setup supabase auth (login and signup and protected routes)
 - [x] login and signup page (UI only)
 - [x] research design improvements (re-read email)
