@@ -29,7 +29,7 @@ const entitySets = [
 ];
 
 // Fixed actions that don't change
-const actions = ["supports", "hates", "loves", "watches"];
+const actions = ["supports", "loathes", "loves", "watches"];
 
 export function Home() {
   const [currentSetIndex, setCurrentSetIndex] = useState(0);

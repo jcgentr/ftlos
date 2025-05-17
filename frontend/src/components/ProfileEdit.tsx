@@ -1,11 +1,43 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { toast } from "sonner";
 
 export function ProfileEdit() {
+  const { profile, loading, updateProfile } = useUserProfile();
+  const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    location: "",
+    birthDate: "",
+    favoriteSports: "",
+  });
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        location: profile.location || "",
+        birthDate: profile.birthDate || "",
+        favoriteSports: profile.favoriteSports || "",
+      });
+    }
+  }, [profile]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -18,53 +50,105 @@ export function ProfileEdit() {
     }
   };
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const updatedProfile = await updateProfile(formData);
+
+      if (updatedProfile) {
+        toast.success("Profile updated successfully");
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
+  }
+
   return (
     <div className="p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
-        <h1 className="text-4xl font-bold mb-6">Edit Profile</h1>
-        <Label className="mb-2" htmlFor="first-name">
-          First Name
-        </Label>
-        <Input type="text" id="first-name" placeholder="Enter your first name" className="mb-6" />
+        <form onSubmit={handleSubmit}>
+          <h1 className="text-4xl font-bold mb-6">Edit Profile</h1>
+          <Label className="mb-2" htmlFor="firstName">
+            First Name
+          </Label>
+          <Input
+            type="text"
+            id="firstName"
+            placeholder="Enter your first name"
+            className="mb-6"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
 
-        <Label className="mb-2" htmlFor="last-name">
-          Last Name
-        </Label>
-        <Input type="text" id="last-name" placeholder="Enter your last name" className="mb-6" />
+          <Label className="mb-2" htmlFor="lastName">
+            Last Name
+          </Label>
+          <Input
+            type="text"
+            id="lastName"
+            placeholder="Enter your last name"
+            className="mb-6"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
 
-        <Label className="mb-2" htmlFor="location">
-          Location
-        </Label>
-        <Input type="text" id="location" placeholder="Enter your location" className="mb-6" />
+          <Label className="mb-2" htmlFor="location">
+            Location
+          </Label>
+          <Input
+            type="text"
+            id="location"
+            placeholder="Enter your location"
+            className="mb-6"
+            value={formData.location}
+            onChange={handleChange}
+          />
 
-        <Label className="mb-2" htmlFor="date-of-birth">
-          Date of Birth
-        </Label>
-        <Input type="date" id="date-of-birth" className="mb-6" />
+          <Label className="mb-2" htmlFor="birthDate">
+            Date of Birth
+          </Label>
+          <Input type="date" id="birthDate" className="mb-6" value={formData.birthDate} onChange={handleChange} />
 
-        <Label className="mb-2" htmlFor="favorite-sports">
-          Favorite Sports
-        </Label>
-        <Input type="text" id="favorite-sports" placeholder="Type to search sports..." />
-        <p className="mt-1 mb-6 text-sm text-gray-500">Search and select your favorite sports</p>
+          <Label className="mb-2" htmlFor="favoriteSports">
+            Favorite Sports
+          </Label>
+          <Input
+            type="text"
+            id="favoriteSports"
+            placeholder="Type to search sports..."
+            value={formData.favoriteSports}
+            onChange={handleChange}
+          />
+          <p className="mt-1 mb-6 text-sm text-gray-500">Search and select your favorite sports</p>
 
-        <Label className="mb-2" htmlFor="profile-picture">
-          Profile Picture
-        </Label>
-        <Input type="file" id="profile-picture" className="mb-6" accept="image/*" onChange={handleImageChange} />
+          <Label className="mb-2" htmlFor="profile-picture">
+            Profile Picture
+          </Label>
+          <Input type="file" id="profile-picture" className="mb-6" accept="image/*" onChange={handleImageChange} />
 
-        {imagePreview && (
-          <div className="mb-6">
-            <img src={imagePreview} alt="Profile preview" className="w-[200px] h-auto" />
+          {imagePreview && (
+            <div className="mb-6">
+              <img src={imagePreview} alt="Profile preview" className="w-[200px] h-auto" />
+            </div>
+          )}
+
+          <div className="flex justify-between items-center mt-6">
+            <Link to="/profile">
+              <Button variant="outline">Cancel</Button>
+            </Link>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
-        )}
-
-        <div className="flex justify-between items-center mt-6">
-          <Link to="/profile">
-            <Button variant="outline">Cancel</Button>
-          </Link>
-          <Button>Save Changes</Button>
-        </div>
+        </form>
       </div>
     </div>
   );
