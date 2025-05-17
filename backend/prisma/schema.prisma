@@ -22,5 +22,13 @@ model User {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
+  // New fields for profile editing
+  isConnecting   Boolean  @default(true)
+  firstName      String?
+  lastName       String?
+  location       String?
+  birthDate      String?
+  favoriteSports String?
+
   @@map("users")
 }

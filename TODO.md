@@ -1,5 +1,12 @@
 ## NOW
 
+- [ ] improve loading states (login skeleton -> loading text -> profile)
+- [ ] be able to update the user on Edit Profile page
+  - [ ] profilePic (do I save in PostgreSQL? or S3 bucket?)
+  - [x] isConnecting, firstName, lastName, location, birthDate, favoriteSports
+  - [x] GET on component load (Profile and ProfileEdit)
+  - [x] PATCH on "Save Changes"
+  - [x] PATCH on "Stop/Start Connecting"
 - [x] create a user on signup in database
 - [x] user schema
 - [x] setup database and ORM (local dev)
