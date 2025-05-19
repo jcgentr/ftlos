@@ -68,6 +68,37 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getPublicUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.user.findUnique({
+      where: { supabaseId: id, isConnecting: true },
+      select: {
+        supabaseId: true,
+        firstName: true,
+        lastName: true,
+        location: true,
+        birthDate: true,
+        favoriteSports: true,
+        isConnecting: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+};
+
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

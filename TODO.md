@@ -1,6 +1,11 @@
 ## NOW
 
+- [ ] add Games and Sweepstakes to database schema
+- [ ] allow user to rank Team or Player
+- [ ] if user has favorite sports filled out, show them 5 other users
+- [ ] add Teams and Players to database schema (should they be separate?)
 - [ ] improve loading states (login skeleton -> loading text -> profile)
+- [x] other (non-self) user profile page
 - [ ] be able to update the user on Edit Profile page
   - [ ] profilePic (do I save in PostgreSQL? or S3 bucket?)
   - [x] isConnecting, firstName, lastName, location, birthDate, favoriteSports

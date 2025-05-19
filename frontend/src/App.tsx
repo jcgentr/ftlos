@@ -13,6 +13,7 @@ import { Signup } from "./components/Signup";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedLayout } from "./components/ProtectedLayout";
 import { Toaster } from "sonner";
+import { ProfileOther } from "./components/ProfileOther";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="profile">
               <Route index element={<Profile />} />
               <Route path="edit" element={<ProfileEdit />} />
+              <Route path=":profileId" element={<ProfileOther />} />
             </Route>
           </Route>
         </Routes>

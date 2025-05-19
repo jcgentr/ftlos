@@ -47,6 +47,33 @@ export function RatingTable() {
   );
 }
 
+export function RatingTableStatic() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Category</TableHead>
+          <TableHead>Sport</TableHead>
+          <TableHead className="text-right">Rating</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {athletes
+          .sort((a, b) => b.rating - a.rating)
+          .map((athlete) => (
+            <TableRow key={athlete.name}>
+              <TableCell className="font-medium">{athlete.name}</TableCell>
+              <TableCell>{athlete.category}</TableCell>
+              <TableCell>{athlete.sport}</TableCell>
+              <TableCell className="flex justify-end">{athlete.rating}</TableCell>
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+  );
+}
+
 function RatingButtons() {
   const [selectedRating, setSelectedRating] = useState<number>(0);
 

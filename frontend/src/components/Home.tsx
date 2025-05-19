@@ -77,7 +77,11 @@ export function Home() {
         <div className="flex flex-col gap-2 justify-center items-center p-4">
           <p>We'll show personalized fan recommendations here once you:</p>
           <p className="flex items-center gap-2 mt-4">
-            <UserPen /> Complete your profile with interests
+            <UserPen /> Complete your{" "}
+            <Link to="/profile">
+              <span className="text-primary font-medium hover:underline">profile</span>
+            </Link>{" "}
+            with interests
           </p>
           <p className="flex items-center gap-2">
             <Star /> Rate some sports entities
