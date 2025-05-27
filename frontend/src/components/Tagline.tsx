@@ -109,7 +109,7 @@ export function Tagline() {
                     {arr.length > 1 && idx === arr.length - 2 && ", and "}
                   </span>
                 ))}
-              {selectsLength === 0 && <span className="text-muted-foreground">...</span>}
+              {(selectsLength === 0 || tagsLength === 0) && <span className="text-muted-foreground">...</span>}
             </p>
           </div>
           <div className="flex justify-end">

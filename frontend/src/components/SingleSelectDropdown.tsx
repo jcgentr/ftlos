@@ -33,6 +33,19 @@ export const sportsOptions = [
       { value: "chiefs", label: "Kansas City Chiefs" },
     ],
   },
+  {
+    category: "Sports",
+    items: [
+      { value: "soccer", label: "Soccer" },
+      { value: "american-football", label: "American Football" },
+      { value: "tennis", label: "Tennis" },
+      { value: "baseball", label: "Baseball" },
+      { value: "basketball", label: "Basketball" },
+      { value: "cricket", label: "Cricket" },
+      { value: "golf", label: "Golf" },
+      { value: "hockey", label: "Hockey" },
+    ],
+  },
 ];
 
 type SingleSelectDropdownProps = {
