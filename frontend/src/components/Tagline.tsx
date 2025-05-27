@@ -38,14 +38,6 @@ export function Tagline() {
     return "";
   };
 
-  const loves = selects
-    .map((value, idx) => (tags[idx] === "love" && value ? { value, label: getLabelForValue(value) } : null))
-    .filter(Boolean) as { value: string; label: string }[];
-
-  const loathes = selects
-    .map((value, idx) => (tags[idx] === "loathe" && value ? { value, label: getLabelForValue(value) } : null))
-    .filter(Boolean) as { value: string; label: string }[];
-
   const selectsLength = selects.filter(Boolean).length;
   const tagsLength = tags.filter(Boolean).length;
   const submitDisabled = selectsLength !== 4 || tagsLength !== 4;
@@ -91,29 +83,34 @@ export function Tagline() {
       ) : (
         <>
           <div className="text-center space-y-2 my-10">
-            {loves.length > 0 ? (
-              <p>
-                <span className="font-bold text-primary text-lg">loves</span>{" "}
-                <span className="font-bold text-lg">{loves.map((item) => item.label).join(", ")}</span>
-              </p>
-            ) : (
-              <p>
-                <span className="font-bold text-primary text-lg">loves</span>{" "}
-                <span className="text-muted-foreground">No selections yet</span>
-              </p>
-            )}
+            <p>
+              Am I the only person in the world who{" "}
+              {selects
+                .map((value, idx) => {
+                  if (!value) return null;
+                  const tag = tags[idx];
+                  if (!tag) return null;
+                  const label = getLabelForValue(value);
 
-            {loathes.length > 0 ? (
-              <p>
-                <span className="font-bold text-primary text-lg">loathes</span>{" "}
-                <span className="font-bold text-lg">{loathes.map((item) => item.label).join(", ")}</span>
-              </p>
-            ) : (
-              <p>
-                <span className="font-bold text-primary text-lg">loathes</span>{" "}
-                <span className="text-muted-foreground">No selections yet</span>
-              </p>
-            )}
+                  return (
+                    <span key={idx}>
+                      {tag === "love" && <span className="font-semibold text-green-600">loves {label}</span>}
+                      {tag === "loathe" && <span className="font-semibold text-red-600">loathes {label}</span>}
+                    </span>
+                  );
+                })
+                // Filter out nulls (where tag is not set)
+                .filter(Boolean)
+                // Add commas and "and" before the last item
+                .map((el, idx, arr) => (
+                  <span key={idx}>
+                    {el}
+                    {arr.length > 1 && idx < arr.length - 2 && ", "}
+                    {arr.length > 1 && idx === arr.length - 2 && ", and "}
+                  </span>
+                ))}
+              {selectsLength === 0 && <span className="text-muted-foreground">...</span>}
+            </p>
           </div>
           <div className="flex justify-end">
             <Button onClick={() => setEditingTagline(true)}>Edit Tagline</Button>
