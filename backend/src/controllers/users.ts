@@ -53,6 +53,7 @@ export const getUser = async (req: Request, res: Response) => {
         isConnecting: true,
         createdAt: true,
         updatedAt: true,
+        profileImageUrl: true,
       },
     });
 
@@ -84,6 +85,7 @@ export const getPublicUser = async (req: Request, res: Response) => {
         isConnecting: true,
         createdAt: true,
         updatedAt: true,
+        profileImageUrl: true,
       },
     });
 
@@ -128,6 +130,7 @@ export const updateUser = async (req: Request, res: Response) => {
         isConnecting: true,
         createdAt: true,
         updatedAt: true,
+        profileImageUrl: true,
       },
     });
 

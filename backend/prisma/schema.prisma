@@ -15,20 +15,21 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  supabaseId String   @unique @map("supabase_id")
-  name       String?
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  email       String   @unique
+  supabaseId  String   @unique @map("supabase_id")
+  name        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   // New fields for profile editing
-  isConnecting   Boolean  @default(true)
-  firstName      String?
-  lastName       String?
-  location       String?
-  birthDate      String?
-  favoriteSports String?
+  isConnecting     Boolean  @default(true)
+  firstName        String?
+  lastName         String?
+  location         String?
+  birthDate        String?
+  favoriteSports   String?
+  profileImageUrl  String?
 
   @@map("users")
 }

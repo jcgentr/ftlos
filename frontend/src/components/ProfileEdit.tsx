@@ -11,6 +11,7 @@ export function ProfileEdit() {
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -28,6 +29,10 @@ export function ProfileEdit() {
         birthDate: profile.birthDate || "",
         favoriteSports: profile.favoriteSports || "",
       });
+
+      if (profile.profileImageUrl) {
+        setImagePreview(profile.profileImageUrl);
+      }
     }
   }, [profile]);
 
@@ -42,6 +47,7 @@ export function ProfileEdit() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setProfileImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -54,7 +60,7 @@ export function ProfileEdit() {
     e.preventDefault();
     setSaving(true);
     try {
-      const updatedProfile = await updateProfile(formData);
+      const updatedProfile = await updateProfile(formData, profileImage || undefined);
 
       if (updatedProfile) {
         toast.success("Profile updated successfully");

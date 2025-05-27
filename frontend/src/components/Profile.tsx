@@ -5,10 +5,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate } from "@/lib/utils";
+import { User } from "lucide-react";
+import { Tagline } from "./Tagline";
 
 export function Profile() {
   const { profile, loading, updateProfile } = useUserProfile();
-  const [loadingProfilePic, setLoadingProfilePic] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   const handleToggleConnecting = async () => {
@@ -56,17 +57,13 @@ export function Profile() {
           </div>
         </div>
         <div className="w-52 h-52 m-auto mt-4 relative bg-gray-200 overflow-hidden rounded-full">
-          {loadingProfilePic && (
-            <div className="absolute inset-0 flex items-center justify-center animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          {profile.profileImageUrl ? (
+            <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <User className="text-gray-500" size={80} strokeWidth={1.5} />
             </div>
           )}
-          <img
-            src="https://images.unsplash.com/photo-1627796795540-18e2db6d3908?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="profile image"
-            className="w-full h-full object-cover"
-            onLoad={() => setLoadingProfilePic(false)}
-          />
         </div>
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
@@ -97,6 +94,8 @@ export function Profile() {
           </Link>
         </div>
       </div>
+
+      <Tagline />
 
       <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Rate Teams & Players</h2>

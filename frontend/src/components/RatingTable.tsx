@@ -2,6 +2,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface Athlete {
   name: string;
@@ -75,29 +77,62 @@ export function RatingTableStatic() {
 }
 
 function RatingButtons() {
-  const [selectedRating, setSelectedRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(0);
 
-  const handleRatingClick = (rating: number) => {
-    setSelectedRating(rating);
+  const handleThumbsUp = () => {
+    setRating((prev) => Math.min(prev + 1, 5));
+  };
+
+  const handleThumbsDown = () => {
+    setRating((prev) => Math.max(prev - 1, -5));
   };
 
   return (
-    <div className="flex gap-2">
-      {[1, 2, 3, 4, 5].map((rating) => (
-        <Button
-          key={rating}
-          onClick={() => handleRatingClick(rating)}
-          className={cn(
-            "h-10 w-10 rounded-md border text-center text-sm transition-colors",
-            selectedRating === rating
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-input bg-background text-foreground hover:bg-primary/10"
-          )}
-          aria-label={`Rate ${rating} out of 5`}
-        >
-          {rating}
-        </Button>
-      ))}
+    <div className="flex items-center gap-3">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={handleThumbsDown}
+              variant="outline"
+              size="icon"
+              className="bg-red-100 hover:bg-red-200 border-red-300 text-red-600"
+              aria-label="Thumbs down"
+            >
+              <ThumbsDown className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Decrease rating</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <div
+        className={cn(
+          "text-sm font-medium flex items-center justify-center w-8 h-6",
+          rating < 0 ? "text-red-600" : rating > 0 ? "text-green-600" : "text-gray-900"
+        )}
+      >
+        {rating > 0 ? `+${rating}` : rating}
+      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={handleThumbsUp}
+              variant="outline"
+              size="icon"
+              className="bg-green-100 hover:bg-green-200 border-green-300 text-green-600"
+              aria-label="Thumbs up"
+            >
+              <ThumbsUp className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Increase rating</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

@@ -10,4 +10,5 @@ export type UserProfile = {
   isConnecting: boolean;
   createdAt: string;
   updatedAt: string;
+  profileImageUrl: string | null;
 };

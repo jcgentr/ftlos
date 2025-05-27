@@ -6,8 +6,8 @@
 - [ ] add Teams and Players to database schema (should they be separate?)
 - [ ] improve loading states (login skeleton -> loading text -> profile)
 - [x] other (non-self) user profile page
-- [ ] be able to update the user on Edit Profile page
-  - [ ] profilePic (do I save in PostgreSQL? or S3 bucket?)
+- [x] be able to update the user on Edit Profile page
+  - [x] profilePic (save to Supabase Storage)
   - [x] isConnecting, firstName, lastName, location, birthDate, favoriteSports
   - [x] GET on component load (Profile and ProfileEdit)
   - [x] PATCH on "Save Changes"
