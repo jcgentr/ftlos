@@ -33,3 +33,46 @@ model User {
 
   @@map("users")
 }
+
+model Sport {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  teams    Team[]
+  athletes Athlete[]
+
+  @@map("sports")
+}
+
+model Team {
+  id        Int       @id @default(autoincrement())
+  name      String
+  sportId   Int       @map("sport_id")
+  sport     Sport     @relation(fields: [sportId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  athletes Athlete[]
+
+  @@unique([name, sportId])
+  @@index([sportId])
+  @@map("teams")
+}
+
+model Athlete {
+  id        Int       @id @default(autoincrement())
+  name      String
+  sportId   Int       @map("sport_id")
+  teamId    Int       @map("team_id")
+  sport     Sport     @relation(fields: [sportId], references: [id])
+  team      Team      @relation(fields: [teamId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([sportId])
+  @@index([teamId])
+  @@map("athletes")
+}

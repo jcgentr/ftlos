@@ -19,3 +19,7 @@ Whenever you update your Prisma schema, you will have to update your database sc
 **Use Case:** It's particularly useful during the development phase when you want to quickly sync your database schema with your Prisma schema without worrying about migration history.
 
 **Caution:** It can overwrite data if your schema changes affect existing tables or columns, so it's best for early-stage development or prototyping.
+
+## `npx prisma db seed`
+
+**Purpose:** This command populates your database with initial data using a seed script (`/prisma/seed.ts`)

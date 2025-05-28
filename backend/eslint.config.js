@@ -15,7 +15,7 @@ export default [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: "./tsconfig.json",
+        project: ["./tsconfig.json", "./prisma/tsconfig.json"],
       },
       globals: {
         process: "readonly",

@@ -1,0 +1,215 @@
+Team ID,Team Name,Sport
+1,AC Milan,Soccer
+3,ACF Fiorentina,Soccer
+4,AFC Bournemouth,Soccer
+6,Ajax,Soccer
+7,Al Ahly,Soccer
+8,Al-Ahli Saudi FC,Soccer
+9,Al-Ain,Soccer
+10,Al-Ettifaq,Soccer
+11,Al-Hilal,Soccer
+12,Al-Ittihad,Soccer
+13,Al-Nassr,Soccer
+14,Angel City FC,Soccer
+15,Arsenal,Soccer
+17,AS Monaco,Soccer
+18,AS Roma,Soccer
+19,Aston Villa,Soccer
+20,Atalanta,Soccer
+21,Athletic Bilbao,Soccer
+22,Atlético Madrid,Soccer
+23,Atlético Mineiro,Soccer
+24,Barcelona,Soccer
+25,Bayer 04 Leverkusen,Soccer
+26,Bayern Munich,Soccer
+28,Beşiktaş,Soccer
+29,Bologna,Soccer
+30,Borussia Dortmund,Soccer
+31,Borussia Mönchengladbach,Soccer
+32,Brentford,Soccer
+33,Brentford FC,Soccer
+34,Brighton & Hove Albion,Soccer
+36,Chelsea FC,Soccer
+37,Chicago Red Stars,Soccer
+38,Columbus Crew,Soccer
+39,Corinthians,Soccer
+40,Crystal Palace,Soccer
+41,D.C. United,Soccer
+42,Espanyol,Soccer
+43,Everton FC,Soccer
+44,FC Barcelona,Soccer
+45,FC Bayern Munich,Soccer
+46,FC Cincinnati,Soccer
+47,FC Dallas,Soccer
+48,FC Köln,Soccer
+49,FC Porto,Soccer
+50,FC Tokyo,Soccer
+51,Fenerbahçe SK,Soccer
+52,Fiorentina,Soccer
+53,Flamengo,Soccer
+54,Fulham FC,Soccer
+55,Galatasaray SK,Soccer
+56,Getafe CF,Soccer
+57,Girona FC,Soccer
+58,Gotham FC,Soccer
+59,Granada CF,Soccer
+60,Houston Dash,Soccer
+61,Inter Miami,Soccer
+62,Inter Milan,Soccer
+63,Internacional,Soccer
+64,Ipswich Town,Soccer
+65,Juventus,Soccer
+66,Kansas City Current,Soccer
+67,LA Galaxy,Soccer
+68,LAFC,Soccer
+69,Lazio,Soccer
+70,Leeds United,Soccer
+71,Leicester City,Soccer
+72,Lille OSC,Soccer
+73,Liverpool FC,Soccer
+74,Los Angeles FC,Soccer
+75,Lyon,Soccer
+76,Manchester City,Soccer
+77,Manchester United,Soccer
+78,Middlesbrough FC,Soccer
+79,Minnesota United FC,Soccer
+80,Nacional,Soccer
+81,Napoli,Soccer
+82,New York City FC,Soccer
+83,Newcastle United,Soccer
+84,Nottingham Forest,Soccer
+85,OGC Nice,Soccer
+86,OL Reign,Soccer
+87,Olympiacos,Soccer
+88,Olympique de Marseille,Soccer
+89,Olympique Lyonnais,Soccer
+90,Orlando City SC,Soccer
+91,Orlando Pride,Soccer
+92,Paris Saint-Germain,Soccer
+93,Parma,Soccer
+94,Portland Thorns FC,Soccer
+95,Portland Timbers,Soccer
+96,Racing Louisville FC,Soccer
+97,Rangers FC,Soccer
+98,RB Leipzig,Soccer
+99,RC Celta de Vigo,Soccer
+100,Real Betis,Soccer
+101,Real Madrid,Soccer
+102,Real Sociedad,Soccer
+103,River Plate,Soccer
+104,Roma,Soccer
+105,Salernitana,Soccer
+106,San Diego Wave FC,Soccer
+107,São Paulo,Soccer
+108,Seattle Sounders,Soccer
+109,Sevilla FC,Soccer
+110,SL Benfica,Soccer
+111,Southampton FC,Soccer
+112,Sporting CP,Soccer
+113,Sporting Kansas City,Soccer
+114,Toronto FC,Soccer
+115,Tottenham Hotspur,Soccer
+116,Urawa Red Diamonds,Soccer
+117,US Sassuolo,Soccer
+118,Valencia CF,Soccer
+119,Villarreal CF,Soccer
+120,Vissel Kobe,Soccer
+121,West Ham United,Soccer
+122,Wolverhampton Wanderers,Soccer
+123,Buffalo Bills,American Football
+124,Miami Dolphins,American Football
+125,New England Patriots,American Football
+126,New York Jets,American Football
+127,Baltimore Ravens,American Football
+128,Cincinnati Bengals,American Football
+129,Cleveland Browns,American Football
+130,Pittsburgh Steelers,American Football
+131,Houston Texans,American Football
+132,Indianapolis Colts,American Football
+133,Jacksonville Jaguars,American Football
+134,Tennessee Titans,American Football
+135,Denver Broncos,American Football
+136,Kansas City Chiefs,American Football
+137,Las Vegas Raiders,American Football
+138,Los Angeles Chargers,American Football
+139,Dallas Cowboys,American Football
+140,New York Giants,American Football
+141,Philadelphia Eagles,American Football
+142,Washington Commanders,American Football
+143,Chicago Bears,American Football
+144,Detroit Lions,American Football
+145,Green Bay Packers,American Football
+146,Minnesota Vikings,American Football
+147,Atlanta Falcons,American Football
+148,Carolina Panthers,American Football
+149,New Orleans Saints,American Football
+150,Tampa Bay Buccaneers,American Football
+151,Arizona Cardinals,American Football
+152,Los Angeles Rams,American Football
+153,San Francisco 49ers,American Football
+154,Seattle Seahawks,American Football
+155,Los Angeles Dodgers,Baseball
+156,San Diego Padres,Baseball
+157,San Francisco Giants,Baseball
+158,Arizona Diamondbacks,Baseball
+159,Colorado Rockies,Baseball
+160,Atlanta Braves,Baseball
+161,Washington Nationals,Baseball
+162,Philadelphia Phillies,Baseball
+163,New York Mets,Baseball
+164,New York Yankees,Baseball
+165,Boston Red Sox,Baseball
+166,Toronto Blue Jays,Baseball
+167,Baltimore Orioles,Baseball
+168,Cleveland Guardians,Baseball
+169,Chicago White Sox,Baseball
+170,Minnesota Twins,Baseball
+171,Texas Rangers,Baseball
+172,Houston Astros,Baseball
+173,Los Angeles Angels,Baseball
+174,Kansas City Royals,Baseball
+175,Seattle Mariners,Baseball
+176,Oakland Athletics,Baseball
+177,Serbia,Tennis
+178,Spain,Tennis
+179,Italy,Tennis
+180,Russia,Tennis
+181,Germany,Tennis
+182,Greece,Tennis
+183,Denmark,Tennis
+184,Norway,Tennis
+185,USA,Tennis
+186,Canada,Tennis
+187,Poland,Tennis
+188,Argentina,Tennis
+189,Bulgaria,Tennis
+190,Switzerland,Tennis
+191,France,Tennis
+192,Japan,Tennis
+193,Australia,Tennis
+194,Croatia,Tennis
+195,Romania,Tennis
+196,Czech Republic,Tennis
+197,Belarus,Tennis
+198,Kazakhstan,Tennis
+199,Tunisia,Tennis
+200,Brazil,Tennis
+201,Great Britain,Tennis
+202,Ukraine,Tennis
+203,Latvia,Tennis
+204,Estonia,Tennis
+205,Belgium,Tennis
+206,China,Tennis
+207,Slovenia,Tennis
+208,Netherlands,Tennis
+209,South Korea,Tennis
+210,Chile,Tennis
+211,Slovakia,Tennis
+212,Uruguay,Tennis
+213,Colombia,Tennis
+214,Sweden,Tennis
+215,Austria,Tennis
+216,Great Britain,Tennis
+217,Hungary,Tennis
+218,Czech Republic,Tennis
+219,Borussia Dortmund,Soccer
