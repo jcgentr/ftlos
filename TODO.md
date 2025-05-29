@@ -10,6 +10,7 @@
 - [ ] add 10 dummy users
 - [ ] implement Find A Fan as full stack feature
 - [ ] turn Tagline into full stack feature
+- [ ] add all sports from tagline dropdown to database
 - [x] other (non-self) user profile page
 - [x] be able to update the user on Edit Profile page
   - [x] profilePic (save to Supabase Storage)

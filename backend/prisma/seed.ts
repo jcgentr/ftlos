@@ -5,6 +5,11 @@ import csv from "csv-parser";
 
 const prisma = new PrismaClient();
 
+type SportData = {
+  name: string;
+  slug: string;
+};
+
 type TeamData = {
   "Team ID": string;
   "Team Name": string;
@@ -26,10 +31,41 @@ async function main() {
   await prisma.team.deleteMany();
   await prisma.sport.deleteMany();
 
-  console.log("Cleared existing data");
+  // Reset sequences
+  await prisma.$executeRaw`ALTER SEQUENCE athletes_id_seq RESTART WITH 1;`;
+  await prisma.$executeRaw`ALTER SEQUENCE teams_id_seq RESTART WITH 1;`;
+  await prisma.$executeRaw`ALTER SEQUENCE sports_id_seq RESTART WITH 1;`;
+
+  console.log("Cleared existing data and reset sequences");
 
   const sportMap = new Map<string, number>();
   const teamMap = new Map<string, number>();
+
+  const sportsData: SportData[] = [];
+
+  await new Promise<void>((resolve) => {
+    fs.createReadStream(path.join(__dirname, "../../data/FTLOS Initial Sports.csv"))
+      .pipe(csv())
+      .on("data", (data) => sportsData.push(data))
+      .on("end", () => resolve());
+  });
+
+  console.log(`Read ${sportsData.length} sports from CSV`);
+
+  for (const sport of sportsData) {
+    try {
+      const createdSport = await prisma.sport.create({
+        data: {
+          name: sport.name,
+          slug: sport.slug,
+        },
+      });
+      sportMap.set(sport.name, createdSport.id);
+      console.log(`Created sport: ${sport.name} with ID ${createdSport.id}`);
+    } catch (error) {
+      console.error(`Error creating sport ${sport.name}:`, error);
+    }
+  }
 
   const teamsData: TeamData[] = [];
 
@@ -44,7 +80,9 @@ async function main() {
 
   const uniqueSports = [...new Set(teamsData.map((team) => team["Sport"]))];
 
+  // create any sports that weren't in sports csv file
   for (const sportName of uniqueSports) {
+    if (sportMap.has(sportName)) continue;
     const slug = sportName.toLowerCase().replace(/\s+/g, "-");
 
     try {
