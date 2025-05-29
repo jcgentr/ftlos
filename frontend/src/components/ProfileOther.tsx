@@ -5,13 +5,13 @@ import { useParams } from "react-router";
 import { UserProfile } from "@/lib/types";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { User } from "lucide-react";
 
 export function ProfileOther() {
   const { profileId } = useParams();
   const { session } = useAuth();
   const [profile, setProfile] = useState<Omit<UserProfile, "email" | "id"> | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadingProfilePic, setLoadingProfilePic] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -73,17 +73,13 @@ export function ProfileOther() {
           </div>
         </div>
         <div className="w-52 h-52 m-auto mt-4 relative bg-gray-200 overflow-hidden rounded-full">
-          {loadingProfilePic && (
-            <div className="absolute inset-0 flex items-center justify-center animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          {profile.profileImageUrl ? (
+            <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <User className="text-gray-500" size={80} strokeWidth={1.5} />
             </div>
           )}
-          <img
-            src="https://images.unsplash.com/photo-1627796795540-18e2db6d3908?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="profile image"
-            className="w-full h-full object-cover"
-            onLoad={() => setLoadingProfilePic(false)}
-          />
         </div>
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
@@ -93,9 +89,6 @@ export function ProfileOther() {
           </p>
           <p>
             <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
-          </p>
-          <p>
-            <span className="font-bold">Favorite Sports:</span> {profile.favoriteSports || "Not set"}
           </p>
         </div>
       </div>

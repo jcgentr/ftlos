@@ -77,9 +77,6 @@ export function Profile() {
           <p>
             <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
           </p>
-          <p>
-            <span className="font-bold">Favorite Sports:</span> {profile.favoriteSports || "Not set"}
-          </p>
         </div>
         <div className="flex justify-end items-center mt-8 gap-4 flex-wrap">
           <Button

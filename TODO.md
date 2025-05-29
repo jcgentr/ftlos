@@ -1,16 +1,16 @@
 ## NOW
 
 - [ ] add Games and Sweepstakes to database schema
-- [ ] if user has favorite sports filled out, show them 5 other users
-- [ ] allow user to rank Team or Player
-- [ ] add Teams and Players to database schema (should they be separate?)
-  - [ ] add in initial data from Arthur
+- [ ] allow user to rank Team or Athlete
 - [ ] improve loading states (login skeleton -> loading text -> profile)
-  - [ ] why is fetch called on Profile page when changing tabs
-- [ ] add 10 dummy users
+  - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)
 - [ ] implement Find A Fan as full stack feature
 - [ ] turn Tagline into full stack feature
-- [ ] add all sports from tagline dropdown to database
+- [x] add all sports from tagline dropdown to database
+  - [ ] fetch those sports from backend for dropdown
+- [x] add 10 dummy users
+- [x] add Teams and Athletes to database schema (should they be separate?)
+  - [x] add in initial data from Arthur
 - [x] other (non-self) user profile page
 - [x] be able to update the user on Edit Profile page
   - [x] profilePic (save to Supabase Storage)

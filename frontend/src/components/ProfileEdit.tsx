@@ -17,7 +17,6 @@ export function ProfileEdit() {
     lastName: "",
     location: "",
     birthDate: "",
-    favoriteSports: "",
   });
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export function ProfileEdit() {
         lastName: profile.lastName || "",
         location: profile.location || "",
         birthDate: profile.birthDate || "",
-        favoriteSports: profile.favoriteSports || "",
       });
 
       if (profile.profileImageUrl) {
@@ -122,18 +120,6 @@ export function ProfileEdit() {
             Date of Birth
           </Label>
           <Input type="date" id="birthDate" className="mb-6" value={formData.birthDate} onChange={handleChange} />
-
-          <Label className="mb-2" htmlFor="favoriteSports">
-            Favorite Sports
-          </Label>
-          <Input
-            type="text"
-            id="favoriteSports"
-            placeholder="Type to search sports..."
-            value={formData.favoriteSports}
-            onChange={handleChange}
-          />
-          <p className="mt-1 mb-6 text-sm text-gray-500">Search and select your favorite sports</p>
 
           <Label className="mb-2" htmlFor="profile-picture">
             Profile Picture

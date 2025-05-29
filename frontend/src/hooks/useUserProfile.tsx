@@ -12,7 +12,7 @@ export function useUserProfile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
+      if (!user?.id || !session?.access_token) return;
 
       setLoading(true);
       try {

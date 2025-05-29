@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { Session, User } from "@supabase/supabase-js";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type AuthContextType = {
   session: Session | null;
@@ -12,8 +12,8 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [userSession, setUserSession] = useState<Session | null>(null);
+  const previousSessionRef = useRef<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,8 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const {
           data: { session },
         } = await supabase.auth.getSession();
-        setSession(session);
-        setUser(session?.user ?? null);
+        setUserSession(session);
       } catch (error) {
         console.log(error);
       } finally {
@@ -36,9 +35,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(event, session);
+      console.log(previousSessionRef.current);
+
+      if (event === "INITIAL_SESSION") {
+        setUserSession(session);
+        previousSessionRef.current = session;
+      } else if (event === "SIGNED_IN") {
+        // Only update if this is a new sign in (previousSession was null)
+        // or if the user ID has changed (different user signed in)
+        // or jwt changes (not sure if this is actually needed)
+        if (
+          !previousSessionRef.current ||
+          previousSessionRef.current?.user?.id !== session?.user?.id ||
+          previousSessionRef?.current?.access_token !== session?.access_token
+        ) {
+          setUserSession(session);
+        }
+        previousSessionRef.current = session;
+      } else if (event === "SIGNED_OUT") {
+        setUserSession(null);
+        previousSessionRef.current = null;
+      } else if (event === "PASSWORD_RECOVERY") {
+        // handle password recovery event
+      } else if (event === "TOKEN_REFRESHED") {
+        setUserSession(session);
+        previousSessionRef.current = session;
+      } else if (event === "USER_UPDATED") {
+        setUserSession(session);
+        previousSessionRef.current = session;
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -49,8 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = {
-    session,
-    user,
+    session: userSession,
+    user: userSession?.user ?? null,
     loading,
     signOut,
   };

@@ -10,8 +10,6 @@ export function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
 
-  console.log({ user });
-
   // Handle screen resize
   useEffect(() => {
     const checkScreenSize = () => {
