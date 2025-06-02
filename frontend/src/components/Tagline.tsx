@@ -40,7 +40,7 @@ export function Tagline() {
 
   const selectsLength = selects.filter(Boolean).length;
   const tagsLength = tags.filter(Boolean).length;
-  const submitDisabled = selectsLength !== 4 || tagsLength !== 4;
+  const submitDisabled = selectsLength < 4 || tagsLength < 4;
 
   return (
     <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
@@ -48,7 +48,7 @@ export function Tagline() {
       {editingTagline ? (
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground mb-4">
-            You must fill out all four rows, selecting a player or team and choosing either{" "}
+            You must fill out all four rows, selecting an athlete, team, or sport and choosing either{" "}
             <span className="font-semibold text-green-600">love</span>{" "}
             <span role="img" aria-label="thumbs up">
               👍

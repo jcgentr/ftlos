@@ -49,28 +49,52 @@ export function RatingTable() {
   );
 }
 
-export function RatingTableStatic() {
+interface RatingSelection {
+  name: string;
+  rating: number;
+}
+
+interface RatingTableStaticProps {
+  selections: RatingSelection[];
+}
+
+export function RatingTableStatic({ selections }: RatingTableStaticProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Sport</TableHead>
+          {/* <TableHead>Category</TableHead> */}
+          {/* <TableHead>Sport</TableHead> */}
           <TableHead className="text-right">Rating</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {athletes
-          .sort((a, b) => b.rating - a.rating)
-          .map((athlete) => (
-            <TableRow key={athlete.name}>
-              <TableCell className="font-medium">{athlete.name}</TableCell>
-              <TableCell>{athlete.category}</TableCell>
-              <TableCell>{athlete.sport}</TableCell>
-              <TableCell className="flex justify-end">{athlete.rating}</TableCell>
-            </TableRow>
-          ))}
+        {selections.length > 0 ? (
+          selections
+            .sort((a, b) => b.rating - a.rating)
+            .map(({ name, rating }) => (
+              <TableRow key={name}>
+                <TableCell className="font-medium">{name}</TableCell>
+                <TableCell className="flex justify-end">
+                  <div
+                    className={cn(
+                      "text-sm font-medium flex items-center justify-center w-8 h-6",
+                      rating < 0 ? "text-red-600" : rating > 0 ? "text-green-600" : "text-gray-900"
+                    )}
+                  >
+                    {rating > 0 ? `+${rating}` : rating}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
+              No selections yet.
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   );

@@ -59,7 +59,7 @@ export function SingleSelectDropdown({
   selectedValue = "",
   onChange,
   disabledValues = [],
-  placeholder = "Select an athlete or team...",
+  placeholder = "Select an athlete, team, or sport...",
 }: SingleSelectDropdownProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedValue);
@@ -89,7 +89,7 @@ export function SingleSelectDropdown({
         </PopoverTrigger>
         <PopoverContent className="max-w-[400px] p-0" align="start" side="bottom" sideOffset={4}>
           <Command>
-            <CommandInput placeholder="Search athletes and teams..." />
+            <CommandInput placeholder="Search athletes, teams, and sports..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               {sportsOptions.map((group) => (

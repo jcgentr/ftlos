@@ -95,7 +95,8 @@ export function ProfileOther() {
 
       <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Favorite Teams & Players</h2>
-        <RatingTableStatic />
+        {/* TODO: add user's selections from backend */}
+        <RatingTableStatic selections={[]} />
       </div>
     </div>
   );

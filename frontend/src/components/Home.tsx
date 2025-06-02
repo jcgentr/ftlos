@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
-import { RatingTable } from "./RatingTable";
 import { useEffect, useState } from "react";
 
 // Define our entities to rotate through, keeping actions constant
@@ -89,19 +88,6 @@ export function Home() {
           <Link to="/fans" className="mt-4">
             <Button>Browse All Fans</Button>
           </Link>
-        </div>
-      </div>
-      {/* Rate These Sports Entities */}
-      <div className="border border-gray-300 mt-8 rounded-lg bg-white">
-        <div className="p-4 border-b border-gray-300">
-          <h2 className="text-2xl font-bold">Rate These Sports Entities</h2>
-          <p>Help us learn your preferences! Rate from 1 (strongly dislike) to 5 (strongly like)</p>
-        </div>
-        <div className="flex flex-col gap-2 justify-center items-center py-4">
-          <div className="w-full px-4">
-            <RatingTable />
-          </div>
-          <Button className="mt-4">Get New Entitites to Rate</Button>
         </div>
       </div>
     </div>

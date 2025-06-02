@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import { RatingTable } from "./RatingTable";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -7,6 +6,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate } from "@/lib/utils";
 import { User } from "lucide-react";
 import { Tagline } from "./Tagline";
+import { ProfileRatings } from "./ProfileRatings";
 
 export function Profile() {
   const { profile, loading, updateProfile } = useUserProfile();
@@ -94,10 +94,7 @@ export function Profile() {
 
       <Tagline />
 
-      <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
-        <h2 className="text-2xl font-semibold mb-4">Rate Teams & Players</h2>
-        <RatingTable />
-      </div>
+      <ProfileRatings />
     </div>
   );
 }
