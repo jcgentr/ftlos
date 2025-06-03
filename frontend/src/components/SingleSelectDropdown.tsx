@@ -79,7 +79,7 @@ export function SingleSelectDropdown({
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="flex-1">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">

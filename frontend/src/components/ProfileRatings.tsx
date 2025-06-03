@@ -56,7 +56,7 @@ export function ProfileRatings() {
             <span className="font-semibold text-red-600">-5</span> to{" "}
             <span className="font-semibold text-green-600">+5</span>.
           </p>
-          <div className="ml-4 space-y-4">
+          <div className="mx-0 md:mx-4 space-y-4">
             {[...Array(12).keys()].map((idx) => (
               <RatingRow
                 key={idx}
@@ -125,8 +125,9 @@ function RatingRow({ value, onChange, rating, onRatingChange, disabledValues }: 
   };
 
   return (
-    <div className="flex gap-2 items-center">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-wrap gap-4 items-center justify-between">
+      <SingleSelectDropdown selectedValue={value} onChange={onChange} disabledValues={disabledValues} />
+      <div className="flex shrink-0 items-center gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -172,7 +173,6 @@ function RatingRow({ value, onChange, rating, onRatingChange, disabledValues }: 
           </Tooltip>
         </TooltipProvider>
       </div>
-      <SingleSelectDropdown selectedValue={value} onChange={onChange} disabledValues={disabledValues} />
     </div>
   );
 }

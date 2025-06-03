@@ -1,5 +1,44 @@
 ## NOW
 
+### HOMEPAGE
+
+- [ ] if user is connecting, has tagline, and ratings filled out, then show 5 user recs (random users if needed)
+
+### FIND A FAN PAGE
+
+- [ ] search for users based on name or location or loved sport or loved team
+- [ ] same rec system as homepage (for now)
+
+### RANKINGS PAGE
+
+- [ ] search for team and/or player with filters on team/player/sport
+- [ ] show top 5 and bottom 5 teams/players based on users' ratings
+
+### SWEEPSTAKES PAGE
+
+- [ ] show active sweepstakes in database
+- [ ] show past sweepstakes
+
+### SWEEPSTAKES/ID PAGE
+
+- [ ] details of sweepstake
+- [ ] show regular games (sport, teams, date) => user has to pick one selection
+- [ ] show final game (sport, teams, date) => user has to pick one selection
+- [ ] submit locks in user's selections
+
+### PROFILE PAGE
+
+- [ ] tagline component needs backend connection and persistence for current user
+- [ ] build profile component needs backend connection and persistence for current user
+- [ ] have select dropdown populate 10 entries for Teams/Athletes/Sports
+  - [ ] work on search later
+
+### PROFILE/ID PAGE
+
+- [ ] show user ratings in build profile component table (no edit)
+
+### MISC
+
 - [ ] add Games and Sweepstakes to database schema
 - [ ] allow user to rank Team or Athlete
 - [ ] improve loading states (login skeleton -> loading text -> profile)
