@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { AuthenticatedRequest } from "../middleware/auth";
 
 const prisma = new PrismaClient();
 
@@ -138,5 +139,67 @@ export const updateUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "Failed to update user" });
+  }
+};
+
+export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { name, location } = req.query;
+    const currentUserSupabaseId = req.user?.sub;
+
+    if (!name && !location) {
+      res.status(400).json({ error: "At least one search parameter is required" });
+      return;
+    }
+
+    const whereConditions: Prisma.UserWhereInput = {
+      isConnecting: true, // Only return users who are open to connecting
+      supabaseId: { not: currentUserSupabaseId }, // Exclude the current user
+    };
+
+    if (name) {
+      // Search in both firstName and lastName
+      whereConditions.OR = [
+        { firstName: { contains: name as string, mode: "insensitive" } },
+        { lastName: { contains: name as string, mode: "insensitive" } },
+      ];
+    }
+
+    if (location) {
+      whereConditions.location = {
+        contains: location as string,
+        mode: "insensitive",
+      };
+    }
+
+    const users = await prisma.user.findMany({
+      where: whereConditions,
+      select: {
+        supabaseId: true,
+        firstName: true,
+        lastName: true,
+        location: true,
+        favoriteSports: true,
+        profileImageUrl: true,
+      },
+      take: 50, // Limit results
+    });
+
+    // Format users for frontend display
+    const formattedUsers = users.map((user) => ({
+      supabaseId: user.supabaseId,
+      name:
+        user.firstName && user.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : user.firstName || user.lastName || "Anonymous",
+      location: user.location || "Unknown location",
+      profileImageUrl: user.profileImageUrl,
+      favoriteSports: user.favoriteSports,
+    }));
+
+    res.status(200).json(formattedUsers);
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ error: "Failed to search users" });
   }
 };

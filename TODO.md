@@ -3,11 +3,14 @@
 ### HOMEPAGE
 
 - [ ] if user is connecting, has tagline, and ratings filled out, then show 5 user recs (random users if needed)
+  - [ ] therefore, finish profile tasks first
 
 ### FIND A FAN PAGE
 
-- [ ] search for users based on name or location or loved sport or loved team
+- [x] search for users based on name or location
+  - [ ] ask Arthur about other two fields in email
 - [ ] same rec system as homepage (for now)
+  - [ ] therefore, finish homepage before this task
 
 ### RANKINGS PAGE
 
