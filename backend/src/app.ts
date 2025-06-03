@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/users";
+import sportsRoutes from "./routes/sports";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/sports", sportsRoutes);
 
 export default app;

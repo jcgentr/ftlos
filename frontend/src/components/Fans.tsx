@@ -1,8 +1,40 @@
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { toast } from "sonner";
+
+interface Sport {
+  id: number;
+  name: string;
+  slug: string;
+}
 
 export function Fans() {
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [isLoadingSports, setIsLoadingSports] = useState(false);
+
+  useEffect(() => {
+    const fetchSports = async () => {
+      setIsLoadingSports(true);
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sports`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch sports");
+        }
+        const data = await response.json();
+        setSports(data);
+      } catch (error) {
+        console.error("Error fetching sports:", error);
+        toast.error("Error fetching sports");
+      } finally {
+        setIsLoadingSports(false);
+      }
+    };
+
+    fetchSports();
+  }, []);
+
   return (
     <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
@@ -18,10 +50,17 @@ export function Fans() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="any-sport">Any Sport</SelectItem>
-                <SelectItem value="american-football">American Football</SelectItem>
-                <SelectItem value="football-soccer">Football (Soccer)</SelectItem>
-                <SelectItem value="tennis">Tennis</SelectItem>
-                <SelectItem value="baseball">Baseball</SelectItem>
+                {isLoadingSports ? (
+                  <SelectItem value="loading" disabled>
+                    Loading sports...
+                  </SelectItem>
+                ) : (
+                  sports.map((sport) => (
+                    <SelectItem key={sport.id} value={sport.slug}>
+                      {sport.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
