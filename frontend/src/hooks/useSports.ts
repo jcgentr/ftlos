@@ -26,7 +26,7 @@ export function useSports() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch sports");
+          throw new Error(`Failed to fetch sports: ${response.status}`);
         }
 
         const data = await response.json();

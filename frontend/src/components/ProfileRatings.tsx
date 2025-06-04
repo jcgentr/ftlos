@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { SingleSelectDropdown, sportsOptions } from "./SingleSelectDropdown";
+import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { RatingTableStatic } from "./RatingTable";
 import { cn } from "@/lib/utils";
+import { SportCategory } from "@/hooks/useSportsData";
+
+type ProfileRatingsProps = {
+  sportsData: SportCategory[];
+  isLoading: boolean;
+};
 
 // 12 rows; 6 min must be filled out
 
-export function ProfileRatings() {
+export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
   const [editingRatings, setEditingRatings] = useState(false);
   const [selects, setSelects] = useState<string[]>(Array(12).fill(""));
   const [ratings, setRatings] = useState<number[]>(Array(12).fill(0));
@@ -35,7 +41,7 @@ export function ProfileRatings() {
 
   const getLabelForValue = (value: string) => {
     if (!value) return "";
-    for (const group of sportsOptions) {
+    for (const group of sportsData) {
       const item = group.items.find((item) => item.value === value);
       if (item) return item.label;
     }
@@ -65,6 +71,8 @@ export function ProfileRatings() {
                 rating={ratings[idx]}
                 onRatingChange={(rating) => handleRatingChange(idx, rating)}
                 disabledValues={getDisabledValues(idx)}
+                sportsData={sportsData}
+                isLoading={isLoading}
               />
             ))}
           </div>
@@ -113,9 +121,11 @@ interface RatingRowProps {
   rating: number;
   onRatingChange: (rating: number) => void;
   disabledValues: string[];
+  sportsData: SportCategory[];
+  isLoading: boolean;
 }
 
-function RatingRow({ value, onChange, rating, onRatingChange, disabledValues }: RatingRowProps) {
+function RatingRow({ value, onChange, rating, onRatingChange, disabledValues, sportsData, isLoading }: RatingRowProps) {
   const handleThumbsUp = () => {
     onRatingChange(Math.min(rating + 1, 5));
   };
@@ -126,7 +136,13 @@ function RatingRow({ value, onChange, rating, onRatingChange, disabledValues }: 
 
   return (
     <div className="flex flex-wrap gap-4 items-center justify-between">
-      <SingleSelectDropdown selectedValue={value} onChange={onChange} disabledValues={disabledValues} />
+      <SingleSelectDropdown
+        selectedValue={value}
+        onChange={onChange}
+        disabledValues={disabledValues}
+        sportsData={sportsData}
+        isLoading={isLoading}
+      />
       <div className="flex shrink-0 items-center gap-2">
         <TooltipProvider>
           <Tooltip>

@@ -72,7 +72,13 @@ export function Fans() {
     <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Find a Fan</h1>
-        <div className="flex flex-col sm:flex-row items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+          className="flex flex-col sm:flex-row items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg"
+        >
           <Input
             type="text"
             placeholder="Search by name"
@@ -114,13 +120,14 @@ export function Fans() {
             onChange={(e) => setTeamQuery(e.target.value)}
           />
           <Button
+            type="submit"
             className="w-full sm:w-fit"
             onClick={handleSearch}
             disabled={isSearching || (!nameQuery && !locationQuery)}
           >
             {isSearching ? "Searching..." : "Search"}
           </Button>
-        </div>
+        </form>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {fans.map((fan) => (

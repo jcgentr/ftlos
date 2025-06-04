@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { SingleSelectDropdown, sportsOptions } from "./SingleSelectDropdown";
+import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { SportCategory } from "@/hooks/useSportsData";
 
-export function Tagline() {
+type TaglineProps = {
+  sportsData: SportCategory[];
+  isLoading: boolean;
+};
+
+export function Tagline({ sportsData, isLoading }: TaglineProps) {
   const [editingTagline, setEditingTagline] = useState(false);
   const [selects, setSelects] = useState(["", "", "", ""]);
   const [tags, setTags] = useState<TagType[]>([null, null, null, null]);
@@ -31,7 +37,7 @@ export function Tagline() {
 
   const getLabelForValue = (value: string) => {
     if (!value) return "";
-    for (const group of sportsOptions) {
+    for (const group of sportsData) {
       const item = group.items.find((item) => item.value === value);
       if (item) return item.label;
     }
@@ -68,6 +74,8 @@ export function Tagline() {
                 tag={tags[idx]}
                 onTagChange={(tag) => handleTagChange(idx, tag)}
                 disabledValues={getDisabledValues(idx)}
+                sportsData={sportsData}
+                isLoading={isLoading}
               />
             ))}
           </div>
@@ -129,9 +137,11 @@ interface TaglineRowProps {
   tag: TagType;
   onTagChange: (tag: TagType) => void;
   disabledValues: string[];
+  sportsData: SportCategory[];
+  isLoading: boolean;
 }
 
-function TaglineRow({ value, onChange, tag, onTagChange, disabledValues }: TaglineRowProps) {
+function TaglineRow({ value, onChange, tag, onTagChange, disabledValues, sportsData, isLoading }: TaglineRowProps) {
   return (
     <div className="flex gap-2 items-center">
       {/* Thumbs Up */}
@@ -180,7 +190,13 @@ function TaglineRow({ value, onChange, tag, onTagChange, disabledValues }: Tagli
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <SingleSelectDropdown selectedValue={value} onChange={onChange} disabledValues={disabledValues} />
+      <SingleSelectDropdown
+        selectedValue={value}
+        onChange={onChange}
+        disabledValues={disabledValues}
+        sportsData={sportsData}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

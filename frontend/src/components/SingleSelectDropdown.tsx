@@ -4,55 +4,15 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-
-// Sample data of famous athletes and sports teams
-export const sportsOptions = [
-  {
-    category: "Athletes",
-    items: [
-      { value: "lebron-james", label: "LeBron James" },
-      { value: "serena-williams", label: "Serena Williams" },
-      { value: "lionel-messi", label: "Lionel Messi" },
-      { value: "simone-biles", label: "Simone Biles" },
-      { value: "usain-bolt", label: "Usain Bolt" },
-      { value: "michael-phelps", label: "Michael Phelps" },
-      { value: "cristiano-ronaldo", label: "Cristiano Ronaldo" },
-      { value: "tom-brady", label: "Tom Brady" },
-    ],
-  },
-  {
-    category: "Teams",
-    items: [
-      { value: "lakers", label: "Los Angeles Lakers" },
-      { value: "real-madrid", label: "Real Madrid" },
-      { value: "yankees", label: "New York Yankees" },
-      { value: "manchester-united", label: "Manchester United" },
-      { value: "patriots", label: "New England Patriots" },
-      { value: "barcelona", label: "FC Barcelona" },
-      { value: "warriors", label: "Golden State Warriors" },
-      { value: "chiefs", label: "Kansas City Chiefs" },
-    ],
-  },
-  {
-    category: "Sports",
-    items: [
-      { value: "soccer", label: "Soccer" },
-      { value: "american-football", label: "American Football" },
-      { value: "tennis", label: "Tennis" },
-      { value: "baseball", label: "Baseball" },
-      { value: "basketball", label: "Basketball" },
-      { value: "cricket", label: "Cricket" },
-      { value: "golf", label: "Golf" },
-      { value: "hockey", label: "Hockey" },
-    ],
-  },
-];
+import { SportCategory } from "@/hooks/useSportsData";
 
 type SingleSelectDropdownProps = {
   selectedValue?: string;
   onChange?: (value: string) => void;
   disabledValues?: string[];
   placeholder?: string;
+  sportsData: SportCategory[];
+  isLoading?: boolean;
 };
 
 export function SingleSelectDropdown({
@@ -60,6 +20,8 @@ export function SingleSelectDropdown({
   onChange,
   disabledValues = [],
   placeholder = "Select an athlete, team, or sport...",
+  sportsData,
+  isLoading = false,
 }: SingleSelectDropdownProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedValue);
@@ -71,7 +33,9 @@ export function SingleSelectDropdown({
 
   // Find the selected item label
   const getSelectedLabel = () => {
-    for (const group of sportsOptions) {
+    if (sportsData.length === 0) return placeholder;
+
+    for (const group of sportsData) {
       const item = group.items.find((item) => item.value === value);
       if (item) return item.label;
     }
@@ -92,33 +56,37 @@ export function SingleSelectDropdown({
             <CommandInput placeholder="Search athletes, teams, and sports..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
-              {sportsOptions.map((group) => (
-                <CommandGroup key={group.category} heading={group.category}>
-                  {group.items.map((item) => {
-                    const isDisabled = disabledValues.includes(item.value);
+              {isLoading ? (
+                <div className="py-6 text-center text-sm">Loading options...</div>
+              ) : (
+                sportsData.map((group) => (
+                  <CommandGroup key={group.category} heading={group.category}>
+                    {group.items.map((item) => {
+                      const isDisabled = disabledValues.includes(item.value);
 
-                    return (
-                      <CommandItem
-                        key={item.value}
-                        value={item.value}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          onChange?.(currentValue === value ? "" : currentValue);
-                          setOpen(false);
-                        }}
-                        disabled={isDisabled}
-                        className={cn(
-                          value === item.value && "bg-accent font-medium",
-                          isDisabled && "opacity-50 cursor-not-allowed"
-                        )}
-                      >
-                        <span>{item.label}</span>
-                        <Check className={cn("ml-auto", value === item.value ? "opacity-100" : "opacity-0")} />
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              ))}
+                      return (
+                        <CommandItem
+                          key={item.value}
+                          value={item.value}
+                          onSelect={(currentValue) => {
+                            setValue(currentValue === value ? "" : currentValue);
+                            onChange?.(currentValue === value ? "" : currentValue);
+                            setOpen(false);
+                          }}
+                          disabled={isDisabled}
+                          className={cn(
+                            value === item.value && "bg-accent font-medium",
+                            isDisabled && "opacity-50 cursor-not-allowed"
+                          )}
+                        >
+                          <span>{item.label}</span>
+                          <Check className={cn("ml-auto", value === item.value ? "opacity-100" : "opacity-0")} />
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                ))
+              )}
             </CommandList>
           </Command>
         </PopoverContent>

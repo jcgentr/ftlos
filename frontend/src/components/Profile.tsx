@@ -7,10 +7,12 @@ import { formatDate } from "@/lib/utils";
 import { User } from "lucide-react";
 import { Tagline } from "./Tagline";
 import { ProfileRatings } from "./ProfileRatings";
+import { useSportsData } from "@/hooks/useSportsData";
 
 export function Profile() {
   const { profile, loading, updateProfile } = useUserProfile();
   const [updating, setUpdating] = useState(false);
+  const { sportsData, isLoading: sportsLoading } = useSportsData();
 
   const handleToggleConnecting = async () => {
     if (!profile) return;
@@ -92,9 +94,9 @@ export function Profile() {
         </div>
       </div>
 
-      <Tagline />
+      <Tagline sportsData={sportsData} isLoading={sportsLoading} />
 
-      <ProfileRatings />
+      <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
     </div>
   );
 }

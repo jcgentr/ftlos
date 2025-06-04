@@ -9,7 +9,7 @@
 
 - [x] search for users based on name or location
   - [x] fetch all sports for dropdown
-  - [ ] ask Arthur about other two fields in email
+  - [ ] other two fields: user likes Sport or Team (after profile tasks)
 - [ ] same rec system as homepage (for now)
   - [ ] therefore, finish homepage before this task
 
@@ -36,8 +36,8 @@
 
 - [ ] tagline component needs backend connection and persistence for current user
 - [ ] build profile component needs backend connection and persistence for current user
-- [ ] have select dropdown populate 10 entries for Teams/Athletes/Sports
-  - [ ] work on search later
+- [x] have select dropdown populate 10 random entries for Teams/Athletes/Sports
+  - [ ] work on load more and search later
 
 ### PROFILE/ID PAGE
 
