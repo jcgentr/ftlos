@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router";
-
-interface Sport {
-  id: number;
-  name: string;
-  slug: string;
-}
+import { useSports } from "@/hooks/useSports";
 
 interface Fan {
   supabaseId: string;
@@ -22,39 +17,13 @@ interface Fan {
 
 export function Fans() {
   const { session } = useAuth();
-  const [sports, setSports] = useState<Sport[]>([]);
-  const [isLoadingSports, setIsLoadingSports] = useState(false);
+  const { sports, isLoading: isLoadingSports } = useSports();
   const [nameQuery, setNameQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
   const [sportQuery, setSportQuery] = useState("any-sport");
   const [teamQuery, setTeamQuery] = useState("");
   const [fans, setFans] = useState<Fan[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
-  useEffect(() => {
-    const fetchSports = async () => {
-      setIsLoadingSports(true);
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sports`, {
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch sports");
-        }
-        const data = await response.json();
-        setSports(data);
-      } catch (error) {
-        console.error("Error fetching sports:", error);
-        toast.error("Error fetching sports");
-      } finally {
-        setIsLoadingSports(false);
-      }
-    };
-
-    fetchSports();
-  }, []);
 
   const handleSearch = async () => {
     // Validate that at least name or location is provided

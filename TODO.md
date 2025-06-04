@@ -8,6 +8,7 @@
 ### FIND A FAN PAGE
 
 - [x] search for users based on name or location
+  - [x] fetch all sports for dropdown
   - [ ] ask Arthur about other two fields in email
 - [ ] same rec system as homepage (for now)
   - [ ] therefore, finish homepage before this task
@@ -15,7 +16,9 @@
 ### RANKINGS PAGE
 
 - [ ] search for team and/or player with filters on team/player/sport
+  - [x] fetch all sports for dropdown
 - [ ] show top 5 and bottom 5 teams/players based on users' ratings
+- [ ] need ratings first, so do after profile page
 
 ### SWEEPSTAKES PAGE
 
@@ -38,18 +41,16 @@
 
 ### PROFILE/ID PAGE
 
-- [ ] show user ratings in build profile component table (no edit)
+- [ ] show user's ratings in build profile component table (no edit)
+- [ ] show user's tagline (no edit)
 
 ### MISC
 
-- [ ] add Games and Sweepstakes to database schema
-- [ ] allow user to rank Team or Athlete
+- [ ] look at TODO comments in codebase
 - [ ] improve loading states (login skeleton -> loading text -> profile)
   - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)
-- [ ] implement Find A Fan as full stack feature
-- [ ] turn Tagline into full stack feature
 - [x] add all sports from tagline dropdown to database
-  - [ ] fetch those sports from backend for dropdown
+  - [x] fetch those sports from backend for dropdown
 - [x] add 10 dummy users
 - [x] add Teams and Athletes to database schema (should they be separate?)
   - [x] add in initial data from Arthur

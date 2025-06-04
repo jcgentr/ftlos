@@ -2,8 +2,13 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { useSports } from "@/hooks/useSports";
+import { useState } from "react";
 
 export function Rankings() {
+  const { sports, isLoading: isLoadingSports } = useSports();
+  const [sportQuery, setSportQuery] = useState("any-sport");
+
   return (
     <div className="p-8 max-w-5xl w-full mx-auto">
       <div>
@@ -23,18 +28,25 @@ export function Rankings() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select defaultValue="all-sports">
+          <Select value={sportQuery} onValueChange={setSportQuery} defaultValue="any-sport">
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All Sports" />
+              <SelectValue placeholder="Any Sport" />
             </SelectTrigger>
 
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="all-sports">All Sports</SelectItem>
-                <SelectItem value="american-football">American Football</SelectItem>
-                <SelectItem value="football-soccer">Football (Soccer)</SelectItem>
-                <SelectItem value="tennis">Tennis</SelectItem>
-                <SelectItem value="baseball">Baseball</SelectItem>
+                <SelectItem value="any-sport">Any Sport</SelectItem>
+                {isLoadingSports ? (
+                  <SelectItem value="loading" disabled>
+                    Loading sports...
+                  </SelectItem>
+                ) : (
+                  sports.map((sport) => (
+                    <SelectItem key={sport.id} value={sport.slug}>
+                      {sport.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
