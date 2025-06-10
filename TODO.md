@@ -34,14 +34,14 @@
 
 ### PROFILE PAGE
 
-- [ ] tagline component needs backend connection and persistence for current user
-- [ ] build profile component needs backend connection and persistence for current user
+- [x] tagline component needs backend connection and persistence for current user
+- [x] build profile component needs backend connection and persistence for current user
 - [x] have select dropdown populate 10 random entries for Teams/Athletes/Sports
   - [ ] work on load more and search later
 
 ### PROFILE/ID PAGE
 
-- [ ] show user's ratings in build profile component table (no edit)
+- [x] show user's ratings in build profile component table (no edit)
 - [ ] show user's tagline (no edit)
 
 ### MISC

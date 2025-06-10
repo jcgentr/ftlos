@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -32,6 +26,7 @@ model User {
 
   // Relationship for ratings
   ratings     UserRating[]
+  taglines    UserTagline[]
 
   @@map("users")
 }
@@ -99,4 +94,27 @@ model UserRating {
   @@unique([userId, entityType, entityId])
   @@index([userId])
   @@map("user_ratings")
+}
+
+enum TagSentiment {
+  LOVE
+  LOATHE
+}
+
+model UserTagline {
+  id          String       @id @default(uuid())
+  userId      String       @map("user_id")
+  entityType  EntityType
+  entityId    Int
+  sentiment   TagSentiment
+  position    Int          // 0-3 for ordering the 4 tagline items
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  
+  user        User         @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, position])
+  @@unique([userId, entityType, entityId])
+  @@index([userId])
+  @@map("user_taglines")
 }

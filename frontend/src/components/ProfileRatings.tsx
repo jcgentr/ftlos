@@ -176,7 +176,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
         let entityId: number | undefined;
 
         // Search through all categories to find the matching item
-        for (const category of combinedSportsData) {
+        for (const category of combinedSportsData.length > 0 ? combinedSportsData : sportsData) {
           const foundItem = category.items.find((sportItem) => sportItem.value === item.value);
           if (foundItem) {
             entityType = foundItem.entityType;
@@ -240,7 +240,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
                 rating={ratings[idx]}
                 onRatingChange={(rating) => handleRatingChange(idx, rating)}
                 disabledValues={getDisabledValues(idx)}
-                sportsData={combinedSportsData}
+                sportsData={combinedSportsData.length > 0 ? combinedSportsData : sportsData}
                 isLoading={isLoading}
               />
             ))}
