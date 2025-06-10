@@ -17,8 +17,9 @@
 
 - [ ] search for team and/or player with filters on team/player/sport
   - [x] fetch all sports for dropdown
-- [ ] show top 5 and bottom 5 teams/players based on users' ratings
-- [ ] need ratings first, so do after profile page
+- [x] show top 5 and bottom 5 teams/players based on users' ratings
+  - [x] change player text to athletes
+- [x] need ratings first, so do after profile page
 
 ### SWEEPSTAKES PAGE
 
