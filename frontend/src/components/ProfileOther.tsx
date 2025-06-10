@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
 import { UserRating } from "./ProfileRatings";
+import { TaglineStatic, UserTagline } from "./Tagline";
 
 export function ProfileOther() {
   const { profileId } = useParams();
@@ -14,6 +15,7 @@ export function ProfileOther() {
   const [profile, setProfile] = useState<Omit<UserProfile, "email" | "id"> | null>(null);
   const [loading, setLoading] = useState(true);
   const [userRatings, setUserRatings] = useState<UserRating[]>([]);
+  const [userTaglines, setUserTaglines] = useState<UserTagline[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -70,6 +72,30 @@ export function ProfileOther() {
     fetchUserRatings();
   }, []);
 
+  useEffect(() => {
+    const fetchUserTaglines = async () => {
+      if (!session?.access_token || !profileId) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/taglines/${profileId}`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch taglines");
+
+        const data = await response.json();
+        setUserTaglines(data);
+      } catch (error) {
+        console.error("Error fetching user taglines:", error);
+        toast.error("Failed to load taglines");
+      }
+    };
+
+    fetchUserTaglines();
+  }, []);
+
   if (loading) {
     return <div className="p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
   }
@@ -117,6 +143,11 @@ export function ProfileOther() {
             <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
           </p>
         </div>
+      </div>
+
+      <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
+        <h2 className="text-2xl font-semibold mb-4">Tagline</h2>
+        <TaglineStatic taglines={userTaglines} />
       </div>
 
       <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">

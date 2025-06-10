@@ -265,34 +265,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
         </div>
       ) : (
         <>
-          <div className="text-center space-y-2 my-10">
-            <p>
-              Am I the only person in the world who{" "}
-              {userTaglines
-                .sort((a, b) => a.position - b.position)
-                .map((tagline) => {
-                  return (
-                    <span key={tagline.id}>
-                      {tagline.sentiment === "LOVE" && (
-                        <span className="font-semibold text-green-600">loves {tagline.entityName}</span>
-                      )}
-                      {tagline.sentiment === "LOATHE" && (
-                        <span className="font-semibold text-red-600">loathes {tagline.entityName}</span>
-                      )}
-                    </span>
-                  );
-                })
-                // Add commas and "and" before the last item
-                .map((el, idx, arr) => (
-                  <span key={idx}>
-                    {el}
-                    {arr.length > 1 && idx < arr.length - 2 && ", "}
-                    {arr.length > 1 && idx === arr.length - 2 && ", and "}
-                  </span>
-                ))}
-              {userTaglines.length === 0 && <span className="text-muted-foreground">...</span>}
-            </p>
-          </div>
+          <TaglineStatic taglines={userTaglines} />
           <div className="flex justify-end">
             <Button onClick={() => setEditingTagline(true)}>Edit Tagline</Button>
           </div>
@@ -370,6 +343,43 @@ function TaglineRow({ value, onChange, tag, onTagChange, disabledValues, sportsD
         sportsData={sportsData}
         isLoading={isLoading}
       />
+    </div>
+  );
+}
+
+interface TaglineStaticProps {
+  taglines: UserTagline[];
+}
+
+export function TaglineStatic({ taglines }: TaglineStaticProps) {
+  return (
+    <div className="text-center space-y-2 my-10">
+      <p>
+        Am I the only person in the world who{" "}
+        {taglines
+          .sort((a, b) => a.position - b.position)
+          .map((tagline) => {
+            return (
+              <span key={tagline.id}>
+                {tagline.sentiment === "LOVE" && (
+                  <span className="font-semibold text-green-600">loves {tagline.entityName}</span>
+                )}
+                {tagline.sentiment === "LOATHE" && (
+                  <span className="font-semibold text-red-600">loathes {tagline.entityName}</span>
+                )}
+              </span>
+            );
+          })
+          // Add commas and "and" before the last item
+          .map((el, idx, arr) => (
+            <span key={idx}>
+              {el}
+              {arr.length > 1 && idx < arr.length - 2 && ", "}
+              {arr.length > 1 && idx === arr.length - 2 && ", and "}
+            </span>
+          ))}
+        {taglines.length === 0 && <span className="text-muted-foreground">...</span>}
+      </p>
     </div>
   );
 }

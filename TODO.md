@@ -42,7 +42,7 @@
 ### PROFILE/ID PAGE
 
 - [x] show user's ratings in build profile component table (no edit)
-- [ ] show user's tagline (no edit)
+- [x] show user's tagline (no edit)
 
 ### MISC
 
