@@ -6,6 +6,7 @@ import userRoutes from "./routes/users";
 import athleteRoutes from "./routes/athletes";
 import teamRoutes from "./routes/teams";
 import sportsRoutes from "./routes/sports";
+import ratingsRoutes from "./routes/ratings";
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/athletes", athleteRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/sports", sportsRoutes);
+app.use("/api/ratings", ratingsRoutes);
 
 export default app;

@@ -1,23 +1,144 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { RatingTableStatic } from "./RatingTable";
 import { cn } from "@/lib/utils";
-import { SportCategory } from "@/hooks/useSportsData";
+import { EntityType, SportCategory } from "@/hooks/useSportsData";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 type ProfileRatingsProps = {
   sportsData: SportCategory[];
   isLoading: boolean;
 };
 
+export type UserRating = {
+  id: string;
+  userId: string;
+  entityType: EntityType;
+  entityId: number;
+  entityName: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 // 12 rows; 6 min must be filled out
 
 export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
+  const { session } = useAuth();
   const [editingRatings, setEditingRatings] = useState(false);
   const [selects, setSelects] = useState<string[]>(Array(12).fill(""));
   const [ratings, setRatings] = useState<number[]>(Array(12).fill(0));
+  const [userRatings, setUserRatings] = useState<UserRating[]>([]);
+  const [combinedSportsData, setCombinedSportsData] = useState<SportCategory[]>([]);
+
+  useEffect(() => {
+    const fetchUserRatings = async () => {
+      if (!session?.access_token || isLoading) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch ratings");
+
+        const data = await response.json();
+        setUserRatings(data);
+      } catch (error) {
+        console.error("Error fetching user ratings:", error);
+        toast.error("Failed to load your ratings");
+      }
+    };
+
+    if (!editingRatings) fetchUserRatings();
+  }, [session, isLoading, editingRatings]);
+
+  useEffect(() => {
+    // Always start with a fresh copy of the original sportsData
+    const newSportsData = JSON.parse(JSON.stringify(sportsData)) as SportCategory[];
+
+    // Then add any entities from userRatings that don't exist in sportsData
+    userRatings.forEach((rating) => {
+      let categoryIndex = -1;
+
+      if (rating.entityType === "ATHLETE") categoryIndex = 0;
+      else if (rating.entityType === "TEAM") categoryIndex = 1;
+      else if (rating.entityType === "SPORT") categoryIndex = 2;
+
+      if (categoryIndex === -1 || !newSportsData[categoryIndex]) return;
+
+      // Check if entity already exists
+      const exists = newSportsData[categoryIndex].items.some(
+        (item) => item.entityType === rating.entityType && item.entityId === rating.entityId
+      );
+
+      // If not, add it
+      if (!exists) {
+        newSportsData[categoryIndex].items.push({
+          id: rating.entityId,
+          entityId: rating.entityId,
+          entityType: rating.entityType,
+          value: rating.entityName,
+          label: rating.entityName,
+        });
+      }
+    });
+
+    // Sort each category alphabetically
+    newSportsData.forEach((category) => {
+      category.items.sort((a, b) => a.label.localeCompare(b.label));
+    });
+
+    setCombinedSportsData(newSportsData);
+
+    // Only update selects and ratings if we have userRatings
+    if (userRatings.length > 0) {
+      // Map ratings to items with values
+      const ratingItems = userRatings.map((item) => {
+        let value = "";
+
+        // Find the corresponding item in newSportsData
+        for (const category of newSportsData) {
+          const matchingItem = category.items.find(
+            (sportItem) => sportItem.entityType === item.entityType && sportItem.entityId === item.entityId
+          );
+
+          if (matchingItem) {
+            value = matchingItem.value;
+            break;
+          }
+        }
+
+        return {
+          value,
+          rating: item.rating,
+        };
+      });
+
+      // Sort by rating (highest to lowest)
+      ratingItems.sort((a, b) => b.rating - a.rating);
+
+      // Create new arrays with the sorted values
+      const newSelects = Array(12).fill("");
+      const newRatings = Array(12).fill(0);
+
+      ratingItems.forEach((item, index) => {
+        if (index < 12) {
+          newSelects[index] = item.value;
+          newRatings[index] = item.rating;
+        }
+      });
+
+      setSelects(newSelects);
+      setRatings(newRatings);
+    }
+  }, [sportsData, userRatings]);
 
   const handleSelectChange = (index: number, value: string) => {
     setSelects((prev) => {
@@ -39,15 +160,63 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
     return selects.filter((_, idx) => idx !== currentIndex && selects[idx]);
   };
 
-  const getLabelForValue = (value: string) => {
-    if (!value) return "";
-    for (const group of sportsData) {
-      const item = group.items.find((item) => item.value === value);
-      if (item) return item.label;
-    }
-    return "";
-  };
+  const handleSaveRatings = async () => {
+    try {
+      // Filter out empty selections and ratings
+      const validRatings = selects
+        .map((value, idx) => ({ value, rating: ratings[idx] }))
+        .filter((item) => item.value && item.rating !== 0);
 
+      if (validRatings.length < 6) return;
+
+      // Map the frontend selections to the backend expected format
+      const ratingsPayload = validRatings.map((item) => {
+        // Find the selected item in sportsData
+        let entityType: EntityType | undefined;
+        let entityId: number | undefined;
+
+        // Search through all categories to find the matching item
+        for (const category of combinedSportsData) {
+          const foundItem = category.items.find((sportItem) => sportItem.value === item.value);
+          if (foundItem) {
+            entityType = foundItem.entityType;
+            entityId = foundItem.entityId;
+            break;
+          }
+        }
+
+        if (!entityType || !entityId) {
+          throw new Error(`Item not found: ${item.value}`);
+        }
+
+        return {
+          entityType,
+          entityId,
+          rating: item.rating,
+        };
+      });
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ ratings: ratingsPayload }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save ratings");
+      }
+
+      toast.success("Ratings saved successfully!");
+      setEditingRatings(false);
+    } catch (error) {
+      console.error("Error saving ratings:", error);
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
+    }
+  };
   const selectsLength = selects.filter(Boolean).length;
   const ratingsLength = ratings.filter(Boolean).length;
   const submitDisabled = selectsLength < 6 || ratingsLength < 6;
@@ -71,7 +240,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
                 rating={ratings[idx]}
                 onRatingChange={(rating) => handleRatingChange(idx, rating)}
                 disabledValues={getDisabledValues(idx)}
-                sportsData={sportsData}
+                sportsData={combinedSportsData}
                 isLoading={isLoading}
               />
             ))}
@@ -80,7 +249,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
             <Button variant="outline" onClick={() => setEditingRatings(false)}>
               Cancel
             </Button>
-            <Button disabled={submitDisabled} onClick={() => setEditingRatings(false)}>
+            <Button disabled={submitDisabled} onClick={handleSaveRatings}>
               Save Changes
             </Button>
           </div>
@@ -88,23 +257,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
       ) : (
         <>
           <div className="space-y-2">
-            <RatingTableStatic
-              selections={
-                selects
-                  .map((value, idx) => {
-                    if (!value) return null;
-                    const rating = ratings[idx];
-                    if (rating === 0) return null;
-                    const label = getLabelForValue(value);
-
-                    return {
-                      name: label,
-                      rating: rating,
-                    };
-                  })
-                  .filter(Boolean) as { name: string; rating: number }[]
-              }
-            />
+            <RatingTableStatic ratings={userRatings} />
           </div>
           <div className="flex justify-end mt-4">
             <Button onClick={() => setEditingRatings(true)}>Edit Ratings</Button>
