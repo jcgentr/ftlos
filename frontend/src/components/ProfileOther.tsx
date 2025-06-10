@@ -6,12 +6,14 @@ import { UserProfile } from "@/lib/types";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
+import { UserRating } from "./ProfileRatings";
 
 export function ProfileOther() {
   const { profileId } = useParams();
   const { session } = useAuth();
   const [profile, setProfile] = useState<Omit<UserProfile, "email" | "id"> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userRatings, setUserRatings] = useState<UserRating[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -42,6 +44,30 @@ export function ProfileOther() {
     };
 
     fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserRatings = async () => {
+      if (!session?.access_token) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings/${profileId}`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch ratings");
+
+        const data = await response.json();
+        setUserRatings(data);
+      } catch (error) {
+        console.error("Error fetching user ratings:", error);
+        toast.error("Failed to load your ratings");
+      }
+    };
+
+    fetchUserRatings();
   }, []);
 
   if (loading) {
@@ -95,8 +121,7 @@ export function ProfileOther() {
 
       <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Favorite Teams & Players</h2>
-        {/* TODO: add user's selections from backend */}
-        <RatingTableStatic selections={[]} />
+        <RatingTableStatic ratings={userRatings} />
       </div>
     </div>
   );

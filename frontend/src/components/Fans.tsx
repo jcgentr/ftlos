@@ -131,11 +131,8 @@ export function Fans() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {fans.map((fan) => (
-            <Link to={`/profile/${fan.supabaseId}`}>
-              <div
-                key={fan.supabaseId}
-                className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
+            <Link to={`/profile/${fan.supabaseId}`} key={fan.supabaseId}>
+              <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
                   {fan.profileImageUrl ? (
                     <img src={fan.profileImageUrl} alt={fan.name} className="w-12 h-12 rounded-full object-cover" />

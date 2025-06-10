@@ -37,7 +37,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
 
   useEffect(() => {
     const fetchUserRatings = async () => {
-      if (!session?.access_token || isLoading) return;
+      if (!session?.access_token) return;
 
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings`, {
@@ -57,7 +57,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
     };
 
     if (!editingRatings) fetchUserRatings();
-  }, [session, isLoading, editingRatings]);
+  }, [session, editingRatings]);
 
   useEffect(() => {
     // Always start with a fresh copy of the original sportsData
