@@ -20,7 +20,7 @@ export function Fans() {
   const { sports, isLoading: isLoadingSports } = useSports();
   const [nameQuery, setNameQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
-  const [sportQuery, setSportQuery] = useState("any-sport");
+  const [sportFilter, setSportFilter] = useState("any-sport");
   const [teamQuery, setTeamQuery] = useState("");
   const [fans, setFans] = useState<Fan[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -35,14 +35,17 @@ export function Fans() {
     setIsSearching(true);
 
     try {
-      // Build query parameters
       const params = new URLSearchParams();
       if (nameQuery) params.append("name", nameQuery);
       if (locationQuery) params.append("location", locationQuery);
-
-      // TODO: add these parameters later when implementing the full search
-      // if (sportQuery !== "any-sport") params.append("sport", sportQuery);
-      // if (teamQuery) params.append("team", teamQuery);
+      // Convert sportFilter (slug) to sportId if it's not "any-sport"
+      if (sportFilter !== "any-sport") {
+        const selectedSport = sports.find((sport) => sport.slug === sportFilter);
+        if (selectedSport) {
+          params.append("sportId", selectedSport.id.toString());
+        }
+      }
+      if (teamQuery) params.append("team", teamQuery);
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/search?${params}`, {
         headers: {
@@ -91,7 +94,7 @@ export function Fans() {
             value={locationQuery}
             onChange={(e) => setLocationQuery(e.target.value)}
           />
-          <Select value={sportQuery} onValueChange={setSportQuery} defaultValue="any-sport">
+          <Select value={sportFilter} onValueChange={setSportFilter} defaultValue="any-sport">
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Any Sport" />
             </SelectTrigger>

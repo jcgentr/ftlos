@@ -144,18 +144,90 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { name, location } = req.query;
+    const { name, location, sportId, team } = req.query;
     const currentUserSupabaseId = req.user?.sub;
 
-    if (!name && !location) {
+    if (!name && !location && !sportId && !team) {
       res.status(400).json({ error: "At least one search parameter is required" });
       return;
+    }
+
+    // Get userIds who love the given sport
+    let userIdsWithSport: string[] = [];
+    if (sportId) {
+      const sportTaglines = await prisma.userTagline.findMany({
+        where: {
+          entityType: "SPORT",
+          entityId: Number(sportId),
+          sentiment: "LOVE",
+        },
+        select: {
+          userId: true,
+        },
+      });
+      userIdsWithSport = sportTaglines.map((tagline) => tagline.userId);
+    }
+
+    // Get userIds who love the given team(s)
+    let userIdsWithTeam: string[] = [];
+    if (team) {
+      // First find the team(s) that match the name
+      const teams = await prisma.team.findMany({
+        where: {
+          name: {
+            contains: team as string,
+            mode: "insensitive",
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      // If any teams found, get users who love those teams
+      if (teams.length > 0) {
+        const teamIds = teams.map((team) => team.id);
+        const teamTaglines = await prisma.userTagline.findMany({
+          where: {
+            entityType: "TEAM",
+            entityId: { in: teamIds },
+            sentiment: "LOVE",
+          },
+          select: {
+            userId: true,
+          },
+        });
+        userIdsWithTeam = teamTaglines.map((tagline) => tagline.userId);
+      }
     }
 
     const whereConditions: Prisma.UserWhereInput = {
       isConnecting: true, // Only return users who are open to connecting
       supabaseId: { not: currentUserSupabaseId }, // Exclude the current user
     };
+
+    // Add sport filter if provided
+    if (sportId && userIdsWithSport.length > 0) {
+      whereConditions.id = { in: userIdsWithSport };
+    }
+
+    // Add team filter if provided
+    if (team && userIdsWithTeam.length > 0) {
+      if (whereConditions.id) {
+        // If we already have sportId filter, we need to find the intersection
+        whereConditions.id = {
+          in: userIdsWithSport.filter((id) => userIdsWithTeam.includes(id)),
+        };
+      } else {
+        whereConditions.id = { in: userIdsWithTeam };
+      }
+    }
+
+    // If we have filters but no users match, return early
+    if ((sportId && userIdsWithSport.length === 0) || (team && userIdsWithTeam.length === 0)) {
+      res.status(200).json([]);
+      return;
+    }
 
     if (name) {
       // Search in both firstName and lastName
@@ -194,7 +266,6 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
           : user.firstName || user.lastName || "Anonymous",
       location: user.location || "Unknown location",
       profileImageUrl: user.profileImageUrl,
-      favoriteSports: user.favoriteSports,
     }));
 
     res.status(200).json(formattedUsers);
