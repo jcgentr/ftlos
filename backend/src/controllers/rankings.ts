@@ -224,3 +224,136 @@ export const getBottomAthletes = async (_req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch bottom athletes" });
   }
 };
+
+export const searchRankings = async (req: Request, res: Response) => {
+  try {
+    const { query, category, sportId } = req.query;
+
+    if (!query || query.toString().trim() === "") {
+      res.status(400).json({ error: "Search query is required" });
+      return;
+    }
+
+    const searchString = `%${query}%`;
+    let results: Array<{
+      id: number;
+      name: string;
+      sportName: string;
+      teamName?: string;
+      type: "TEAM" | "ATHLETE";
+      avgRating: number | null;
+      ratingCount: number;
+    }> = [];
+
+    // Search in the appropriate category (or both if no category specified)
+    if (!category || category === "all-categories" || category === "teams") {
+      const teams = await prisma.team.findMany({
+        where: {
+          name: {
+            contains: searchString,
+            mode: "insensitive",
+          },
+          ...(sportId && sportId !== "any-sport" ? { sportId: parseInt(sportId.toString()) } : {}),
+        },
+        include: {
+          sport: true,
+        },
+        take: 20,
+      });
+
+      // Get ratings for each team
+      const teamIds = teams.map((team) => team.id);
+      const teamRatings =
+        teamIds.length > 0
+          ? await prisma.userRating.groupBy({
+              by: ["entityId"],
+              where: {
+                entityType: "TEAM",
+                entityId: { in: teamIds },
+              },
+              _avg: {
+                rating: true,
+              },
+              _count: {
+                rating: true,
+              },
+            })
+          : [];
+
+      // Format team results
+      const teamResults = teams.map((team) => {
+        const rating = teamRatings.find((r) => r.entityId === team.id);
+        return {
+          id: team.id,
+          name: team.name,
+          sportName: team.sport.name,
+          type: "TEAM" as const,
+          avgRating: rating ? parseFloat(rating._avg.rating?.toFixed(2) || "0") : null,
+          ratingCount: rating?._count.rating || 0,
+        };
+      });
+
+      results = teamResults;
+    }
+
+    if (!category || category === "all-categories" || category === "athletes") {
+      const athletes = await prisma.athlete.findMany({
+        where: {
+          name: {
+            contains: searchString,
+            mode: "insensitive",
+          },
+          ...(sportId && sportId !== "any-sport" ? { sportId: parseInt(sportId.toString()) } : {}),
+        },
+        include: {
+          sport: true,
+          team: true,
+        },
+        take: 20,
+      });
+
+      // Get ratings for each athlete
+      const athleteIds = athletes.map((athlete) => athlete.id);
+      const athleteRatings =
+        athleteIds.length > 0
+          ? await prisma.userRating.groupBy({
+              by: ["entityId"],
+              where: {
+                entityType: "ATHLETE",
+                entityId: { in: athleteIds },
+              },
+              _avg: {
+                rating: true,
+              },
+              _count: {
+                rating: true,
+              },
+            })
+          : [];
+
+      // Format athlete results
+      const athleteResults = athletes.map((athlete) => {
+        const rating = athleteRatings.find((r) => r.entityId === athlete.id);
+        return {
+          id: athlete.id,
+          name: athlete.name,
+          sportName: athlete.sport.name,
+          teamName: athlete.team.name,
+          type: "ATHLETE" as const,
+          avgRating: rating ? parseFloat(rating._avg.rating?.toFixed(2) || "0") : null,
+          ratingCount: rating?._count.rating || 0,
+        };
+      });
+
+      results = [...results, ...athleteResults];
+    }
+
+    // Sort results by rating count (most rated first)
+    results.sort((a, b) => (b.ratingCount || 0) - (a.ratingCount || 0));
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error searching rankings:", error);
+    res.status(500).json({ error: "Failed to search rankings" });
+  }
+};
