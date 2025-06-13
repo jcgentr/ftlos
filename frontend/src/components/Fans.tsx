@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router";
 import { useSports } from "@/hooks/useSports";
+import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
 
 interface Fan {
   supabaseId: string;
@@ -18,6 +19,7 @@ interface Fan {
 export function Fans() {
   const { session } = useAuth();
   const { sports, isLoading: isLoadingSports } = useSports();
+  const { recommendations, userMeetsCriteria } = useRecommendedUsers();
   const [nameQuery, setNameQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
   const [sportFilter, setSportFilter] = useState("any-sport");
@@ -157,28 +159,49 @@ export function Fans() {
         <div className="mt-8 p-8 border border-gray-300 bg-white rounded-lg">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-2xl font-semibold">Fans For You</h2>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter Recommendations" />
-              </SelectTrigger>
+          </div>
 
-              <SelectContent>
-                <SelectItem value="similar-teams">Similar Teams</SelectItem>
-                <SelectItem value="nearby-fans">Nearby Fans</SelectItem>
-                <SelectItem value="similar-events">Similar Events</SelectItem>
-                <SelectItem value="mutual-friends">Mutual Friends</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {/* Improve this blue coloring */}
-          <div className="bg-primary-foreground border border-primary rounded-lg p-6 my-6">
-            <h1 className="text-2xl font-bold text-primary mb-2">Welcome to Find a Fan!</h1>
-            <p className="text-primary">We'll show personalized fan recommendations here once you:</p>
-            <ul className="list-disc list-inside text-primary mt-4 space-y-1">
-              <li>Complete your profile with your favorite teams and players</li>
-              <li>Connect with other fans</li>
-            </ul>
-          </div>
+          {userMeetsCriteria && recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+              {recommendations.map((user) => (
+                <Link to={`/profile/${user.supabaseId}`} key={user.supabaseId}>
+                  <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between md:flex-col gap-2">
+                      <div className="flex items-center gap-3 shrink-0">
+                        {user.profileImageUrl ? (
+                          <img
+                            src={user.profileImageUrl}
+                            alt={user.name}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                            {user.name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-semibold text-lg">{user.name}</h3>
+                          <p className="text-gray-600 text-sm">{user.location}</p>
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600 truncate md:ml-auto" title={user.matchReason}>
+                        {user.matchReason}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-primary-foreground border border-primary rounded-lg p-6 my-6">
+              <h1 className="text-2xl font-bold text-primary mb-2">Welcome to Find a Fan!</h1>
+              <p className="text-primary">We'll show personalized fan recommendations here once you:</p>
+              <ul className="list-disc list-inside text-primary mt-4 space-y-1">
+                <li>Complete your profile with your favorite teams and players</li>
+                <li>Connect with other fans</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

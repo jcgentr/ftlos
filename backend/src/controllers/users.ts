@@ -473,7 +473,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
           const entityKey = `${firstMatch.entityType}_${firstMatch.entityId}`;
           const entityName = entityNameMap.get(entityKey);
           if (entityName) {
-            matchReason = `Also loves ${entityName}`;
+            matchReason = `Also likes ${entityName}`;
           }
         }
 

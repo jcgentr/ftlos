@@ -11,8 +11,7 @@
 - [x] search for users based on name or location
   - [x] fetch all sports for dropdown
   - [x] other two fields: user LOVES Sport or Team (after profile tasks)
-- [ ] same rec system as homepage (for now)
-  - [ ] therefore, finish homepage before this task
+- [x] same rec system as homepage (for now)
 
 ### RANKINGS PAGE
 

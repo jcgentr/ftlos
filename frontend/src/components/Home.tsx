@@ -2,16 +2,7 @@ import { Link } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
-
-type RecommendedUser = {
-  supabaseId: string;
-  name: string;
-  location: string;
-  profileImageUrl?: string;
-  matchReason: string;
-};
+import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
 
 // Define our entities to rotate through, keeping actions constant
 const entitySets = [
@@ -41,37 +32,9 @@ const entitySets = [
 const actions = ["supports", "loathes", "loves", "watches"];
 
 export function Home() {
-  const { session } = useAuth();
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [recommendations, setRecommendations] = useState<RecommendedUser[]>([]);
-  const [userMeetsCriteria, setUserMeetsCriteria] = useState(false);
-
-  useEffect(() => {
-    const fetchRecommendedUsers = async () => {
-      if (!session?.access_token) return;
-
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/recommended`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch recommended users");
-
-        const { userMeetsCriteria, recommendations } = await response.json();
-
-        setRecommendations(recommendations);
-        setUserMeetsCriteria(userMeetsCriteria);
-      } catch (error) {
-        console.error("Error fetching recommended users:", error);
-        toast.error("Failed to load your recommended users");
-      }
-    };
-
-    fetchRecommendedUsers();
-  }, []);
+  const { recommendations, userMeetsCriteria } = useRecommendedUsers();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -80,7 +43,7 @@ export function Home() {
       setTimeout(() => {
         setCurrentSetIndex((prev) => (prev + 1) % entitySets.length);
         setIsAnimating(false);
-      }, 500); // Half the transition time for switching content
+      }, 500);
     }, 3650);
 
     return () => clearInterval(interval);
