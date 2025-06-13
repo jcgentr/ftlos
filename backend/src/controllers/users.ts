@@ -274,3 +274,264 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
     res.status(500).json({ error: "Failed to search users" });
   }
 };
+
+const RECOMMENDATION_COUNT = 6;
+
+export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const currentUserSupabaseId = req.user?.sub;
+
+    if (!currentUserSupabaseId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    // 1. First, check if the current user meets the criteria
+    const currentUser = await prisma.user.findUnique({
+      where: { supabaseId: currentUserSupabaseId },
+      include: {
+        taglines: true,
+        ratings: true,
+      },
+    });
+
+    if (!currentUser) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Check if user meets all criteria: isConnecting, has taglines, and has ratings
+    const hasTaglines = currentUser.taglines.length > 0;
+    const hasRatings = currentUser.ratings.length > 0;
+    const isConnecting = currentUser.isConnecting;
+
+    if (!isConnecting || !hasTaglines || !hasRatings) {
+      // If user doesn't meet criteria, return empty recommendations
+      res.status(200).json({
+        userMeetsCriteria: false,
+        recommendations: [],
+      });
+      return;
+    }
+
+    // 2. If user meets criteria, find similar users based on shared interests
+
+    // Collect all liked entity IDs from taglines
+    const userLikedEntityIds = currentUser.taglines.filter((t) => t.sentiment === "LOVE").map((t) => t.entityId);
+
+    // Collect all highly rated entity IDs from ratings
+    const highlyRatedEntityIds = currentUser.ratings.filter((r) => r.rating > 3).map((r) => r.entityId);
+
+    // Combine all liked and highly rated entity IDs
+    const allLikedEntityIds = [...new Set([...userLikedEntityIds, ...highlyRatedEntityIds])];
+
+    let userTaglineMatches: {
+      userId: string;
+      entityId: number;
+      entityType: "ATHLETE" | "TEAM" | "SPORT";
+    }[] = [];
+    let userRatingMatches: {
+      userId: string;
+      entityId: number;
+      entityType: "ATHLETE" | "TEAM" | "SPORT";
+    }[] = [];
+
+    if (allLikedEntityIds.length > 0) {
+      [userTaglineMatches, userRatingMatches] = await Promise.all([
+        prisma.userTagline.findMany({
+          where: {
+            entityId: { in: allLikedEntityIds },
+            sentiment: "LOVE",
+            userId: { not: currentUser.id },
+          },
+          select: {
+            userId: true,
+            entityId: true,
+            entityType: true,
+          },
+        }),
+        prisma.userRating.findMany({
+          where: {
+            entityId: { in: allLikedEntityIds },
+            rating: { gt: 1 },
+            userId: { not: currentUser.id },
+          },
+          select: {
+            userId: true,
+            entityId: true,
+            entityType: true,
+          },
+        }),
+      ]);
+    }
+
+    // Combine all matches
+    const allMatches = [...userTaglineMatches, ...userRatingMatches];
+
+    // Count matches per user ID to sort by match count
+    const userMatchCounts = allMatches.reduce(
+      (acc, match) => {
+        acc[match.userId] = acc[match.userId] || { count: 0, matches: [] };
+        acc[match.userId].count += 1;
+        acc[match.userId].matches.push({
+          entityId: match.entityId,
+          entityType: match.entityType,
+        });
+        return acc;
+      },
+      {} as Record<string, { count: number; matches: Array<{ entityId: number; entityType: string }> }>
+    );
+
+    // Get unique user IDs sorted by match count
+    const sortedUserIds = Object.keys(userMatchCounts).sort(
+      (a, b) => userMatchCounts[b].count - userMatchCounts[a].count
+    );
+
+    let recommendedUsers: {
+      supabaseId: string;
+      name: string;
+      location: string;
+      profileImageUrl: string | null;
+      matchReason: string;
+    }[] = [];
+
+    // If we have matching users
+    if (sortedUserIds.length > 0) {
+      // Get the top users (or fewer if not available)
+      const topUserIds = sortedUserIds.slice(0, RECOMMENDATION_COUNT);
+
+      // Get user details
+      const userDetails = await prisma.user.findMany({
+        where: {
+          id: { in: topUserIds },
+          isConnecting: true,
+        },
+        select: {
+          id: true,
+          supabaseId: true,
+          firstName: true,
+          lastName: true,
+          location: true,
+          profileImageUrl: true,
+        },
+      });
+
+      // Get entity names for match reasons
+      const entityIds = new Set<{ id: number; type: string }>();
+      for (const userId in userMatchCounts) {
+        for (const match of userMatchCounts[userId].matches) {
+          entityIds.add({ id: match.entityId, type: match.entityType });
+        }
+      }
+
+      // Extract IDs by entity type
+      const sportIds: number[] = [];
+      const teamIds: number[] = [];
+      const athleteIds: number[] = [];
+
+      Array.from(entityIds).forEach((entity) => {
+        if (entity.type === "SPORT") sportIds.push(entity.id);
+        else if (entity.type === "TEAM") teamIds.push(entity.id);
+        else if (entity.type === "ATHLETE") athleteIds.push(entity.id);
+      });
+
+      // Fetch all entities in parallel
+      const [sports, teams, athletes] = await Promise.all([
+        sportIds.length > 0
+          ? prisma.sport.findMany({
+              where: { id: { in: sportIds } },
+              select: { id: true, name: true },
+            })
+          : [],
+        teamIds.length > 0
+          ? prisma.team.findMany({
+              where: { id: { in: teamIds } },
+              select: { id: true, name: true },
+            })
+          : [],
+        athleteIds.length > 0
+          ? prisma.athlete.findMany({
+              where: { id: { in: athleteIds } },
+              select: { id: true, name: true },
+            })
+          : [],
+      ]);
+
+      // Create a unified entity lookup map
+      const entityNameMap = new Map<string, string>();
+      sports.forEach((s) => entityNameMap.set(`SPORT_${s.id}`, s.name));
+      teams.forEach((t) => entityNameMap.set(`TEAM_${t.id}`, t.name));
+      athletes.forEach((a) => entityNameMap.set(`ATHLETE_${a.id}`, a.name));
+
+      // Use the unified map for lookups
+      recommendedUsers = userDetails.map((user) => {
+        const userMatches = userMatchCounts[user.id].matches;
+        let matchReason = "Similar interests";
+
+        if (userMatches.length > 0) {
+          const firstMatch = userMatches[0];
+          const entityKey = `${firstMatch.entityType}_${firstMatch.entityId}`;
+          const entityName = entityNameMap.get(entityKey);
+          if (entityName) {
+            matchReason = `Also loves ${entityName}`;
+          }
+        }
+
+        return {
+          supabaseId: user.supabaseId,
+          name:
+            user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.firstName || user.lastName || "Anonymous",
+          location: user.location || "Unknown location",
+          profileImageUrl: user.profileImageUrl,
+          matchReason,
+        };
+      });
+    }
+
+    // If we don't have enough recommendations, add random users
+    if (recommendedUsers.length < RECOMMENDATION_COUNT) {
+      const existingIds = recommendedUsers.map((u) => u.supabaseId);
+
+      const randomUsers = await prisma.user.findMany({
+        where: {
+          isConnecting: true,
+          supabaseId: {
+            not: currentUserSupabaseId,
+            notIn: existingIds,
+          },
+        },
+        select: {
+          supabaseId: true,
+          firstName: true,
+          lastName: true,
+          location: true,
+          profileImageUrl: true,
+        },
+        take: RECOMMENDATION_COUNT - recommendedUsers.length,
+      });
+
+      const formattedRandomUsers = randomUsers.map((user) => ({
+        supabaseId: user.supabaseId,
+        name:
+          user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.firstName || user.lastName || "Anonymous",
+        location: user.location || "Unknown location",
+        profileImageUrl: user.profileImageUrl,
+        matchReason: "New user",
+      }));
+
+      recommendedUsers = [...recommendedUsers, ...formattedRandomUsers];
+    }
+
+    res.status(200).json({
+      userMeetsCriteria: true,
+      recommendations: recommendedUsers,
+    });
+  } catch (error) {
+    console.error("Error getting recommended users:", error);
+    res.status(500).json({ error: "Failed to get recommended users" });
+  }
+};

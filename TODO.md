@@ -2,14 +2,15 @@
 
 ### HOMEPAGE
 
-- [ ] if user is connecting, has tagline, and ratings filled out, then show 5 user recs (random users if needed)
-  - [ ] therefore, finish profile tasks first
+- [x] if user is connecting, has tagline, and ratings filled out, then show 6 user recs (random users if needed)
+  - [x] therefore, finish profile tasks first
+  - [x] improve styling (like match reason placement)
 
 ### FIND A FAN PAGE
 
 - [x] search for users based on name or location
   - [x] fetch all sports for dropdown
-  - [ ] other two fields: user likes Sport or Team (after profile tasks)
+  - [x] other two fields: user LOVES Sport or Team (after profile tasks)
 - [ ] same rec system as homepage (for now)
   - [ ] therefore, finish homepage before this task
 

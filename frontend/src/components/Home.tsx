@@ -2,6 +2,16 @@ import { Link } from "react-router";
 import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+
+type RecommendedUser = {
+  supabaseId: string;
+  name: string;
+  location: string;
+  profileImageUrl?: string;
+  matchReason: string;
+};
 
 // Define our entities to rotate through, keeping actions constant
 const entitySets = [
@@ -31,8 +41,37 @@ const entitySets = [
 const actions = ["supports", "loathes", "loves", "watches"];
 
 export function Home() {
+  const { session } = useAuth();
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [recommendations, setRecommendations] = useState<RecommendedUser[]>([]);
+  const [userMeetsCriteria, setUserMeetsCriteria] = useState(false);
+
+  useEffect(() => {
+    const fetchRecommendedUsers = async () => {
+      if (!session?.access_token) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/recommended`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch recommended users");
+
+        const { userMeetsCriteria, recommendations } = await response.json();
+
+        setRecommendations(recommendations);
+        setUserMeetsCriteria(userMeetsCriteria);
+      } catch (error) {
+        console.error("Error fetching recommended users:", error);
+        toast.error("Failed to load your recommended users");
+      }
+    };
+
+    fetchRecommendedUsers();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,22 +112,55 @@ export function Home() {
             <Button variant="outline">Find More Fans</Button>
           </Link>
         </div>
-        <div className="flex flex-col gap-2 justify-center items-center p-4">
-          <p>We'll show personalized fan recommendations here once you:</p>
-          <p className="flex items-center gap-2 mt-4">
-            <UserPen /> Complete your{" "}
-            <Link to="/profile">
-              <span className="text-primary font-medium hover:underline">profile</span>
-            </Link>{" "}
-            with interests
-          </p>
-          <p className="flex items-center gap-2">
-            <Star /> Rate some sports entities
-          </p>
-          <Link to="/fans" className="mt-4">
-            <Button>Browse All Fans</Button>
-          </Link>
-        </div>
+        {userMeetsCriteria && recommendations.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            {recommendations.map((user) => (
+              <Link to={`/profile/${user.supabaseId}`} key={user.supabaseId}>
+                <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between md:flex-col gap-2">
+                    <div className="flex items-center gap-3 shrink-0">
+                      {user.profileImageUrl ? (
+                        <img
+                          src={user.profileImageUrl}
+                          alt={user.name}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                          {user.name.charAt(0)}
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="font-semibold text-lg">{user.name}</h3>
+                        <p className="text-gray-600 text-sm">{user.location}</p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-600 truncate md:ml-auto" title={user.matchReason}>
+                      {user.matchReason}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 justify-center items-center p-4">
+            <p>We'll show personalized fan recommendations here once you:</p>
+            <p className="flex items-center gap-2 mt-4">
+              <UserPen /> Complete your{" "}
+              <Link to="/profile">
+                <span className="text-primary font-medium hover:underline">profile</span>
+              </Link>{" "}
+              with interests
+            </p>
+            <p className="flex items-center gap-2">
+              <Star /> Rate some sports entities
+            </p>
+            <Link to="/fans" className="mt-4">
+              <Button>Browse All Fans</Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
