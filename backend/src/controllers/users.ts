@@ -55,6 +55,7 @@ export const getUser = async (req: Request, res: Response) => {
         createdAt: true,
         updatedAt: true,
         profileImageUrl: true,
+        isAdmin: true,
       },
     });
 

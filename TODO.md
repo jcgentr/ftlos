@@ -23,15 +23,15 @@
 
 ### SWEEPSTAKES PAGE
 
-- [ ] show active sweepstakes in database
-- [ ] show past sweepstakes
+- [x] show active sweepstakes in database
+- [x] show past sweepstakes
 
 ### SWEEPSTAKES/ID PAGE
 
-- [ ] details of sweepstake
-- [ ] show regular games (sport, teams, date) => user has to pick one selection
-- [ ] show final game (sport, teams, date) => user has to pick one selection
-- [ ] submit locks in user's selections
+- [x] details of sweepstake
+- [x] show regular games (sport, teams, date) => user has to pick one selection
+- [x] show final game (sport, teams, date) => user has to pick one selection
+- [x] submit locks in user's selections
 
 ### PROFILE PAGE
 
@@ -47,6 +47,8 @@
 
 ### MISC
 
+- [ ] add Zod for type validation
+- [ ] move all frontend types to lib/types file
 - [ ] look at TODO comments in codebase
 - [ ] improve loading states (login skeleton -> loading text -> profile)
   - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)

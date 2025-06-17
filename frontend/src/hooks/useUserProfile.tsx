@@ -28,7 +28,6 @@ export function useUserProfile() {
         }
 
         const data = await response.json();
-        console.log({ profile: data });
         setProfile(data);
       } catch (err) {
         setProfile(null);

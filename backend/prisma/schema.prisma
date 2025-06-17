@@ -23,10 +23,14 @@ model User {
   birthDate       String?
   favoriteSports  String?
   profileImageUrl String?
+  isAdmin         Boolean   @default(false)
 
   // Relationship for ratings
   ratings     UserRating[]
   taglines    UserTagline[]
+
+  sweepstakeEntries  SweepstakeEntry[]
+  createdSweepstakes Sweepstake[]
 
   @@map("users")
 }
@@ -40,6 +44,7 @@ model Sport {
 
   teams    Team[]
   athletes Athlete[]
+  games    Game[] 
 
   @@map("sports")
 }
@@ -53,6 +58,10 @@ model Team {
   updatedAt DateTime  @updatedAt @map("updated_at")
 
   athletes Athlete[]
+
+  teamOneGames Game[]    @relation("GameTeamOne")
+  teamTwoGames Game[]    @relation("GameTeamTwo")
+  gamePicks    GamePick[]
 
   @@unique([name, sportId])
   @@index([sportId])
@@ -117,4 +126,91 @@ model UserTagline {
   @@unique([userId, entityType, entityId])
   @@index([userId])
   @@map("user_taglines")
+}
+
+enum SweepstakeStatus {
+  ACTIVE
+  COMPLETED
+}
+
+model Sweepstake {
+  id          String     @id @default(uuid())
+  name        String
+  startDate   DateTime   @map("start_date")
+  endDate     DateTime   @map("end_date")
+  prizePool   Decimal    @map("prize_pool") @db.Decimal(10, 2)
+  status      SweepstakeStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  createdById String     @map("created_by_id")
+  createdBy   User       @relation(fields: [createdById], references: [id])
+  
+  games       Game[]
+  entries     SweepstakeEntry[]
+
+  @@index([createdById])
+  @@map("sweepstakes")
+}
+
+model Game {
+  id            String     @id @default(uuid())
+  sweepstakeId  String     @map("sweepstake_id")
+  sportId       Int        @map("sport_id")
+  teamOneId     Int        @map("team_one_id")
+  teamTwoId     Int        @map("team_two_id")
+  startTime     DateTime   @map("start_time")
+  isFinal       Boolean    @default(false) @map("is_final")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  
+  sweepstake    Sweepstake @relation(fields: [sweepstakeId], references: [id])
+  sport         Sport      @relation(fields: [sportId], references: [id])
+  teamOne       Team       @relation("GameTeamOne", fields: [teamOneId], references: [id])
+  teamTwo       Team       @relation("GameTeamTwo", fields: [teamTwoId], references: [id])
+  
+  picks         GamePick[]
+
+  @@index([sweepstakeId])
+  @@index([sportId])
+  @@index([teamOneId])
+  @@index([teamTwoId])
+  @@map("games")
+}
+
+model SweepstakeEntry {
+  id            String     @id @default(uuid())
+  userId        String     @map("user_id")
+  sweepstakeId  String     @map("sweepstake_id")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  
+  user          User       @relation(fields: [userId], references: [id])
+  sweepstake    Sweepstake @relation(fields: [sweepstakeId], references: [id])
+  
+  picks         GamePick[]
+
+  @@unique([userId, sweepstakeId])
+  @@index([userId])
+  @@index([sweepstakeId])
+  @@map("sweepstake_entries")
+}
+
+model GamePick {
+  id                String          @id @default(uuid())
+  sweepstakeEntryId String          @map("sweepstake_entry_id")
+  gameId            String          @map("game_id")
+  selectedTeamId    Int             @map("selected_team_id")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  
+  sweepstakeEntry   SweepstakeEntry @relation(fields: [sweepstakeEntryId], references: [id])
+  game              Game            @relation(fields: [gameId], references: [id])
+  selectedTeam      Team            @relation(fields: [selectedTeamId], references: [id])
+
+  @@unique([sweepstakeEntryId, gameId])
+  @@index([sweepstakeEntryId])
+  @@index([gameId])
+  @@index([selectedTeamId])
+  @@map("game_picks")
 }

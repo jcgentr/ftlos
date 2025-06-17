@@ -14,6 +14,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedLayout } from "./components/ProtectedLayout";
 import { Toaster } from "sonner";
 import { ProfileOther } from "./components/ProfileOther";
+import { SweepstakesAdmin } from "./components/SweepstakesAdmin";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
 
             <Route path="sweepstakes">
               <Route index element={<Sweepstakes />} />
+              <Route path="admin" element={<SweepstakesAdmin />} />
               <Route path=":sweepstakeId" element={<Sweepstake />} />
             </Route>
 
