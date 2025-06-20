@@ -72,7 +72,7 @@ export function SweepstakesAdmin() {
           fetch(`${import.meta.env.VITE_API_URL}/api/sports`, {
             headers: { Authorization: `Bearer ${session.access_token}` },
           }),
-          fetch(`${import.meta.env.VITE_API_URL}/api/teams?limit=100`, {
+          fetch(`${import.meta.env.VITE_API_URL}/api/teams`, {
             headers: { Authorization: `Bearer ${session.access_token}` },
           }),
           fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}`, {

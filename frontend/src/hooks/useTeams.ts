@@ -18,7 +18,7 @@ export function useTeams() {
       setIsLoading(true);
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/teams?limit=300`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/teams`, {
           headers: {
             Authorization: `Bearer ${session?.access_token}`,
           },

@@ -38,7 +38,6 @@
 - [x] tagline component needs backend connection and persistence for current user
 - [x] build profile component needs backend connection and persistence for current user
 - [x] have select dropdown populate 10 random entries for Teams/Athletes/Sports
-  - [ ] work on load more and search later
 
 ### PROFILE/ID PAGE
 
@@ -47,7 +46,6 @@
 
 ### MISC
 
-- [x] add autocomplete search (all teams and athletes) for single select dropdown
 - [ ] add autocomplete search for Rankings team/athlete search
 - [ ] add autocomplete search for Find a Fan team search
 - [ ] add autocomplete search for Find a Fan user search
@@ -56,6 +54,7 @@
 - [ ] look at TODO comments in codebase
 - [ ] improve loading states (login skeleton -> loading text -> profile)
   - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)
+- [x] add autocomplete search (all teams and athletes) for single select dropdown
 - [x] add all sports from tagline dropdown to database
   - [x] fetch those sports from backend for dropdown
 - [x] add 10 dummy users

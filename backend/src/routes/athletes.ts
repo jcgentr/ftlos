@@ -1,9 +1,9 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth";
-import { getSomeAthletes } from "../controllers/athletes";
+import { getAthletes } from "../controllers/athletes";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getSomeAthletes);
+router.get("/", authMiddleware, getAthletes);
 
 export default router;
