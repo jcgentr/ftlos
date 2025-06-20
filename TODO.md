@@ -47,6 +47,10 @@
 
 ### MISC
 
+- [x] add autocomplete search (all teams and athletes) for single select dropdown
+- [ ] add autocomplete search for Rankings team/athlete search
+- [ ] add autocomplete search for Find a Fan team search
+- [ ] add autocomplete search for Find a Fan user search
 - [ ] add Zod for type validation
 - [ ] move all frontend types to lib/types file
 - [ ] look at TODO comments in codebase

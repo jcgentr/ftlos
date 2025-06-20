@@ -19,7 +19,7 @@ export function useAthletes() {
       setIsLoading(true);
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/athletes?limit=10`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/athletes?limit=1500`, {
           headers: {
             Authorization: `Bearer ${session?.access_token}`,
           },
