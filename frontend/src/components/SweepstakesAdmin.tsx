@@ -163,15 +163,15 @@ export function SweepstakesAdmin() {
   };
 
   if (loading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-4 sm:p-8 max-w-2xl w-full mx-auto">Loading...</div>;
   }
 
   if (!isAdmin) {
-    return <div className="p-8">Unauthorized access</div>;
+    return <div className="p-4 sm:p-8 max-w-2xl w-full mx-auto">Unauthorized access</div>;
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-8 max-w-2xl w-full mx-auto">
       <h1 className="text-3xl font-bold mb-6">Create Sweepstake</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-4 rounded border">

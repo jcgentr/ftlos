@@ -3,25 +3,13 @@ import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { EntityType, SportCategory } from "@/hooks/useSportsData";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { EntityType, SportCategory, UserTagline } from "@/lib/types";
 
 type TaglineProps = {
   sportsData: SportCategory[];
   isLoading: boolean;
-};
-
-export type UserTagline = {
-  id: string;
-  userId: string;
-  entityType: EntityType;
-  entityId: number;
-  entityName: string;
-  sentiment: "LOVE" | "LOATHE";
-  position: number;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export function Tagline({ sportsData, isLoading }: TaglineProps) {
@@ -240,7 +228,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
             </span>{" "}
             for each.
           </p>
-          <div className="ml-4 space-y-4">
+          <div className="sm:mx-4 space-y-4">
             {[0, 1, 2, 3].map((idx) => (
               <TaglineRow
                 key={idx}
@@ -289,7 +277,7 @@ interface TaglineRowProps {
 
 function TaglineRow({ value, onChange, tag, onTagChange, disabledValues, sportsData, isLoading }: TaglineRowProps) {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex flex-wrap gap-2 items-center">
       {/* Thumbs Up */}
       <TooltipProvider>
         <Tooltip>

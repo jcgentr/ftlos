@@ -74,7 +74,7 @@ export function Fans() {
   };
 
   return (
-    <div className="p-8 max-w-5xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Find a Fan</h1>
         <form
@@ -82,7 +82,7 @@ export function Fans() {
             e.preventDefault();
             handleSearch();
           }}
-          className="flex flex-col sm:flex-row items-center gap-2 p-8 border border-gray-300 bg-white rounded-lg"
+          className="flex flex-col sm:flex-row items-center gap-2 p-4 sm:p-8 border border-gray-300 bg-white rounded-lg"
         >
           <Input
             type="text"
@@ -156,7 +156,7 @@ export function Fans() {
           ))}
         </div>
 
-        <div className="mt-8 p-8 border border-gray-300 bg-white rounded-lg">
+        <div className="mt-8 p-4 sm:p-8 border border-gray-300 bg-white rounded-lg">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-2xl font-semibold">Fans For You</h2>
           </div>

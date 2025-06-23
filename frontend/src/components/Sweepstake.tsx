@@ -147,25 +147,25 @@ export function Sweepstake() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-5xl w-full mx-auto">
-        <div className="text-center">Loading sweepstake details...</div>
+      <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
+        <div>Loading sweepstake details...</div>
       </div>
     );
   }
 
   if (!sweepstake) {
     return (
-      <div className="p-8 max-w-5xl w-full mx-auto">
-        <div className="text-center text-red-500">{"Sweepstake not found"}</div>
+      <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
+        <div className="text-red-500">Sweepstake not found</div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-5xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">{sweepstake.name}</h1>
-        <div className="border border-gray-300 bg-white rounded-lg p-8">
+        <div className="border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
           <h2 className="text-2xl font-bold mb-4">Contest Details</h2>
           <div>
             <p>
@@ -197,7 +197,7 @@ export function Sweepstake() {
         {sweepstake.regularGames.length > 0 ? (
           <div className="space-y-4">
             {sweepstake.regularGames.map((game) => (
-              <div key={game.id} className="border border-gray-300 bg-white rounded-lg p-8">
+              <div key={game.id} className="border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
                 <div className="flex justify-between items-center flex-wrap gap-1">
                   <h2 className="text-xl font-bold">{game.sportName}</h2>
                   <span className="text-gray-500">{formatDate(game.startTime)}</span>
@@ -233,7 +233,7 @@ export function Sweepstake() {
         {sweepstake.finalGame && (
           <div>
             <h2 className="text-3xl font-bold mt-8 mb-4">Final Game (Mandatory)</h2>
-            <div className="border border-gray-300 bg-white rounded-lg p-8">
+            <div className="border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
               <div className="flex justify-between items-center flex-wrap gap-1">
                 <h2 className="text-xl font-bold">{sweepstake.finalGame.sportName}</h2>
                 <span className="text-gray-500">{formatDate(sweepstake.finalGame.startTime)}</span>
@@ -266,7 +266,7 @@ export function Sweepstake() {
 
         {sweepstake.finalGame && !sweepstake.hasSubmittedPicks && (
           <div className="mt-8">
-            <div className="border border-gray-300 bg-white rounded-lg p-8">
+            <div className="border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
               <Button
                 className="w-full bg-success hover:bg-success-lighter text-lg shadow-md"
                 size="lg"

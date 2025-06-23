@@ -72,11 +72,11 @@ export function ProfileEdit() {
   };
 
   if (loading) {
-    return <div className="p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
+    return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
   }
 
   return (
-    <div className="p-8 max-w-3xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
         <form onSubmit={handleSubmit}>
           <h1 className="text-4xl font-bold mb-6">Edit Profile</h1>

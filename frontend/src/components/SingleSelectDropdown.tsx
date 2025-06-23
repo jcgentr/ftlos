@@ -4,7 +4,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { SportCategory } from "@/hooks/useSportsData";
+import { SportCategory } from "@/lib/types";
 
 type SingleSelectDropdownProps = {
   selectedValue?: string;

@@ -50,9 +50,9 @@
 - [ ] add autocomplete search for Find a Fan team search
 - [ ] add autocomplete search for Find a Fan user search
 - [ ] add Zod for type validation
-- [ ] move all frontend types to lib/types file
 - [ ] look at TODO comments in codebase
-- [ ] improve loading states (login skeleton -> loading text -> profile)
+- [x] move all frontend types (referenced more than once) to lib/types file
+- [x] improve loading states (login skeleton -> loading text -> profile)
   - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)
 - [x] add autocomplete search (all teams and athletes) for single select dropdown
 - [x] add all sports from tagline dropdown to database

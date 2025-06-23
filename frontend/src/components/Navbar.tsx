@@ -20,13 +20,10 @@ export function Navbar() {
       }
     };
 
-    // Initial check
     checkScreenSize();
 
-    // Add event listener
     window.addEventListener("resize", checkScreenSize);
 
-    // Clean up
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 

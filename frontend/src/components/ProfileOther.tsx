@@ -2,12 +2,11 @@ import { formatDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { RatingTableStatic } from "./RatingTable";
 import { useParams } from "react-router";
-import { UserProfile } from "@/lib/types";
+import { UserProfile, UserRating, UserTagline } from "@/lib/types";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
-import { UserRating } from "./ProfileRatings";
-import { TaglineStatic, UserTagline } from "./Tagline";
+import { TaglineStatic } from "./Tagline";
 
 export function ProfileOther() {
   const { profileId } = useParams();
@@ -97,15 +96,15 @@ export function ProfileOther() {
   }, []);
 
   if (loading) {
-    return <div className="p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
+    return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
   }
 
   if (!profile) {
-    return <div className="p-8 max-w-3xl w-full mx-auto">Profile not found.</div>;
+    return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Profile not found.</div>;
   }
 
   return (
-    <div className="p-8 max-w-3xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
         <h1 className="text-4xl font-bold mb-4">
           {!profile.firstName && !profile.lastName ? "Profile" : `${profile.firstName} ${profile.lastName}`.trim()}

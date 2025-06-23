@@ -43,8 +43,6 @@ export function Signup() {
         password,
       });
 
-      console.log({ authData });
-
       if (supabaseError) {
         setFormError(supabaseError.message);
         toast.error(supabaseError.message);

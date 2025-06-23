@@ -47,14 +47,14 @@ export function Sweepstakes() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-5xl w-full mx-auto">
-        <div className="text-center">Loading sweepstakes...</div>
+      <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
+        <div>Loading sweepstakes...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-5xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Active Sweepstakes</h1>
 
@@ -90,7 +90,7 @@ export function Sweepstakes() {
         )}
       </div>
 
-      <div className="mt-8 border border-gray-300 bg-white rounded-lg p-8">
+      <div className="mt-8 border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
         <h2 className="text-2xl font-semibold mb-4">Past Sweepstakes</h2>
         {pastSweepstakes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

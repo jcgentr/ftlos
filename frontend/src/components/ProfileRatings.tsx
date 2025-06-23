@@ -5,24 +5,13 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { RatingTableStatic } from "./RatingTable";
 import { cn } from "@/lib/utils";
-import { EntityType, SportCategory } from "@/hooks/useSportsData";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { EntityType, SportCategory, UserRating } from "@/lib/types";
 
 type ProfileRatingsProps = {
   sportsData: SportCategory[];
   isLoading: boolean;
-};
-
-export type UserRating = {
-  id: string;
-  userId: string;
-  entityType: EntityType;
-  entityId: number;
-  entityName: string;
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
 };
 
 // 12 rows; 6 min must be filled out

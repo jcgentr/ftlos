@@ -31,15 +31,15 @@ export function Profile() {
   };
 
   if (loading) {
-    return <div className="p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
+    return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
   }
 
   if (!profile) {
-    return <div className="p-8 max-w-3xl w-full mx-auto">Profile not found.</div>;
+    return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Profile not found.</div>;
   }
 
   return (
-    <div className="p-8 max-w-3xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
         <h1 className="text-4xl font-bold mb-4">
           {!profile.firstName && !profile.lastName ? "Profile" : `${profile.firstName} ${profile.lastName}`.trim()}

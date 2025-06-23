@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { UserRating } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { UserRating } from "./ProfileRatings";
 
 interface RatingTableStaticProps {
   ratings: UserRating[];

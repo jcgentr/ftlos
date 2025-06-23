@@ -52,7 +52,7 @@ export function Home() {
   const currentSet = entitySets[currentSetIndex];
 
   return (
-    <div className="p-8 max-w-5xl w-full mx-auto">
+    <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
       <h1 className="text-5xl font-bold text-primary">Are you the only person in the world who...</h1>
       <div className="text-center space-y-2 my-10">
         {actions.map((action, index) => (
