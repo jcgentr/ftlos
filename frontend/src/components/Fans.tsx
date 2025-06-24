@@ -1,12 +1,15 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
+import { useSports } from "@/hooks/useSports";
+import { useTeams } from "@/hooks/useTeams";
 import { useState } from "react";
+import { Link } from "react-router";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "react-router";
-import { useSports } from "@/hooks/useSports";
-import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
+import { EntityType } from "@/lib/types";
+import { SingleSelectDropdown } from "./SingleSelectDropdown";
 
 interface Fan {
   supabaseId: string;
@@ -18,6 +21,7 @@ interface Fan {
 
 export function Fans() {
   const { session } = useAuth();
+  const { teams, isLoading: isLoadingTeams } = useTeams();
   const { sports, isLoading: isLoadingSports } = useSports();
   const { recommendations, userMeetsCriteria } = useRecommendedUsers();
   const [nameQuery, setNameQuery] = useState("");
@@ -118,12 +122,26 @@ export function Fans() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Input
-            type="text"
-            placeholder="Search by team"
-            value={teamQuery}
-            onChange={(e) => setTeamQuery(e.target.value)}
-          />
+          <div className="w-full">
+            <SingleSelectDropdown
+              selectedValue={teamQuery}
+              onChange={(value) => setTeamQuery(value)}
+              placeholder="Search by team"
+              sportsData={[
+                {
+                  category: "Teams",
+                  items: teams.map((team) => ({
+                    id: team.id,
+                    entityId: team.id,
+                    entityType: "TEAM" as EntityType.TEAM,
+                    value: team.name,
+                    label: team.name,
+                  })),
+                },
+              ]}
+              isLoading={isLoadingTeams}
+            />
+          </div>
           <Button
             type="submit"
             className="w-full sm:w-fit"

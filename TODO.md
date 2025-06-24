@@ -47,10 +47,9 @@
 ### MISC
 
 - [ ] add autocomplete search for Rankings team/athlete search
-- [ ] add autocomplete search for Find a Fan team search
-- [ ] add autocomplete search for Find a Fan user search
 - [ ] add Zod for type validation
-- [ ] look at TODO comments in codebase
+- [x] add autocomplete search for Find a Fan team search
+- [x] look at TODO comments in codebase
 - [x] move all frontend types (referenced more than once) to lib/types file
 - [x] improve loading states (login skeleton -> loading text -> profile)
   - [x] why is fetch called on Profile page when changing tabs (useAuth was triggering session b/c of supabase signed_in event on tab refocus)

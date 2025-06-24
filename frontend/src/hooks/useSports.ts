@@ -1,4 +1,3 @@
-// TODO: this could probably be loaded once per login since sports list doesn't change
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";

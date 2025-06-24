@@ -74,7 +74,6 @@ export function useUserProfile() {
         if (imageUrl) {
           profileData.profileImageUrl = imageUrl;
         }
-        // TODO: should I prevent rest of update if image upload fails?
       }
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}`, {

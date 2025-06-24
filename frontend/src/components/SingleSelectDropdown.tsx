@@ -115,11 +115,7 @@ export function SingleSelectDropdown({
         </PopoverTrigger>
         <PopoverContent className="max-w-[400px] p-0" align="start" side="bottom" sideOffset={4}>
           <Command>
-            <CommandInput
-              placeholder="Search athletes, teams, and sports..."
-              value={searchQuery}
-              onValueChange={setSearchQuery}
-            />
+            <CommandInput placeholder={placeholder} value={searchQuery} onValueChange={setSearchQuery} />
             <CommandList className="max-h-[300px]">
               <CommandEmpty>No results found.</CommandEmpty>
               {isLoading ? (

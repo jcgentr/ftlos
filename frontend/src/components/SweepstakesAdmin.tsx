@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
+import { useNavigate } from "react-router";
 
 interface Sport {
   id: number;
@@ -47,6 +48,7 @@ interface Game {
 }
 
 export function SweepstakesAdmin() {
+  const navigate = useNavigate();
   const { user, session } = useAuth();
   const [sports, setSports] = useState<Sport[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -84,10 +86,13 @@ export function SweepstakesAdmin() {
         const teamsData = (await teamsRes.json()) as Team[];
         const userData = (await userRes.json()) as User;
 
+        if (!userData.isAdmin) {
+          toast.error("You don't have admin access");
+          navigate("/sweepstakes");
+        }
+
         setSports(sportsData);
         setTeams(teamsData);
-        // Check if user is admin - you'd need to add an isAdmin field to your User model
-        // TODO: if not admin, redirect to sweepstake page
         setIsAdmin(userData.isAdmin === true);
       } catch (error) {
         console.error("Error fetching data:", error);
