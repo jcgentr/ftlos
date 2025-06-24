@@ -1,11 +1,11 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { useSportsData } from "@/hooks/useSportsData";
 import { Search, ThumbsDown, ThumbsUp } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { useSports } from "@/hooks/useSports";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { SingleSelectDropdown } from "./SingleSelectDropdown";
+import { Button } from "./ui/button";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 type SearchResult = {
   id: number;
@@ -19,7 +19,7 @@ type SearchResult = {
 
 export function Rankings() {
   const { session } = useAuth();
-  const { sports, isLoading: isLoadingSports } = useSports();
+  const { sportsData, isLoading, sports } = useSportsData();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all-categories");
   const [sportFilter, setSportFilter] = useState("any-sport");
@@ -87,12 +87,15 @@ export function Rankings() {
           }}
           className="flex flex-col sm:flex-row items-center gap-2 p-4 sm:p-8 border border-gray-300 bg-white rounded-lg"
         >
-          <Input
-            type="text"
-            placeholder="Search for team or athlete"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <div className="w-full">
+            <SingleSelectDropdown
+              selectedValue={searchQuery}
+              onChange={(value) => setSearchQuery(value)}
+              placeholder="Search for an athlete or team"
+              sportsData={sportsData.filter((el) => el.category !== "Sports")}
+              isLoading={isLoading}
+            />
+          </div>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="All Categories" />
@@ -114,7 +117,7 @@ export function Rankings() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="any-sport">Any Sport</SelectItem>
-                {isLoadingSports ? (
+                {isLoading ? (
                   <SelectItem value="loading" disabled>
                     Loading sports...
                   </SelectItem>

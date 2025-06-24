@@ -51,5 +51,5 @@ export function useSportsData() {
     setSportsData(formattedData);
   }, [sports, teams, athletes, isLoading]);
 
-  return { sportsData, isLoading };
+  return { sportsData, isLoading, sports };
 }

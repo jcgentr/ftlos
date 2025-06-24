@@ -46,8 +46,8 @@
 
 ### MISC
 
-- [ ] add autocomplete search for Rankings team/athlete search
 - [ ] add Zod for type validation
+- [x] add autocomplete search for Rankings team/athlete search
 - [x] add autocomplete search for Find a Fan team search
 - [x] look at TODO comments in codebase
 - [x] move all frontend types (referenced more than once) to lib/types file
