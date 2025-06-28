@@ -1,5 +1,4 @@
 import { Response, Router } from "express";
-// import { User, ApiResponse } from "@ftlos/shared/src/types";
 import { AuthenticatedRequest, authMiddleware } from "../middleware/auth";
 
 const router = Router();

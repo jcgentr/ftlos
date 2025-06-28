@@ -36,9 +36,15 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const currentUserSupabaseId = req.user?.sub;
+
+    if (id !== currentUserSupabaseId) {
+      res.status(403).json({ error: "Not authorized to view this user profile" });
+      return;
+    }
 
     const user = await prisma.user.findUnique({
       where: { supabaseId: id },
@@ -103,10 +109,16 @@ export const getPublicUser = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const currentUserSupabaseId = req.user?.sub;
     const updateData = req.body;
+
+    if (id !== currentUserSupabaseId) {
+      res.status(403).json({ error: "Not authorized to update this user profile" });
+      return;
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { supabaseId: id },
@@ -277,15 +289,11 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 const RECOMMENDATION_COUNT = 6;
+const RATING_LEVEL = 3;
 
 export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const currentUserSupabaseId = req.user?.sub;
-
-    if (!currentUserSupabaseId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
 
     // 1. First, check if the current user meets the criteria
     const currentUser = await prisma.user.findUnique({
@@ -321,7 +329,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
     const userLikedEntityIds = currentUser.taglines.filter((t) => t.sentiment === "LOVE").map((t) => t.entityId);
 
     // Collect all highly rated entity IDs from ratings
-    const highlyRatedEntityIds = currentUser.ratings.filter((r) => r.rating > 3).map((r) => r.entityId);
+    const highlyRatedEntityIds = currentUser.ratings.filter((r) => r.rating > RATING_LEVEL).map((r) => r.entityId);
 
     // Combine all liked and highly rated entity IDs
     const allLikedEntityIds = [...new Set([...userLikedEntityIds, ...highlyRatedEntityIds])];
@@ -354,7 +362,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
         prisma.userRating.findMany({
           where: {
             entityId: { in: allLikedEntityIds },
-            rating: { gt: 1 },
+            rating: { gt: RATING_LEVEL },
             userId: { not: currentUser.id },
           },
           select: {
