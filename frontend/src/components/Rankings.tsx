@@ -3,9 +3,9 @@ import { useSportsData } from "@/hooks/useSportsData";
 import { Search, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { SearchableInput } from "./SearchableInput";
 
 type SearchResult = {
   id: number;
@@ -88,10 +88,10 @@ export function Rankings() {
           className="flex flex-col sm:flex-row items-center gap-2 p-4 sm:p-8 border border-gray-300 bg-white rounded-lg"
         >
           <div className="w-full">
-            <SingleSelectDropdown
-              selectedValue={searchQuery}
-              onChange={(value) => setSearchQuery(value)}
-              placeholder="Search for an athlete or team"
+            <SearchableInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search for athletes or teams"
               sportsData={sportsData.filter((el) => el.category !== "Sports")}
               isLoading={isLoading}
             />
