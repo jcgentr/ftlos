@@ -23,3 +23,7 @@ Whenever you update your Prisma schema, you will have to update your database sc
 ## `npx prisma db seed`
 
 **Purpose:** This command populates your database with initial data using a seed script (`/prisma/seed.ts`)
+
+## `npx prisma format`
+
+**Purpose:** This command formats `schema.prisma` file

@@ -5,6 +5,7 @@ import { Label } from "./ui/label";
 import { Link, useNavigate } from "react-router";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { toast } from "sonner";
+import { PlacesAutocomplete } from "./PlacesAutocomplete";
 
 export function ProfileEdit() {
   const { profile, loading, updateProfile } = useUserProfile();
@@ -104,19 +105,12 @@ export function ProfileEdit() {
             onChange={handleChange}
           />
 
-          <Label className="mb-2" htmlFor="location">
-            Location
-          </Label>
-          <Input
-            type="text"
-            id="location"
-            placeholder="Enter your location"
-            className="mb-6"
-            value={formData.location}
-            onChange={handleChange}
+          <PlacesAutocomplete
+            value={formData.location || ""}
+            onChange={(value) => setFormData({ ...formData, location: value })}
           />
 
-          <Label className="mb-2" htmlFor="birthDate">
+          <Label className="mb-2 pt-6" htmlFor="birthDate">
             Date of Birth
           </Label>
           <Input type="date" id="birthDate" className="mb-6" value={formData.birthDate} onChange={handleChange} />

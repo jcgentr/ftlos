@@ -46,7 +46,10 @@
 
 ### MISC
 
+- [ ] deploy backend changes to prod
 - [ ] add Zod for type validation
+
+- [x] add Google Places Autocomplete for profile edit location
 - [x] add autocomplete search for Rankings team/athlete search
 - [x] add autocomplete search for Find a Fan team search
 - [x] look at TODO comments in codebase
