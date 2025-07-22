@@ -85,6 +85,16 @@ pm2 restart ftlos-backend || pm2 start dist/app.js --name "ftlos-backend"
 pm2 save
 ```
 
+## Using Prisma Studio with Production Database
+
+To access Prisma Studio connected to the production database from your local machine:
+
+```bash
+ssh -i id_ed25519 -L 5555:localhost:5555 root@74.207.237.116 "cd /var/www/backend && npx prisma studio --port 5555"
+```
+
+This creates an SSH tunnel from your local port 5555 to the Linode server and runs Prisma Studio. You can then access the interface by opening `http://localhost:5555` in your browser.
+
 ## NGINX Configuration
 
 Ensure NGINX is configured to serve the frontend and proxy API requests to the backend:

@@ -4,35 +4,42 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { toast } from "sonner";
 
-export function Login() {
-  const navigate = useNavigate();
+export function ResetPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (formError) {
       setFormError(null);
     }
-  }, [email, password]);
+  }, [email]);
 
   const handleFormSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setFormError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/change-password`,
+      });
 
-    if (error) {
-      setFormError(error.message);
-      toast.error(error.message);
-    } else {
-      toast.success("Login successful!");
-      navigate("/");
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Reset instructions sent to your email");
+    } catch (error: unknown) {
+      const supabaseError = error as { message: string };
+      console.error("Error during password reset:", error);
+      setFormError(supabaseError.message || "Failed to send reset instructions");
+      toast.error(supabaseError.message || "Failed to send reset instructions");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +48,11 @@ export function Login() {
       <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>Enter your email below to login to your account</CardDescription>
+            <CardTitle className="text-2xl">Reset Password</CardTitle>
+            <CardDescription>
+              Include the email address associated with your account and we'll send you an email with instructions to
+              reset your password.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleFormSubmission}>
@@ -63,29 +73,14 @@ export function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="text-sm hover:text-primary">
-                      <Link to="/reset-password">Forgot your password?</Link>
-                    </div>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Sending..." : "Send Reset Instructions"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link to="/signup">
-                  <span className="underline underline-offset-4 hover:text-primary">Sign up</span>
+                Remember your password?{" "}
+                <Link to="/login">
+                  <span className="underline underline-offset-4 hover:text-primary">Login</span>
                 </Link>
               </div>
             </form>

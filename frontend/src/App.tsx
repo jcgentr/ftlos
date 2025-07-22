@@ -15,6 +15,8 @@ import { ProtectedLayout } from "./components/ProtectedLayout";
 import { Toaster } from "sonner";
 import { ProfileOther } from "./components/ProfileOther";
 import { SweepstakesAdmin } from "./components/SweepstakesAdmin";
+import { ResetPassword } from "./components/ResetPassword";
+import { ChangePassword } from "./components/ChangePassword";
 
 function App() {
   return (
@@ -26,12 +28,14 @@ function App() {
           {/* public routes */}
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
           {/* protected routes */}
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
             <Route path="fans" element={<Fans />} />
             <Route path="leaderboard" element={<Rankings />} />
+            <Route path="change-password" element={<ChangePassword />} />
 
             <Route path="sweepstakes">
               <Route index element={<Sweepstakes />} />

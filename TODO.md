@@ -46,9 +46,15 @@
 
 ### MISC
 
-- [ ] deploy backend changes to prod
+- [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation
 
+- [x] add reset password flow
+  - [x] create reset password page
+  - [x] configure Supabase Auth reset method and redirect url
+  - [x] change password page
+  - [x] navigation integration
+  - [x] think about / ask Arthur about email verification on initial sign up
 - [x] add Google Places Autocomplete for profile edit location
 - [x] add autocomplete search for Rankings team/athlete search
 - [x] add autocomplete search for Find a Fan team search
