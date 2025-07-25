@@ -51,7 +51,7 @@ export function ResetPassword() {
             <CardTitle className="text-2xl">Reset Password</CardTitle>
             <CardDescription>
               Include the email address associated with your account and we'll send you an email with instructions to
-              reset your password.
+              reset your password. If you don't see it in your inbox, please check your spam folder.
             </CardDescription>
           </CardHeader>
           <CardContent>

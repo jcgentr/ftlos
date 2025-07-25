@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
@@ -21,7 +21,9 @@ interface PlacesAutocompleteProps {
 export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteProps) {
   const [input, setInput] = useState(value);
   const [predictions, setPredictions] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const debounceTimerRef = useRef<number | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Sync with external value
   useEffect(() => {
@@ -36,6 +38,11 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
       }
     };
   }, []);
+
+  // Reset selected index when predictions change
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [predictions]);
 
   const fetchPredictions = async (searchText: string) => {
     if (!searchText) {
@@ -95,17 +102,59 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
     onChange?.(text);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    // Only handle keyboard navigation when there are predictions
+    if (predictions.length === 0) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev < predictions.length - 1 ? prev + 1 : 0));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : predictions.length - 1));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex < predictions.length) {
+          handleSelectPlace(predictions[selectedIndex]);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setPredictions([]);
+        setSelectedIndex(-1);
+        inputRef.current?.blur();
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="relative">
       <Label className="mb-2" htmlFor="location">
         Location
       </Label>
-      <Input id="location" type="text" value={input} onChange={handleInputChange} placeholder="Enter your location" />
+      <Input
+        id="location"
+        type="text"
+        value={input}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Enter your location"
+        ref={inputRef}
+      />
 
       {predictions.length > 0 && (
         <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
           {predictions.map((text, index) => (
-            <li key={index} onClick={() => handleSelectPlace(text)} className="p-2 hover:bg-gray-100 cursor-pointer">
+            <li
+              key={index}
+              onClick={() => handleSelectPlace(text)}
+              className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : "hover:bg-gray-100"}`}
+            >
               {text}
             </li>
           ))}

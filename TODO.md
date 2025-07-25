@@ -49,6 +49,8 @@
 - [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation
 
+- [x] add keydown event handler for location predictions
+- [x] customize email template in Supabase
 - [x] add reset password flow
   - [x] create reset password page
   - [x] configure Supabase Auth reset method and redirect url
