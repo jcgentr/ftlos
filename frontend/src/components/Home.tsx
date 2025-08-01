@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { Star, UserPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
+import { UserCard } from "./UserCard";
 
 // Define our entities to rotate through, keeping actions constant
 const entitySets = [
@@ -78,32 +79,7 @@ export function Home() {
         {userMeetsCriteria && recommendations.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
             {recommendations.map((user) => (
-              <Link to={`/profile/${user.supabaseId}`} key={user.supabaseId}>
-                <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex justify-between md:flex-col gap-2">
-                    <div className="flex items-center gap-3 shrink-0">
-                      {user.profileImageUrl ? (
-                        <img
-                          src={user.profileImageUrl}
-                          alt={user.name}
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                          {user.name.charAt(0)}
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="font-semibold text-lg">{user.name}</h3>
-                        <p className="text-gray-600 text-sm">{user.location}</p>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 truncate md:ml-auto" title={user.matchReason}>
-                      {user.matchReason}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <UserCard key={user.supabaseId} user={user} showFriendButton={true} />
             ))}
           </div>
         ) : (

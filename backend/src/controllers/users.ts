@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest } from "../middleware/auth";
+import { FriendshipStatusResponse, getFriendshipStatusForUsers } from "../utils/friendship";
 
 const prisma = new PrismaClient();
 
@@ -77,13 +78,27 @@ export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-export const getPublicUser = async (req: Request, res: Response) => {
+export const getPublicUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    const currentUserSupabaseId = req.user?.sub;
+
+    const currentUser = await prisma.user.findUnique({
+      where: { supabaseId: currentUserSupabaseId },
+      select: { id: true },
+    });
+
+    if (!currentUser) {
+      res.status(401).json({ error: "Current user not found" });
+      return;
+    }
+
     const { id } = req.params;
 
     const user = await prisma.user.findUnique({
       where: { supabaseId: id, isConnecting: true },
       select: {
+        id: true,
+        email: true,
         supabaseId: true,
         firstName: true,
         lastName: true,
@@ -102,7 +117,14 @@ export const getPublicUser = async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json(user);
+    const friendshipStatusMap = await getFriendshipStatusForUsers(currentUser.id, [user.id]);
+
+    const userWithStatus = {
+      ...user,
+      friendshipStatus: friendshipStatusMap.get(user.id) || FriendshipStatusResponse.NOT_FRIENDS,
+    };
+
+    res.status(200).json(userWithStatus);
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: "Failed to fetch user" });
@@ -162,6 +184,16 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
 
     if (!name && !location && !sportId && !team) {
       res.status(400).json({ error: "At least one search parameter is required" });
+      return;
+    }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { supabaseId: currentUserSupabaseId },
+      select: { id: true },
+    });
+
+    if (!currentUser) {
+      res.status(401).json({ error: "Current user not found" });
       return;
     }
 
@@ -260,6 +292,7 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
     const users = await prisma.user.findMany({
       where: whereConditions,
       select: {
+        id: true,
         supabaseId: true,
         firstName: true,
         lastName: true,
@@ -272,6 +305,7 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
 
     // Format users for frontend display
     const formattedUsers = users.map((user) => ({
+      id: user.id,
       supabaseId: user.supabaseId,
       name:
         user.firstName && user.lastName
@@ -281,7 +315,16 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
       profileImageUrl: user.profileImageUrl,
     }));
 
-    res.status(200).json(formattedUsers);
+    const userIds = formattedUsers.map((user) => user.id);
+
+    const friendshipStatusMap = await getFriendshipStatusForUsers(currentUser.id, userIds);
+
+    const usersWithStatus = formattedUsers.map((user) => ({
+      ...user,
+      friendshipStatus: friendshipStatusMap.get(user.id) || FriendshipStatusResponse.NOT_FRIENDS,
+    }));
+
+    res.status(200).json(usersWithStatus);
   } catch (error) {
     console.error("Error searching users:", error);
     res.status(500).json({ error: "Failed to search users" });
@@ -305,7 +348,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
     });
 
     if (!currentUser) {
-      res.status(404).json({ error: "User not found" });
+      res.status(401).json({ error: "Current user not found" });
       return;
     }
 
@@ -397,6 +440,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
     );
 
     let recommendedUsers: {
+      id: string;
       supabaseId: string;
       name: string;
       location: string;
@@ -487,6 +531,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
         }
 
         return {
+          id: user.id,
           supabaseId: user.supabaseId,
           name:
             user.firstName && user.lastName
@@ -512,6 +557,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
           },
         },
         select: {
+          id: true,
           supabaseId: true,
           firstName: true,
           lastName: true,
@@ -522,6 +568,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
       });
 
       const formattedRandomUsers = randomUsers.map((user) => ({
+        id: user.id,
         supabaseId: user.supabaseId,
         name:
           user.firstName && user.lastName
@@ -535,9 +582,18 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
       recommendedUsers = [...recommendedUsers, ...formattedRandomUsers];
     }
 
+    const userIds = recommendedUsers.map((user) => user.id);
+
+    const friendshipStatusMap = await getFriendshipStatusForUsers(currentUser.id, userIds);
+
+    const recommendedUsersWithStatus = recommendedUsers.map((user) => ({
+      ...user,
+      friendshipStatus: friendshipStatusMap.get(user.id) || FriendshipStatusResponse.NOT_FRIENDS,
+    }));
+
     res.status(200).json({
       userMeetsCriteria: true,
-      recommendations: recommendedUsers,
+      recommendations: recommendedUsersWithStatus,
     });
   } catch (error) {
     console.error("Error getting recommended users:", error);

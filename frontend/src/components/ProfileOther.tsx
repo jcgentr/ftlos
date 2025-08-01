@@ -7,11 +7,12 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
 import { TaglineStatic } from "./Tagline";
+import { FriendRequestButton } from "./FriendRequestButton";
 
 export function ProfileOther() {
   const { profileId } = useParams();
   const { session } = useAuth();
-  const [profile, setProfile] = useState<Omit<UserProfile, "email" | "id"> | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [userRatings, setUserRatings] = useState<UserRating[]>([]);
   const [userTaglines, setUserTaglines] = useState<UserTagline[]>([]);
@@ -142,6 +143,11 @@ export function ProfileOther() {
             <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
           </p>
         </div>
+        {profile.friendshipStatus && (
+          <div className="mt-4 flex justify-end">
+            <FriendRequestButton userId={profile.id} friendshipStatus={profile.friendshipStatus} />
+          </div>
+        )}
       </div>
 
       <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">

@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 export type RecommendedUser = {
+  id: string;
   supabaseId: string;
   name: string;
   location: string;

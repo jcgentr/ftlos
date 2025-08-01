@@ -29,6 +29,10 @@ model User {
   ratings  UserRating[]
   taglines UserTagline[]
 
+  // Friend relationships
+  sentFriendRequests     Friendship[] @relation("SentFriendRequests")
+  receivedFriendRequests Friendship[] @relation("ReceivedFriendRequests")
+
   sweepstakeEntries  SweepstakeEntry[]
   createdSweepstakes Sweepstake[]
 
@@ -213,4 +217,27 @@ model GamePick {
   @@index([gameId])
   @@index([selectedTeamId])
   @@map("game_picks")
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Friendship {
+  id          String           @id @default(uuid())
+  requesterId String           @map("requester_id")
+  addresseeId String           @map("addressee_id")
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  requester User @relation("SentFriendRequests", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("ReceivedFriendRequests", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@index([requesterId])
+  @@index([addresseeId])
+  @@map("friendships")
 }

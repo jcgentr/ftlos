@@ -44,8 +44,50 @@
 - [x] show user's ratings in build profile component table (no edit)
 - [x] show user's tagline (no edit)
 
+### Add Friend Feature
+
+#### Backend
+
+- [x] Database Schema Updates (~ 2 hours)
+  - [x] Create friendship/connection tables and relationships
+  - [x] Implement migration scripts
+- [x] API Endpoints (~ 4 hours)
+  - [x] Send friend request endpoint
+  - [x] Accept/reject request endpoints
+  - [x] List pending requests endpoint
+  - [x] List friends endpoint
+  - [x] Remove friend endpoint
+- [ ] Business Logic (~ 2 hours)
+  - [x] Friend request validation
+  - [x] Status handling (pending, accepted, rejected)
+  - [ ] Notification preparation
+- [ ] Testing & QA (~ 1 hour)
+  - [ ] Manual testing in production
+
+#### Frontend
+
+- [ ] UI Components (~ 3 hours)
+  - [ ] Friend request button component
+  - [ ] Friend request notification component
+  - [x] Friends list component
+- [ ] Profile Page Updates (~ 2 hours)
+  - [ ] Add friend button on other profiles
+  - [x] Friends tab/section on user profile
+  - [ ] Friends tab/section on others' profile
+- [ ] Friend Request Management (~ 3 hours)
+  - [ ] Pending requests view
+  - [ ] Accept/reject UI
+  - [ ] State management for requests
+- [ ] Friends List View (~ 2 hours)
+  - [x] Friends list on profile page
+  - [ ] Friend filtering/sorting options
+- [ ] Testing & Responsive Design (~ 2 hours)
+  - [ ] Mobile responsiveness
+  - [ ] UI/UX refinements
+
 ### MISC
 
+- [ ] remove `name` field from User model
 - [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation
 

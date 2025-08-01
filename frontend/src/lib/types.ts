@@ -11,6 +11,7 @@ export type UserProfile = {
   createdAt: string;
   updatedAt: string;
   profileImageUrl: string | null;
+  friendshipStatus?: FriendshipStatus;
 };
 
 export type UserTagline = {
@@ -54,3 +55,10 @@ export type SportCategory = {
   category: "Athletes" | "Teams" | "Sports";
   items: SportItem[];
 };
+
+export enum FriendshipStatus {
+  FRIENDS = "FRIENDS",
+  OUTGOING_REQUEST = "OUTGOING_REQUEST",
+  INCOMING_REQUEST = "INCOMING_REQUEST",
+  NOT_FRIENDS = "NOT_FRIENDS",
+}

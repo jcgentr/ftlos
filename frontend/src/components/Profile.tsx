@@ -8,6 +8,7 @@ import { User } from "lucide-react";
 import { Tagline } from "./Tagline";
 import { ProfileRatings } from "./ProfileRatings";
 import { useSportsData } from "@/hooks/useSportsData";
+import { FriendsList } from "./FriendsList";
 
 export function Profile() {
   const { profile, loading, updateProfile } = useUserProfile();
@@ -97,6 +98,8 @@ export function Profile() {
       <Tagline sportsData={sportsData} isLoading={sportsLoading} />
 
       <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
+
+      <FriendsList />
     </div>
   );
 }

@@ -3,20 +3,20 @@ import { useRecommendedUsers } from "@/hooks/useRecommendedUsers";
 import { useSports } from "@/hooks/useSports";
 import { useTeams } from "@/hooks/useTeams";
 import { useState } from "react";
-import { Link } from "react-router";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { EntityType } from "@/lib/types";
 import { SingleSelectDropdown } from "./SingleSelectDropdown";
+import { UserCard } from "./UserCard";
 
 interface Fan {
+  id: string;
   supabaseId: string;
   name: string;
   location: string;
   profileImageUrl?: string;
-  favoriteSports?: string;
 }
 
 export function Fans() {
@@ -154,23 +154,7 @@ export function Fans() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {fans.map((fan) => (
-            <Link to={`/profile/${fan.supabaseId}`} key={fan.supabaseId}>
-              <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3">
-                  {fan.profileImageUrl ? (
-                    <img src={fan.profileImageUrl} alt={fan.name} className="w-12 h-12 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                      {fan.name.charAt(0)}
-                    </div>
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-lg">{fan.name}</h3>
-                    <p className="text-gray-600">{fan.location}</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <UserCard key={fan.supabaseId} user={fan} showFriendButton={true} />
           ))}
         </div>
 
@@ -182,32 +166,7 @@ export function Fans() {
           {userMeetsCriteria && recommendations.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
               {recommendations.map((user) => (
-                <Link to={`/profile/${user.supabaseId}`} key={user.supabaseId}>
-                  <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex justify-between md:flex-col gap-2">
-                      <div className="flex items-center gap-3 shrink-0">
-                        {user.profileImageUrl ? (
-                          <img
-                            src={user.profileImageUrl}
-                            alt={user.name}
-                            className="w-12 h-12 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                            {user.name.charAt(0)}
-                          </div>
-                        )}
-                        <div>
-                          <h3 className="font-semibold text-lg">{user.name}</h3>
-                          <p className="text-gray-600 text-sm">{user.location}</p>
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-600 truncate md:ml-auto" title={user.matchReason}>
-                        {user.matchReason}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <UserCard key={user.supabaseId} user={user} showFriendButton={true} />
               ))}
             </div>
           ) : (

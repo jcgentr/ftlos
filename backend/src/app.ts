@@ -10,6 +10,7 @@ import ratingsRoutes from "./routes/ratings";
 import taglinesRoutes from "./routes/taglines";
 import rankingsRoutes from "./routes/rankings";
 import sweepstakesRoutes from "./routes/sweepstakes";
+import friendsRoutes from "./routes/friends";
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use("/api/ratings", ratingsRoutes);
 app.use("/api/taglines", taglinesRoutes);
 app.use("/api/rankings", rankingsRoutes);
 app.use("/api/sweepstakes", sweepstakesRoutes);
+app.use("/api/friends", friendsRoutes);
 
 export default app;
