@@ -173,12 +173,17 @@ export const rejectFriendRequest = async (req: AuthenticatedRequest, res: Respon
     }
 
     // Update the friendship status
-    const updatedFriendship = await prisma.friendship.update({
+    // const updatedFriendship = await prisma.friendship.update({
+    //   where: { id: friendshipId },
+    //   data: { status: FriendshipStatus.REJECTED },
+    // });
+
+    // Delete the friendship instead of updating its status
+    await prisma.friendship.delete({
       where: { id: friendshipId },
-      data: { status: FriendshipStatus.REJECTED },
     });
 
-    res.status(200).json(updatedFriendship);
+    res.status(200).json({ message: "Friend request rejected successfully" });
   } catch (error) {
     console.error("Error rejecting friend request:", error);
     res.status(500).json({ error: "Failed to reject friend request" });

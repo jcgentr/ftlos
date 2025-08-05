@@ -62,3 +62,14 @@ export enum FriendshipStatus {
   INCOMING_REQUEST = "INCOMING_REQUEST",
   NOT_FRIENDS = "NOT_FRIENDS",
 }
+
+export interface Friend {
+  id: string;
+  supabaseId: string;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  location: string | null;
+}
+
+export type SortOption = "none" | "asc" | "desc";

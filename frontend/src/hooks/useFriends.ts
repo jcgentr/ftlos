@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface Friend {
-  id: string;
-  supabaseId: string;
-  firstName: string | null;
-  lastName: string | null;
-  profileImageUrl: string | null;
-  location: string | null;
-}
+import { Friend } from "@/lib/types";
 
 interface FriendRequest {
   id: string;

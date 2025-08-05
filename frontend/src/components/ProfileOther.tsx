@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
 import { TaglineStatic } from "./Tagline";
 import { FriendRequestButton } from "./FriendRequestButton";
+import { FriendsListOther } from "./FriendsListOther";
 
 export function ProfileOther() {
   const { profileId } = useParams();
@@ -17,84 +18,78 @@ export function ProfileOther() {
   const [userRatings, setUserRatings] = useState<UserRating[]>([]);
   const [userTaglines, setUserTaglines] = useState<UserTagline[]>([]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!profileId) return;
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${profileId}/public`, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
 
-      setLoading(true);
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${profileId}/public`, {
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to fetch profile");
-        }
-
-        const data = await response.json();
-        setProfile(data);
-      } catch (err) {
-        setProfile(null);
-        console.error("Error during fetching user profile:", err);
-        toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch profile");
       }
-    };
 
-    fetchProfile();
-  }, []);
+      const data = await response.json();
+      setProfile(data);
+    } catch (err) {
+      setProfile(null);
+      console.error("Error during fetching user profile:", err);
+      toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUserRatings = async () => {
+    if (!session?.access_token) return;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings/${profileId}`, {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch ratings");
+
+      const data = await response.json();
+      setUserRatings(data);
+    } catch (error) {
+      console.error("Error fetching user ratings:", error);
+      toast.error("Failed to load your ratings");
+    }
+  };
+
+  const fetchUserTaglines = async () => {
+    if (!session?.access_token || !profileId) return;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/taglines/${profileId}`, {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch taglines");
+
+      const data = await response.json();
+      setUserTaglines(data);
+    } catch (error) {
+      console.error("Error fetching user taglines:", error);
+      toast.error("Failed to load taglines");
+    }
+  };
 
   useEffect(() => {
-    const fetchUserRatings = async () => {
-      if (!session?.access_token) return;
-
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ratings/${profileId}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch ratings");
-
-        const data = await response.json();
-        setUserRatings(data);
-      } catch (error) {
-        console.error("Error fetching user ratings:", error);
-        toast.error("Failed to load your ratings");
-      }
-    };
-
-    fetchUserRatings();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserTaglines = async () => {
-      if (!session?.access_token || !profileId) return;
-
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/taglines/${profileId}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch taglines");
-
-        const data = await response.json();
-        setUserTaglines(data);
-      } catch (error) {
-        console.error("Error fetching user taglines:", error);
-        toast.error("Failed to load taglines");
-      }
-    };
-
-    fetchUserTaglines();
-  }, []);
+    if (profileId) {
+      fetchProfile();
+      fetchUserRatings();
+      fetchUserTaglines();
+    }
+  }, [profileId]);
 
   if (loading) {
     return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
@@ -104,12 +99,12 @@ export function ProfileOther() {
     return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Profile not found.</div>;
   }
 
+  const fullName = `${profile.firstName} ${profile.lastName}`.trim();
+
   return (
     <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
-        <h1 className="text-4xl font-bold mb-4">
-          {!profile.firstName && !profile.lastName ? "Profile" : `${profile.firstName} ${profile.lastName}`.trim()}
-        </h1>
+        <h1 className="text-4xl font-bold mb-4">{!profile.firstName && !profile.lastName ? "Profile" : fullName}</h1>
         <div className="flex justify-between items-center">
           <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
             {profile.location || "Location not set"}
@@ -136,8 +131,7 @@ export function ProfileOther() {
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
           <p>
-            <span className="font-bold">Name:</span>{" "}
-            {!profile.firstName && !profile.lastName ? "Not set" : `${profile.firstName} ${profile.lastName}`.trim()}
+            <span className="font-bold">Name:</span> {!profile.firstName && !profile.lastName ? "Not set" : fullName}
           </p>
           <p>
             <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
@@ -159,6 +153,8 @@ export function ProfileOther() {
         <h2 className="text-2xl font-semibold mb-4">Favorite Teams & Players</h2>
         <RatingTableStatic ratings={userRatings} />
       </div>
+
+      <FriendsListOther userId={profile.id} userName={fullName} />
     </div>
   );
 }

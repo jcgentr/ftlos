@@ -5,11 +5,14 @@ import { UserCard } from "./UserCard";
 import { useFriendActions } from "@/hooks/useFriendActions";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { SortOption } from "@/lib/types";
 
 export function FriendsList() {
   const { friends, pendingRequests, loading, error, refetchFriends, refetchPendingRequests } = useFriends();
   const { acceptFriendRequest, rejectFriendRequest, isLoading } = useFriendActions();
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
+  const [sortOption, setSortOption] = useState<SortOption>("none");
 
   const handleAcceptRequest = async (friendshipId: string) => {
     setProcessingIds((prev) => new Set(prev).add(friendshipId));
@@ -49,6 +52,18 @@ export function FriendsList() {
       });
     }
   };
+
+  const sortedFriends = [...friends].sort((a, b) => {
+    const nameA = `${a.firstName || ""} ${a.lastName || ""}`.trim().toLowerCase();
+    const nameB = `${b.firstName || ""} ${b.lastName || ""}`.trim().toLowerCase();
+
+    if (sortOption === "asc") {
+      return nameA.localeCompare(nameB);
+    } else if (sortOption === "desc") {
+      return nameB.localeCompare(nameA);
+    }
+    return 0;
+  });
 
   return (
     <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
@@ -92,9 +107,24 @@ export function FriendsList() {
       )}
 
       {/* Friends Section */}
-      <h2 className="text-2xl font-semibold mb-4" id="friends">
-        Friends
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold" id="friends">
+          Friends
+        </h2>
+        {friends.length > 0 && (
+          <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
+            <SelectTrigger className="w-[130px]" size="sm">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No Sort</SelectItem>
+              <SelectItem value="asc">A-Z</SelectItem>
+              <SelectItem value="desc">Z-A</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
+      </div>
+
       {loading ? (
         <p className="text-gray-500">Loading friends...</p>
       ) : error ? (
@@ -111,7 +141,7 @@ export function FriendsList() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {friends.map((friend) => (
+            {sortedFriends.map((friend) => (
               <UserCard key={friend.id} user={friend} showFriendButton={false} />
             ))}
           </div>

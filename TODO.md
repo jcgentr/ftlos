@@ -67,16 +67,16 @@
 #### Frontend
 
 - [ ] UI Components (~ 3 hours)
-  - [ ] Friend request button component
+  - [x] Friend request button component
   - [ ] Friend request notification component
   - [x] Friends list component
 - [ ] Profile Page Updates (~ 2 hours)
-  - [ ] Add friend button on other profiles
+  - [x] Add friend button on other profiles
   - [x] Friends tab/section on user profile
-  - [ ] Friends tab/section on others' profile
+  - [x] Friends tab/section on others' profile
 - [ ] Friend Request Management (~ 3 hours)
-  - [ ] Pending requests view
-  - [ ] Accept/reject UI
+  - [x] Pending requests view
+  - [x] Accept/reject UI
   - [ ] State management for requests
 - [ ] Friends List View (~ 2 hours)
   - [x] Friends list on profile page
@@ -87,6 +87,7 @@
 
 ### MISC
 
+- [ ] bug: have user card route to current user if current user
 - [ ] remove `name` field from User model
 - [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation

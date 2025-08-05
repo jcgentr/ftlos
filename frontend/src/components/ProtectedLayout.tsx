@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { FriendshipProvider } from "@/contexts/FriendshipContext";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
@@ -14,5 +15,9 @@ export function ProtectedLayout() {
     }
   }, [loading, session, navigate, location]);
 
-  return session ? <Outlet /> : null;
+  return session ? (
+    <FriendshipProvider>
+      <Outlet />
+    </FriendshipProvider>
+  ) : null;
 }

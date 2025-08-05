@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFriendActions } from "@/hooks/useFriendActions";
@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { FriendshipStatus } from "@/lib/types";
 import { UserCheck, UserPlus, UserSearch, UserX } from "lucide-react";
 import { Link } from "react-router";
+import { useFriendship } from "@/contexts/FriendshipContext";
 
 interface FriendRequestButtonProps {
   userId: string;
@@ -15,19 +16,31 @@ interface FriendRequestButtonProps {
 export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestButtonProps) {
   const { session } = useAuth();
   const { sendFriendRequest, cancelFriendRequest } = useFriendActions();
+  const { friendshipStatuses, updateFriendshipStatus } = useFriendship();
   const [isLoading, setIsLoading] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState(friendshipStatus);
+
+  // Initialize the status in context if it doesn't exist yet
+  useEffect(() => {
+    if (!friendshipStatuses[userId]) {
+      updateFriendshipStatus(userId, friendshipStatus);
+    }
+  }, []);
+
+  // Use the global state, fallback to prop if not in context
+  const currentStatus = friendshipStatuses[userId] || friendshipStatus;
 
   const handleAddFriend = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setIsLoading(true);
-    setCurrentStatus(FriendshipStatus.OUTGOING_REQUEST);
+    // Optimistically update the global state
+    updateFriendshipStatus(userId, FriendshipStatus.OUTGOING_REQUEST);
     try {
       await sendFriendRequest(userId);
       toast.success("Friend request sent!");
     } catch (err) {
-      setCurrentStatus(FriendshipStatus.NOT_FRIENDS);
+      // Revert on failure
+      updateFriendshipStatus(userId, FriendshipStatus.NOT_FRIENDS);
       console.error("Failed to send friend request", err);
       toast.error("Failed to send friend request");
     } finally {
@@ -39,12 +52,14 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
     e.stopPropagation();
     e.preventDefault();
     setIsLoading(true);
-    setCurrentStatus(FriendshipStatus.NOT_FRIENDS);
+    // Optimistically update the global state
+    updateFriendshipStatus(userId, FriendshipStatus.NOT_FRIENDS);
     try {
       await cancelFriendRequest(userId);
       toast.success("Friend request canceled");
     } catch (err) {
-      setCurrentStatus(FriendshipStatus.OUTGOING_REQUEST);
+      // Revert on failure
+      updateFriendshipStatus(userId, FriendshipStatus.OUTGOING_REQUEST);
       console.error("Failed to cancel friend request", err);
       toast.error("Failed to cancel friend request");
     } finally {
