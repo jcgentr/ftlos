@@ -87,11 +87,11 @@
 
 ### MISC
 
-- [ ] bug: have user card route to current user if current user
 - [ ] remove `name` field from User model
 - [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation
 
+- [x] bug: have user card route to current user if current user
 - [x] add keydown event handler for location predictions
 - [x] customize email template in Supabase
 - [x] add reset password flow

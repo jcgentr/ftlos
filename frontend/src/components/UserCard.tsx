@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { FriendRequestButton } from "./FriendRequestButton";
 import { FriendshipStatus } from "@/lib/types";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UserCardProps {
   user: {
@@ -18,12 +19,15 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, showFriendButton = false }: UserCardProps) {
+  const { user: currentUser } = useAuth();
   const displayName =
     user.name ||
     (user.firstName || user.lastName ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "Unknown User");
+  const isCurrentUser = currentUser?.id === user.supabaseId;
+  const profilePath = isCurrentUser ? "/profile" : `/profile/${user.supabaseId}`;
 
   return (
-    <Link to={`/profile/${user.supabaseId}`}>
+    <Link to={profilePath}>
       <div className="border border-gray-300 bg-white rounded-lg p-4 hover:shadow-md transition-shadow space-y-2">
         <div className="flex items-center gap-3 shrink-0">
           {user.profileImageUrl ? (
@@ -47,7 +51,7 @@ export function UserCard({ user, showFriendButton = false }: UserCardProps) {
               </div>
             )}
 
-            {showFriendButton && (
+            {showFriendButton && !isCurrentUser && (
               <div className="ml-auto">
                 <FriendRequestButton
                   userId={user.id}
