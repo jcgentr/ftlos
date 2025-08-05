@@ -72,4 +72,19 @@ export interface Friend {
   location: string | null;
 }
 
+export interface FriendRequest {
+  id: string;
+  requesterId: string;
+  addresseeId: string;
+  status: "PENDING" | "ACCEPTED" | "REJECTED";
+  requester: {
+    id: string;
+    supabaseId: string;
+    firstName: string | null;
+    lastName: string | null;
+    location: string | null;
+    profileImageUrl: string | null;
+  };
+}
+
 export type SortOption = "none" | "asc" | "desc";

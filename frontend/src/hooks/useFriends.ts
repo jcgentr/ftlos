@@ -1,21 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Friend } from "@/lib/types";
-
-interface FriendRequest {
-  id: string;
-  requesterId: string;
-  addresseeId: string;
-  status: "PENDING" | "ACCEPTED" | "REJECTED";
-  requester: {
-    id: string;
-    supabaseId: string;
-    firstName: string | null;
-    lastName: string | null;
-    location: string | null;
-    profileImageUrl: string | null;
-  };
-}
+import { Friend, FriendRequest } from "@/lib/types";
 
 export function useFriends() {
   const { session } = useAuth();

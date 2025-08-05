@@ -19,12 +19,10 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
   const { friendshipStatuses, updateFriendshipStatus } = useFriendship();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize the status in context if it doesn't exist yet
+  // update context with fresh API data
   useEffect(() => {
-    if (!friendshipStatuses[userId]) {
-      updateFriendshipStatus(userId, friendshipStatus);
-    }
-  }, []);
+    updateFriendshipStatus(userId, friendshipStatus);
+  }, [userId, friendshipStatus]);
 
   // Use the global state, fallback to prop if not in context
   const currentStatus = friendshipStatuses[userId] || friendshipStatus;

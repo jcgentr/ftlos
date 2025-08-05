@@ -57,38 +57,36 @@
   - [x] List pending requests endpoint
   - [x] List friends endpoint
   - [x] Remove friend endpoint
-- [ ] Business Logic (~ 2 hours)
+- [x] Business Logic (~ 2 hours)
   - [x] Friend request validation
   - [x] Status handling (pending, accepted, rejected)
-  - [ ] Notification preparation
-- [ ] Testing & QA (~ 1 hour)
-  - [ ] Manual testing in production
+- [x] Testing & QA (~ 1 hour)
+  - [x] Manual testing in production
 
 #### Frontend
 
-- [ ] UI Components (~ 3 hours)
+- [x] UI Components (~ 3 hours)
   - [x] Friend request button component
   - [ ] Friend request notification component
   - [x] Friends list component
-- [ ] Profile Page Updates (~ 2 hours)
+- [x] Profile Page Updates (~ 2 hours)
   - [x] Add friend button on other profiles
   - [x] Friends tab/section on user profile
   - [x] Friends tab/section on others' profile
-- [ ] Friend Request Management (~ 3 hours)
+- [x] Friend Request Management (~ 3 hours)
   - [x] Pending requests view
   - [x] Accept/reject UI
-  - [ ] State management for requests
-- [ ] Friends List View (~ 2 hours)
+  - [x] State management for requests
+- [x] Friends List View (~ 2 hours)
   - [x] Friends list on profile page
-  - [ ] Friend filtering/sorting options
-- [ ] Testing & Responsive Design (~ 2 hours)
-  - [ ] Mobile responsiveness
-  - [ ] UI/UX refinements
+  - [x] Friend filtering/sorting options
+- [x] Testing & Responsive Design (~ 2 hours)
+  - [x] Mobile responsiveness
+  - [x] UI/UX refinements
 
 ### MISC
 
 - [ ] remove `name` field from User model
-- [ ] deploy frontend and backend changes to prod
 - [ ] add Zod for type validation
 
 - [x] bug: have user card route to current user if current user
