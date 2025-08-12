@@ -1,8 +1,10 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth";
 import { PrismaClient, FriendshipStatus } from "@prisma/client";
+import { Resend } from "resend";
 
 const prisma = new PrismaClient();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -23,7 +25,7 @@ export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response
     // Get requester user
     const requester = await prisma.user.findUnique({
       where: { supabaseId },
-      select: { id: true },
+      select: { id: true, firstName: true, lastName: true },
     });
 
     if (!requester) {
@@ -34,7 +36,7 @@ export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response
     // Get addressee user
     const addressee = await prisma.user.findUnique({
       where: { id: addresseeId },
-      select: { id: true },
+      select: { id: true, email: true, firstName: true },
     });
 
     if (!addressee) {
@@ -71,6 +73,37 @@ export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response
         status: FriendshipStatus.PENDING,
       },
     });
+
+    // Send email notification to the addressee
+    if (addressee.email) {
+      try {
+        const requesterName = `${requester.firstName || ""} ${requester.lastName || ""}`.trim() || "Someone";
+        const addresseeName = addressee.firstName || "there";
+
+        await resend.emails.send({
+          from: "FTLOS <no-reply@notifications.ftlos.app>",
+          to: addressee.email,
+          subject: `New Friend Request from ${requesterName}`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>New Friend Request</h2>
+                <p>Hi ${addresseeName},</p>
+                <p><strong>${requesterName}</strong> has sent you a friend request on FTLOS.</p>
+                <p>Log in to your account to accept or decline this request.</p>
+                <div style="margin: 30px 0;">
+                  <a href="${process.env.FRONTEND_URL}/profile#friend-requests" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Request</a>
+                </div>
+                <p>Thanks,<br>The FTLOS Team</p>
+              </div>
+            `,
+        });
+
+        console.log("Friend request email notification sent");
+      } catch (emailError) {
+        console.error("Error sending friend request email:", emailError);
+        // Don't fail the request if email sending fails
+      }
+    }
 
     res.status(201).json(friendship);
   } catch (error) {
