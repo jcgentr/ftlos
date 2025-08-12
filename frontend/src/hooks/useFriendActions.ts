@@ -113,11 +113,39 @@ export function useFriendActions() {
     }
   };
 
+  const removeFriend = async (friendId: string) => {
+    if (!session?.access_token) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/friends/${friendId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to remove friend");
+      }
+
+      return await response.json();
+    } catch (err) {
+      console.error("Error removing friend:", err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     sendFriendRequest,
     cancelFriendRequest,
     acceptFriendRequest,
     rejectFriendRequest,
+    removeFriend,
   };
 }

@@ -87,10 +87,11 @@
 
 - [x] enforce selection from list for location autocomplete input on Profile Edit page form
   - [x] hide predictions list on esc and click away
-  - [ ] should location be required before saving form changes? ask Arthur
+  - [ ] ASK ARTHUR: should location be required before saving form changes?
 - [ ] Friend Func.
   - [ ] look into sending an email notification when a user receives a friend request
-  - [ ] add ability to remove a friend
+  - [x] add ability to remove a friend
+    - [ ] ASK ARTHUR: confirmation box before removing friend?
   - [ ] disallow friend requests to user's that aren't "connecting" (either by no btn or return a response/toast)
   - [ ] add view permissions for friend vs public users (show friends list and birthdate only if user is a friend of current user)
 - [ ] remove `name` field from User model
