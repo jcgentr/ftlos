@@ -67,7 +67,6 @@
 
 - [x] UI Components (~ 3 hours)
   - [x] Friend request button component
-  - [ ] Friend request notification component
   - [x] Friends list component
 - [x] Profile Page Updates (~ 2 hours)
   - [x] Add friend button on other profiles
@@ -86,6 +85,14 @@
 
 ### MISC
 
+- [x] enforce selection from list for location autocomplete input on Profile Edit page form
+  - [x] hide predictions list on esc and click away
+  - [ ] should location be required before saving form changes? ask Arthur
+- [ ] Friend Func.
+  - [ ] look into sending an email notification when a user receives a friend request
+  - [ ] add ability to remove a friend
+  - [ ] disallow friend requests to user's that aren't "connecting" (either by no btn or return a response/toast)
+  - [ ] add view permissions for friend vs public users (show friends list and birthdate only if user is a friend of current user)
 - [ ] remove `name` field from User model
 - [ ] add Zod for type validation
 

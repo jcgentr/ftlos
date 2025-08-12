@@ -19,16 +19,11 @@ interface PlacesAutocompleteProps {
 }
 
 export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteProps) {
-  const [input, setInput] = useState(value);
   const [predictions, setPredictions] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const debounceTimerRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Sync with external value
-  useEffect(() => {
-    setInput(value);
-  }, [value]);
+  const validSelectionMadeRef = useRef(false);
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -42,6 +37,10 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
   // Reset selected index when predictions change
   useEffect(() => {
     setSelectedIndex(-1);
+    // use case: user types exact location of a valid prediction (case sensitive)
+    if (predictions.includes(value)) {
+      validSelectionMadeRef.current = true;
+    }
   }, [predictions]);
 
   const fetchPredictions = async (searchText: string) => {
@@ -91,13 +90,15 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setInput(newValue);
+    // Reset the valid selection flag when user types
+    validSelectionMadeRef.current = false;
     debouncedFetchPredictions(newValue);
     onChange?.(newValue);
   };
 
   const handleSelectPlace = (text: string) => {
-    setInput(text);
+    // Set flag to indicate a valid selection was made
+    validSelectionMadeRef.current = true;
     setPredictions([]);
     onChange?.(text);
   };
@@ -123,13 +124,19 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
         break;
       case "Escape":
         e.preventDefault();
-        setPredictions([]);
-        setSelectedIndex(-1);
         inputRef.current?.blur();
         break;
       default:
         break;
     }
+  };
+
+  const handleBlur = () => {
+    // enforce selection from list of predictions
+    if (!validSelectionMadeRef.current && !predictions.includes(value)) {
+      onChange?.("");
+    }
+    setPredictions([]);
   };
 
   return (
@@ -140,9 +147,10 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
       <Input
         id="location"
         type="text"
-        value={input}
+        value={value}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         placeholder="Enter your location"
         ref={inputRef}
       />
@@ -152,6 +160,10 @@ export function PlacesAutocomplete({ value = "", onChange }: PlacesAutocompleteP
           {predictions.map((text, index) => (
             <li
               key={index}
+              onMouseDown={(e) => {
+                // Prevent blur from firing before click
+                e.preventDefault();
+              }}
               onClick={() => handleSelectPlace(text)}
               className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : "hover:bg-gray-100"}`}
             >
