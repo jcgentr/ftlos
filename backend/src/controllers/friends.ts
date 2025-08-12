@@ -35,7 +35,7 @@ export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response
 
     // Get addressee user
     const addressee = await prisma.user.findUnique({
-      where: { id: addresseeId },
+      where: { id: addresseeId, isConnecting: true },
       select: { id: true, email: true, firstName: true },
     });
 

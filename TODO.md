@@ -92,7 +92,9 @@
   - [x] look into sending an email notification when a user receives a friend request
   - [x] add ability to remove a friend
     - [ ] ASK ARTHUR: confirmation box before removing friend?
-  - [ ] disallow friend requests to user's that aren't "connecting" (either by no btn or return a response/toast)
+  - [x] disallow friend requests to users that aren't "connecting" (either by no btn or return a response/toast)
+    - [x] profile will not show on find a fan / home / profile if isConnecting is false
+    - [x] sendFriendRequest now checks if user isConnecting in query
   - [ ] add view permissions for friend vs public users (show friends list and birthdate only if user is a friend of current user)
 - [ ] remove `name` field from User model
 - [ ] add Zod for type validation
