@@ -18,8 +18,8 @@ export function ProfileOther() {
   const [userRatings, setUserRatings] = useState<UserRating[]>([]);
   const [userTaglines, setUserTaglines] = useState<UserTagline[]>([]);
 
-  const fetchProfile = async () => {
-    setLoading(true);
+  const fetchProfile = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${profileId}/public`, {
         headers: {
@@ -35,11 +35,13 @@ export function ProfileOther() {
       const data = await response.json();
       setProfile(data);
     } catch (err) {
-      setProfile(null);
+      if (showLoading) setProfile(null);
       console.error("Error during fetching user profile:", err);
-      toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
+      if (showLoading) {
+        toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
+      }
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -91,6 +93,10 @@ export function ProfileOther() {
     }
   }, [profileId]);
 
+  const handleFriendshipChange = () => {
+    fetchProfile(false);
+  };
+
   if (loading) {
     return <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">Loading profile...</div>;
   }
@@ -141,7 +147,11 @@ export function ProfileOther() {
         </div>
         {profile.friendshipStatus && (
           <div className="mt-4 flex justify-end">
-            <FriendRequestButton userId={profile.id} friendshipStatus={profile.friendshipStatus} />
+            <FriendRequestButton
+              userId={profile.id}
+              friendshipStatus={profile.friendshipStatus}
+              onFriendshipChange={handleFriendshipChange}
+            />
           </div>
         )}
       </div>

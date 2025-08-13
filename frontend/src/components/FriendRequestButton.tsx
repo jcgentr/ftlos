@@ -12,9 +12,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 interface FriendRequestButtonProps {
   userId: string;
   friendshipStatus: FriendshipStatus;
+  onFriendshipChange?: () => void;
 }
 
-export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestButtonProps) {
+export function FriendRequestButton({ userId, friendshipStatus, onFriendshipChange }: FriendRequestButtonProps) {
   const { session } = useAuth();
   const { sendFriendRequest, cancelFriendRequest, removeFriend } = useFriendActions();
   const { friendshipStatuses, updateFriendshipStatus } = useFriendship();
@@ -38,6 +39,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
     try {
       await sendFriendRequest(userId);
       toast.success("Friend request sent!");
+      onFriendshipChange?.();
     } catch (err) {
       // Revert on failure
       updateFriendshipStatus(userId, FriendshipStatus.NOT_FRIENDS);
@@ -57,6 +59,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
     try {
       await cancelFriendRequest(userId);
       toast.success("Friend request canceled");
+      onFriendshipChange?.();
     } catch (err) {
       // Revert on failure
       updateFriendshipStatus(userId, FriendshipStatus.OUTGOING_REQUEST);
@@ -77,6 +80,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
     try {
       await removeFriend(userId);
       toast.success("Friend removed");
+      onFriendshipChange?.();
     } catch (err) {
       // Revert on failure
       updateFriendshipStatus(userId, FriendshipStatus.FRIENDS);
@@ -114,7 +118,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
             className="flex items-center"
           >
             <UserMinus />
-            {isLoading ? "Removing..." : "Remove Friend"}
+            Remove Friend
           </Button>
         </PopoverContent>
       </Popover>
@@ -125,7 +129,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
     return (
       <Button variant="outline" size="sm" onClick={handleCancelRequest} disabled={isLoading}>
         <UserX />
-        {isLoading ? "Cancelling..." : "Cancel Request"}
+        Cancel Request
       </Button>
     );
   }
@@ -149,7 +153,7 @@ export function FriendRequestButton({ userId, friendshipStatus }: FriendRequestB
   return (
     <Button variant="default" size="sm" onClick={handleAddFriend} disabled={isLoading}>
       <UserPlus />
-      {isLoading ? "Sending..." : "Add Friend"}
+      Add Friend
     </Button>
   );
 }
