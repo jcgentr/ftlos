@@ -2,9 +2,10 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth";
 import { PrismaClient, FriendshipStatus } from "@prisma/client";
 import { Resend } from "resend";
+import { EMAIL_REDIRECT_URL, RESEND_API_KEY } from "../config";
 
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(RESEND_API_KEY);
 
 export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -91,7 +92,7 @@ export const sendFriendRequest = async (req: AuthenticatedRequest, res: Response
                 <p><strong>${requesterName}</strong> has sent you a friend request on FTLOS.</p>
                 <p>Log in to your account to accept or decline this request.</p>
                 <div style="margin: 30px 0;">
-                  <a href="${process.env.FRONTEND_URL}/profile#friend-requests" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Request</a>
+                  <a href="${EMAIL_REDIRECT_URL}" style="background-color: #4c6fae; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Request</a>
                 </div>
                 <p>Thanks,<br>The FTLOS Team</p>
               </div>

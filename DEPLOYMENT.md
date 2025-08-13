@@ -23,7 +23,7 @@ pnpm build
 scp -r dist/* root@74.207.237.116:/var/www/react-frontend/
 ```
 
-4. Clean up old assets on server (optional):
+4. Clean up old assets on server:
 
 ```bash
 ssh -i id_ed25519 root@74.207.237.116 "cd /var/www/react-frontend/assets/ && rm -f *.old.css *.old.js"
@@ -54,34 +54,42 @@ ssh -i id_ed25519 root@74.207.237.116
 cd /var/www/backend
 ```
 
-3. Install dependencies:
+3. Update environment variables if necessary:
+
+```bash
+vim .env
+```
+
+Make sure to update any new or changed environment variables, such as EMAIL_REDIRECT_URL, API keys, etc.
+
+4. Install dependencies:
 
 ```bash
 pnpm install
 ```
 
-4. Generate Prisma client:
+5. Generate Prisma client:
 
 ```bash
 npx prisma generate
 ```
 
-5. Build the backend:
+6. Build the backend:
 
 ```bash
 pnpm build
 ```
 
-6. Apply database migrations:
+7. Apply database migrations:
 
 ```bash
 npx prisma migrate deploy
 ```
 
-7. Restart the backend service:
+8. Restart the backend service:
 
 ```bash
-pm2 restart ftlos-backend || pm2 start dist/app.js --name "ftlos-backend"
+pm2 restart ftlos-backend || pm2 start dist/server.js --name "ftlos-backend"
 pm2 save
 ```
 
