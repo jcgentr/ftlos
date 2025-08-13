@@ -118,10 +118,12 @@ export const getPublicUser = async (req: AuthenticatedRequest, res: Response) =>
     }
 
     const friendshipStatusMap = await getFriendshipStatusForUsers(currentUser.id, [user.id]);
+    const friendshipStatus = friendshipStatusMap.get(user.id) || FriendshipStatusResponse.NOT_FRIENDS;
 
     const userWithStatus = {
       ...user,
-      friendshipStatus: friendshipStatusMap.get(user.id) || FriendshipStatusResponse.NOT_FRIENDS,
+      birthDate: friendshipStatus === FriendshipStatusResponse.FRIENDS ? user.birthDate : null,
+      friendshipStatus,
     };
 
     res.status(200).json(userWithStatus);

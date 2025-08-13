@@ -2,7 +2,7 @@ import { formatDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { RatingTableStatic } from "./RatingTable";
 import { useParams } from "react-router";
-import { UserProfile, UserRating, UserTagline } from "@/lib/types";
+import { FriendshipStatus, UserProfile, UserRating, UserTagline } from "@/lib/types";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { User } from "lucide-react";
@@ -133,9 +133,11 @@ export function ProfileOther() {
           <p>
             <span className="font-bold">Name:</span> {!profile.firstName && !profile.lastName ? "Not set" : fullName}
           </p>
-          <p>
-            <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
-          </p>
+          {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
+            <p>
+              <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
+            </p>
+          )}
         </div>
         {profile.friendshipStatus && (
           <div className="mt-4 flex justify-end">
@@ -154,7 +156,9 @@ export function ProfileOther() {
         <RatingTableStatic ratings={userRatings} />
       </div>
 
-      <FriendsListOther userId={profile.id} userName={fullName} />
+      {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
+        <FriendsListOther userId={profile.id} userName={fullName} />
+      )}
     </div>
   );
 }
