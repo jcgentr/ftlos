@@ -1,4 +1,4 @@
-# FTLOS - Fan Team League Operating System
+# FTLOS - For the Love of Sports
 
 FTLOS is a full-stack web application for sports fans to connect, rate teams and athletes, create and participate in sweepstakes, and build a community around their favorite sports.
 
@@ -13,7 +13,7 @@ FTLOS is a full-stack web application for sports fans to connect, rate teams and
 - **React Router** for client-side routing
 - **Tailwind CSS** for styling
 - **shadcn/ui** for accessible UI components
-- **Supabase** for authentication and storage
+- **Supabase** for authentication and image storage
 - **Context API** for state management
 
 ### Backend
@@ -124,9 +124,9 @@ pnpm run dev
 
 - `/frontend` - React frontend application
 - `/backend` - Express backend API server
+- `/backend/prisma` - Database schema and migrations
 - `/shared` - Shared TypeScript types and utilities
 - `/data` - CSV data files for database seeding
-- `/prisma` - Database schema and migrations
 
 ## Available Scripts
 
