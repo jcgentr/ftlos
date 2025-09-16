@@ -211,8 +211,8 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
   const submitDisabled = selectsLength < 6 || ratingsLength < 6;
 
   return (
-    <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Build your profile</h2>
+    <div className="mt-4 pt-4 border-t-2 border-gray-300">
+      <h2 className="text-2xl font-semibold mb-2">My Ratings</h2>
       {editingRatings ? (
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground mb-4">

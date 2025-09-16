@@ -70,7 +70,7 @@ export function FriendsList() {
   });
 
   return (
-    <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
+    <div className="mt-4 pt-4 border-t-2 border-gray-300">
       {/* Pending Requests Section */}
       {pendingRequests.length > 0 && (
         <div className="mb-8">

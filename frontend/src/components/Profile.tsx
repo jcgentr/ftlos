@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { formatDate } from "@/lib/utils";
 import { User } from "lucide-react";
 import { Tagline } from "./Tagline";
 import { ProfileRatings } from "./ProfileRatings";
@@ -42,64 +41,53 @@ export function Profile() {
   return (
     <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
-        <h1 className="text-4xl font-bold mb-4">
+        <div className="w-full h-auto m-auto relative">
+          <div className="w-full mx-auto h-80 relative bg-gray-200 transform rotate-2 shadow-xl/30">
+            {profile.profileImageUrl ? (
+              <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <User className="text-gray-500" size={80} strokeWidth={1.5} />
+              </div>
+            )}
+          </div>
+        </div>
+        <h1 className="text-4xl font-bold my-4">
           {!profile.firstName && !profile.lastName ? "Profile" : `${profile.firstName} ${profile.lastName}`.trim()}
         </h1>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap gap-2">
           <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
             {profile.location || "Location not set"}
           </div>
-          <div
-            className={`px-3 py-1 rounded-lg text-sm border ${
-              profile.isConnecting
-                ? "bg-green-100 text-green-700 border-green-700"
-                : "bg-red-100 text-red-700 border-red-700"
-            }`}
-          >
-            {profile.isConnecting ? "Connecting" : "Not Connecting"}
+          <div className="flex gap-2 items-center flex-wrap">
+            <div
+              className={`px-3 py-1 rounded-lg text-sm border ${
+                profile.isConnecting
+                  ? "bg-green-100 text-green-700 border-green-700"
+                  : "bg-red-100 text-red-700 border-red-700"
+              }`}
+            >
+              {profile.isConnecting ? "Connecting" : "Not Connecting"}
+            </div>
+            <Button
+              onClick={handleToggleConnecting}
+              disabled={updating}
+              size="sm"
+              className={`${profile.isConnecting ? "bg-red-500 hover:bg-red-600" : "bg-success hover:bg-success-lighter"} transition-all`}
+            >
+              {updating ? "Updating..." : profile.isConnecting ? "Stop Connecting" : "Start Connecting"}
+            </Button>
+            <Link to="/profile/edit">
+              <Button size="sm">Edit Profile</Button>
+            </Link>
           </div>
         </div>
-        <div className="w-52 h-52 m-auto mt-4 relative bg-gray-200 overflow-hidden rounded-full">
-          {profile.profileImageUrl ? (
-            <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <User className="text-gray-500" size={80} strokeWidth={1.5} />
-            </div>
-          )}
-        </div>
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
-          <p>
-            <span className="font-bold">Name:</span>{" "}
-            {!profile.firstName && !profile.lastName ? "Not set" : `${profile.firstName} ${profile.lastName}`.trim()}
-          </p>
-          <p>
-            <span className="font-bold">Email:</span> {profile.email}
-          </p>
-          <p>
-            <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
-          </p>
-        </div>
-        <div className="flex justify-end items-center mt-8 gap-4 flex-wrap">
-          <Button
-            onClick={handleToggleConnecting}
-            disabled={updating}
-            className={`${profile.isConnecting ? "bg-red-500 hover:bg-red-600" : "bg-success hover:bg-success-lighter"} transition-all`}
-          >
-            {updating ? "Updating..." : profile.isConnecting ? "Stop Connecting" : "Start Connecting"}
-          </Button>
-          <Link to="/profile/edit">
-            <Button>Edit Profile</Button>
-          </Link>
-        </div>
+        <Tagline sportsData={sportsData} isLoading={sportsLoading} />
+
+        <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
+
+        <FriendsList />
       </div>
-
-      <Tagline sportsData={sportsData} isLoading={sportsLoading} />
-
-      <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
-
-      <FriendsList />
     </div>
   );
 }

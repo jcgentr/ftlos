@@ -1,4 +1,3 @@
-import { formatDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { RatingTableStatic } from "./RatingTable";
 import { useParams } from "react-router";
@@ -110,65 +109,55 @@ export function ProfileOther() {
   return (
     <div className="p-4 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="bg-white p-8 border border-gray-300 rounded-lg">
-        <h1 className="text-4xl font-bold mb-4">{!profile.firstName && !profile.lastName ? "Profile" : fullName}</h1>
-        <div className="flex justify-between items-center">
+        <div className="w-full h-auto m-auto relative">
+          <div className="w-full mx-auto h-80 relative bg-gray-200 transform rotate-2 shadow-xl/30">
+            {profile.profileImageUrl ? (
+              <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <User className="text-gray-500" size={80} strokeWidth={1.5} />
+              </div>
+            )}
+          </div>
+        </div>
+        <h1 className="text-4xl font-bold my-4">{!profile.firstName && !profile.lastName ? "Profile" : fullName}</h1>
+        <div className="flex justify-between items-center flex-wrap gap-2">
           <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
             {profile.location || "Location not set"}
           </div>
-          <div
-            className={`px-3 py-1 rounded-lg text-sm border ${
-              profile.isConnecting
-                ? "bg-green-100 text-green-700 border-green-700"
-                : "bg-red-100 text-red-700 border-red-700"
-            }`}
-          >
-            {profile.isConnecting ? "Connecting" : "Not Connecting"}
-          </div>
-        </div>
-        <div className="w-52 h-52 m-auto mt-4 relative bg-gray-200 overflow-hidden rounded-full">
-          {profile.profileImageUrl ? (
-            <img src={profile.profileImageUrl} alt="profile image" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <User className="text-gray-500" size={80} strokeWidth={1.5} />
+          <div className="flex gap-2 items-center flex-wrap">
+            <div
+              className={`px-3 py-1 rounded-lg text-sm border ${
+                profile.isConnecting
+                  ? "bg-green-100 text-green-700 border-green-700"
+                  : "bg-red-100 text-red-700 border-red-700"
+              }`}
+            >
+              {profile.isConnecting ? "Connecting" : "Not Connecting"}
             </div>
-          )}
-        </div>
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold mt-8">Personal Information</h2>
-          <p>
-            <span className="font-bold">Name:</span> {!profile.firstName && !profile.lastName ? "Not set" : fullName}
-          </p>
-          {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
-            <p>
-              <span className="font-bold">Date of Birth:</span> {formatDate(profile.birthDate)}
-            </p>
-          )}
-        </div>
-        {profile.friendshipStatus && (
-          <div className="mt-4 flex justify-end">
-            <FriendRequestButton
-              userId={profile.id}
-              friendshipStatus={profile.friendshipStatus}
-              onFriendshipChange={handleFriendshipChange}
-            />
+            {profile.friendshipStatus && (
+              <FriendRequestButton
+                userId={profile.id}
+                friendshipStatus={profile.friendshipStatus}
+                onFriendshipChange={handleFriendshipChange}
+              />
+            )}
           </div>
+        </div>
+
+        <div className="mt-4 py-2 border-t-2 border-gray-300">
+          <TaglineStatic taglines={userTaglines} />
+        </div>
+
+        <div className="mb-2 pt-4 border-t-2 border-gray-300">
+          <h2 className="text-2xl font-semibold mb-2">Ratings</h2>
+          <RatingTableStatic ratings={userRatings} />
+        </div>
+
+        {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
+          <FriendsListOther userId={profile.id} userName={fullName} />
         )}
       </div>
-
-      <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
-        <h2 className="text-2xl font-semibold mb-4">Tagline</h2>
-        <TaglineStatic taglines={userTaglines} />
-      </div>
-
-      <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
-        <h2 className="text-2xl font-semibold mb-4">Favorite Teams & Players</h2>
-        <RatingTableStatic ratings={userRatings} />
-      </div>
-
-      {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
-        <FriendsListOther userId={profile.id} userName={fullName} />
-      )}
     </div>
   );
 }

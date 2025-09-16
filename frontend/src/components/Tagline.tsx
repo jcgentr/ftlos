@@ -212,8 +212,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
   const submitDisabled = selectsLength < 4 || tagsLength < 4;
 
   return (
-    <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Tagline</h2>
+    <div className="mt-4 pt-2 border-t-2 border-gray-300">
       {editingTagline ? (
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground mb-4">
@@ -341,33 +340,22 @@ interface TaglineStaticProps {
 
 export function TaglineStatic({ taglines }: TaglineStaticProps) {
   return (
-    <div className="text-center space-y-2 my-10">
-      <p>
-        Am I the only person in the world who{" "}
+    <div className="text-lg">
+      <p className="text-muted-foreground font-semibold">Am I the only person in the world who ...</p>
+      <div className="flex flex-col">
         {taglines
           .sort((a, b) => a.position - b.position)
-          .map((tagline) => {
-            return (
-              <span key={tagline.id}>
-                {tagline.sentiment === "LOVE" && (
-                  <span className="font-semibold text-green-600">loves {tagline.entityName}</span>
-                )}
-                {tagline.sentiment === "LOATHE" && (
-                  <span className="font-semibold text-red-600">loathes {tagline.entityName}</span>
-                )}
-              </span>
-            );
-          })
-          // Add commas and "and" before the last item
-          .map((el, idx, arr) => (
-            <span key={idx}>
-              {el}
-              {arr.length > 1 && idx < arr.length - 2 && ", "}
-              {arr.length > 1 && idx === arr.length - 2 && ", and "}
-            </span>
+          .map((tagline) => (
+            <div key={tagline.id}>
+              {tagline.sentiment === "LOVE" && (
+                <span className="font-semibold text-green-600">Loves {tagline.entityName}</span>
+              )}
+              {tagline.sentiment === "LOATHE" && (
+                <span className="font-semibold text-red-600">Loathes {tagline.entityName}</span>
+              )}
+            </div>
           ))}
-        {taglines.length === 0 && <span className="text-muted-foreground">...</span>}
-      </p>
+      </div>
     </div>
   );
 }

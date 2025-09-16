@@ -60,7 +60,7 @@ export function FriendsListOther({ userId, userName }: FriendsListOtherProps) {
   });
 
   return (
-    <div className="mt-8 bg-white p-8 border border-gray-300 rounded-lg">
+    <div className="pt-4 border-t-2 border-gray-300">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold" id="friends">
           Friends
