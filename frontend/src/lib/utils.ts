@@ -40,3 +40,10 @@ export function formatDate(dateString: string | null | undefined, locale = "en-U
     return "Not set";
   }
 }
+
+/**
+ * Creates a Google search link for a given name
+ */
+export function createGoogleSearchLink(name: string): string {
+  return `https://www.google.com/search?q=${encodeURIComponent(name)}`;
+}

@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { UserRating } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { EntityType, UserRating } from "@/lib/types";
+import { cn, createGoogleSearchLink } from "@/lib/utils";
+import { ExternalLink } from "lucide-react";
 
 interface RatingTableStaticProps {
   ratings: UserRating[];
@@ -22,7 +23,22 @@ export function RatingTableStatic({ ratings }: RatingTableStaticProps) {
             .sort((a, b) => b.rating - a.rating)
             .map(({ id, entityName, entityType, rating }) => (
               <TableRow key={id}>
-                <TableCell className="font-medium">{entityName}</TableCell>
+                <TableCell className="font-medium">
+                  <div className="flex items-center">
+                    {entityName}
+                    {(entityType === EntityType.TEAM || entityType === EntityType.ATHLETE) && (
+                      <a
+                        href={createGoogleSearchLink(entityName)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                        title={`Search for ${entityName} on Google`}
+                      >
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell className="font-medium">
                   {entityType.charAt(0) + entityType.slice(1).toLowerCase()}
                 </TableCell>

@@ -1,11 +1,13 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useSportsData } from "@/hooks/useSportsData";
-import { Search, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ExternalLink, Search, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { SearchableInput } from "./SearchableInput";
+import { EntityType } from "@/lib/types";
+import { createGoogleSearchLink } from "@/lib/utils";
 
 type SearchResult = {
   id: number;
@@ -158,9 +160,24 @@ export function Rankings() {
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{result.name}</h3>
+                          <h3 className="font-medium">
+                            <div className="flex items-center">
+                              {result.name}
+                              {(result.type === EntityType.TEAM || result.type === EntityType.ATHLETE) && (
+                                <a
+                                  href={createGoogleSearchLink(result.name)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                                  title={`Search for ${result.name} on Google`}
+                                >
+                                  <ExternalLink className="h-4 w-4 shrink-0" />
+                                </a>
+                              )}
+                            </div>
+                          </h3>
                           <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
-                            {result.type === "TEAM" ? "Team" : "Athlete"}
+                            {result.type === EntityType.TEAM ? "Team" : "Athlete"}
                           </span>
                         </div>
                         <p className="text-sm text-gray-500">
@@ -257,7 +274,20 @@ function TopTeamsRanking() {
             <li key={team.id} className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="font-medium">{team.name}</h3>
+                  <h3 className="font-medium">
+                    <div className="flex items-center">
+                      {team.name}
+                      <a
+                        href={createGoogleSearchLink(team.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                        title={`Search for ${team.name} on Google`}
+                      >
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    </div>
+                  </h3>
                   <p className="text-sm text-gray-500">{team.sportName}</p>
                 </div>
                 <div className="text-right">
@@ -325,7 +355,20 @@ function BottomTeamsRanking() {
             <li key={team.id} className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="font-medium">{team.name}</h3>
+                  <h3 className="font-medium">
+                    <div className="flex items-center">
+                      {team.name}
+                      <a
+                        href={createGoogleSearchLink(team.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                        title={`Search for ${team.name} on Google`}
+                      >
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    </div>
+                  </h3>
                   <p className="text-sm text-gray-500">{team.sportName}</p>
                 </div>
                 <div className="text-right">
@@ -404,7 +447,20 @@ function TopAthletesRanking() {
             <li key={athlete.id} className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="font-medium">{athlete.name}</h3>
+                  <h3 className="font-medium">
+                    <div className="flex items-center">
+                      {athlete.name}
+                      <a
+                        href={createGoogleSearchLink(athlete.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                        title={`Search for ${athlete.name} on Google`}
+                      >
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    </div>
+                  </h3>
                   <p className="text-sm text-gray-500">
                     {athlete.sportName} • {athlete.teamName}
                   </p>
@@ -474,7 +530,20 @@ function BottomAthletesRanking() {
             <li key={athlete.id} className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="font-medium">{athlete.name}</h3>
+                  <h3 className="font-medium">
+                    <div className="flex items-center">
+                      {athlete.name}
+                      <a
+                        href={createGoogleSearchLink(athlete.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center ml-1 text-blue-500 hover:text-blue-700"
+                        title={`Search for ${athlete.name} on Google`}
+                      >
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    </div>
+                  </h3>
                   <p className="text-sm text-gray-500">
                     {athlete.sportName} • {athlete.teamName}
                   </p>

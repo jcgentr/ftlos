@@ -85,20 +85,21 @@
 
 ### MISC
 
+- [ ] remove `name` field from User model
+- [ ] add Zod for type validation
+- [ ] add error handler middleware and remove try catches (backend)
+
 - [x] enforce selection from list for location autocomplete input on Profile Edit page form
   - [x] hide predictions list on esc and click away
-  - [ ] ASK ARTHUR: should location be required before saving form changes?
-- [ ] Friend Func.
+  - [x] ASK ARTHUR: should location be required before saving form changes?
+- [x] Friend Func.
   - [x] look into sending an email notification when a user receives a friend request
   - [x] add ability to remove a friend
-    - [ ] ASK ARTHUR: confirmation box before removing friend?
+    - [x] ASK ARTHUR: confirmation box before removing friend?
   - [x] disallow friend requests to users that aren't "connecting" (either by no btn or return a response/toast)
     - [x] profile will not show on find a fan / home / profile if isConnecting is false
     - [x] sendFriendRequest now checks if user isConnecting in query
-  - [ ] add view permissions for friend vs public users (show friends list and birthdate only if user is a friend of current user)
-- [ ] remove `name` field from User model
-- [ ] add Zod for type validation
-
+  - [x] add view permissions for friend vs public users (show friends list and birthdate only if user is a friend of current user)
 - [x] bug: have user card route to current user if current user
 - [x] add keydown event handler for location predictions
 - [x] customize email template in Supabase
