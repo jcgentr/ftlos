@@ -33,6 +33,7 @@ export type UserRating = {
   entityId: number;
   entityName: string;
   rating: number;
+  position?: number;
   createdAt: string;
   updatedAt: string;
 };

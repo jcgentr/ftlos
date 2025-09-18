@@ -110,10 +110,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
         };
       });
 
-      // Sort by rating (highest to lowest)
-      ratingItems.sort((a, b) => b.rating - a.rating);
-
-      // Create new arrays with the sorted values
+      // Create new arrays with the values (already in position order)
       const newSelects = Array(12).fill("");
       const newRatings = Array(12).fill(0);
 
@@ -159,7 +156,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
       if (validRatings.length < 6) return;
 
       // Map the frontend selections to the backend expected format
-      const ratingsPayload = validRatings.map((item) => {
+      const ratingsPayload = validRatings.map((item, index) => {
         // Find the selected item in sportsData
         let entityType: EntityType | undefined;
         let entityId: number | undefined;
@@ -182,6 +179,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
           entityType,
           entityId,
           rating: item.rating,
+          position: index,
         };
       });
 
@@ -206,6 +204,7 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
       toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
     }
   };
+
   const selectsLength = selects.filter(Boolean).length;
   const ratingsLength = ratings.filter(Boolean).length;
   const submitDisabled = selectsLength < 6 || ratingsLength < 6;

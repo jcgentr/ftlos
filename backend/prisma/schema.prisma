@@ -99,6 +99,7 @@ model UserRating {
   entityType EntityType
   entityId   Int
   rating     Int // -5 to +5 rating
+  position   Int? // Position for ordering the ratings (null means no specific position)
   createdAt  DateTime   @default(now()) @map("created_at")
   updatedAt  DateTime   @updatedAt @map("updated_at")
 

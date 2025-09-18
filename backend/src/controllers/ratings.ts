@@ -8,6 +8,7 @@ type RatingItem = {
   entityType: EntityType;
   entityId: number;
   rating: number;
+  position?: number;
 };
 
 export const saveUserRatings = async (req: AuthenticatedRequest, res: Response) => {
@@ -64,13 +65,14 @@ export const saveUserRatings = async (req: AuthenticatedRequest, res: Response) 
 
       // 2. Create all new ratings
       return Promise.all(
-        ratings.map((item) =>
+        ratings.map((item, index) =>
           tx.userRating.create({
             data: {
               userId: user.id,
               entityType: item.entityType,
               entityId: item.entityId,
               rating: item.rating,
+              position: item.position ?? index,
             },
           })
         )
@@ -108,7 +110,7 @@ export const getCurrentUserRatings = async (req: AuthenticatedRequest, res: Resp
 
     const ratings = await prisma.userRating.findMany({
       where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
+      orderBy: { position: "asc" },
       take: 12,
     });
 
@@ -183,8 +185,8 @@ export const getUserRatings = async (req: AuthenticatedRequest, res: Response) =
 
     const ratings = await prisma.userRating.findMany({
       where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
-      take: 12,
+      orderBy: { position: "asc" },
+      take: 6,
     });
 
     // Extract unique IDs for each entity type
