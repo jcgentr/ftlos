@@ -220,7 +220,25 @@ export function ProfileRatings({ sportsData, isLoading }: ProfileRatingsProps) {
             <span className="font-semibold text-green-600">+5</span>.
           </p>
           <div className="mx-0 md:mx-4 space-y-4">
-            {[...Array(12).keys()].map((idx) => (
+            <h3 className="text-lg font-semibold text-gray-800">Strongest Convictions (Required)</h3>
+            {[0, 1, 2, 3, 4, 5].map((idx) => (
+              <RatingRow
+                key={idx}
+                value={selects[idx]}
+                onChange={(val) => handleSelectChange(idx, val)}
+                rating={ratings[idx]}
+                onRatingChange={(rating) => handleRatingChange(idx, rating)}
+                disabledValues={getDisabledValues(idx)}
+                sportsData={combinedSportsData.length > 0 ? combinedSportsData : sportsData}
+                isLoading={isLoading}
+              />
+            ))}
+
+            <div className="border-t border-gray-200 pt-2">
+              <h3 className="text-lg font-semibold text-gray-800">Additional Ratings (Optional)</h3>
+            </div>
+
+            {[6, 7, 8, 9, 10, 11].map((idx) => (
               <RatingRow
                 key={idx}
                 value={selects[idx]}
