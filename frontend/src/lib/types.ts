@@ -1,3 +1,5 @@
+import { TAGLINE_SENTIMENTS } from "./utils";
+
 export type UserProfile = {
   id: string;
   email: string;
@@ -14,13 +16,16 @@ export type UserProfile = {
   friendshipStatus?: FriendshipStatus;
 };
 
+export type TaglineSentiment = keyof typeof TAGLINE_SENTIMENTS;
+export type SentimentType = "positive" | "negative";
+
 export type UserTagline = {
   id: string;
   userId: string;
   entityType: EntityType;
   entityId: number;
   entityName: string;
-  sentiment: "LOVE" | "LOATHE";
+  sentiment: TaglineSentiment;
   position: number;
   createdAt: string;
   updatedAt: string;

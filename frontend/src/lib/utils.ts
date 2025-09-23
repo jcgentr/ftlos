@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { SentimentType, TaglineSentiment } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,3 +48,34 @@ export function formatDate(dateString: string | null | undefined, locale = "en-U
 export function createGoogleSearchLink(name: string): string {
   return `https://www.google.com/search?q=${encodeURIComponent(name)}`;
 }
+
+export const TAGLINE_SENTIMENTS = {
+  // Positive sentiments
+  LOVES: { display: "Loves", type: "positive" },
+  LOOKS_LIKE: { display: "Looks Like", type: "positive" },
+  WATCHES: { display: "Watches", type: "positive" },
+  IDOLIZES: { display: "Idolizes", type: "positive" },
+  ADORES: { display: "Adores", type: "positive" },
+  SUPPORTS: { display: "Supports", type: "positive" },
+  // Negative sentiments
+  DETESTS: { display: "Detests", type: "negative" },
+  LOATHES: { display: "Loathes", type: "negative" },
+  ROOTS_AGAINST: { display: "Roots Against", type: "negative" },
+  LAUGHS_AT: { display: "Laughs At", type: "negative" },
+  PITIES: { display: "Pities", type: "negative" },
+  IS_SCARED_OF: { display: "Is Scared Of", type: "negative" },
+};
+
+export const getSentimentDisplay = (sentiment: TaglineSentiment): string => {
+  return TAGLINE_SENTIMENTS[sentiment]?.display || "Unknown";
+};
+
+export const getSentimentType = (sentiment: TaglineSentiment): SentimentType => {
+  return (TAGLINE_SENTIMENTS[sentiment]?.type as SentimentType) || "positive";
+};
+
+export const getSentimentsByType = (type: SentimentType): TaglineSentiment[] => {
+  return Object.entries(TAGLINE_SENTIMENTS)
+    .filter(([, config]) => config.type === type)
+    .map(([key]) => key as TaglineSentiment);
+};

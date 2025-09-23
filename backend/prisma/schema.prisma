@@ -111,8 +111,20 @@ model UserRating {
 }
 
 enum TagSentiment {
-  LOVE
-  LOATHE
+  // Positive Prefixes
+  LOVES
+  LOOKS_LIKE
+  WATCHES
+  IDOLIZES
+  ADORES
+  SUPPORTS
+  // Negative Prefixes
+  DETESTS
+  LOATHES
+  ROOTS_AGAINST
+  LAUGHS_AT
+  PITIES
+  IS_SCARED_OF
 }
 
 model UserTagline {

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { SingleSelectDropdown } from "./SingleSelectDropdown";
 import { Button } from "./ui/button";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { EntityType, SportCategory, UserTagline } from "@/lib/types";
+import { EntityType, SportCategory, TaglineSentiment, UserTagline } from "@/lib/types";
+import { SentimentDropdown } from "./SentimentDropdown";
+import { getSentimentDisplay, getSentimentType } from "@/lib/utils";
 
 type TaglineProps = {
   sportsData: SportCategory[];
@@ -16,7 +16,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
   const { session } = useAuth();
   const [editingTagline, setEditingTagline] = useState(false);
   const [selects, setSelects] = useState(["", "", "", ""]);
-  const [tags, setTags] = useState<TagType[]>([null, null, null, null]);
+  const [sentiments, setSentiments] = useState<(TaglineSentiment | null)[]>([null, null, null, null]);
   const [userTaglines, setUserTaglines] = useState<UserTagline[]>([]);
   const [combinedSportsData, setCombinedSportsData] = useState<SportCategory[]>([]);
 
@@ -112,18 +112,17 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
 
       // Create new arrays with the sorted values
       const newSelects = Array(4).fill("");
-      const newTags = Array(4).fill(null);
+      const newSentiments = Array(4).fill(null);
 
       taglineItems.forEach((item, index) => {
         if (index < 4) {
           newSelects[index] = item.value;
-          // Convert backend LOVE/LOATHE to frontend love/loathe
-          newTags[index] = item.sentiment === "LOVE" ? "love" : "loathe";
+          newSentiments[index] = item.sentiment;
         }
       });
 
       setSelects(newSelects);
-      setTags(newTags as TagType[]);
+      setSentiments(newSentiments);
     }
   }, [sportsData, userTaglines]);
 
@@ -135,10 +134,10 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
     });
   };
 
-  const handleTagChange = (index: number, tag: TagType) => {
-    setTags((prev) => {
+  const handleSentimentChange = (index: number, sentiment: TaglineSentiment | null) => {
+    setSentiments((prev) => {
       const next = [...prev];
-      next[index] = tag;
+      next[index] = sentiment;
       return next;
     });
   };
@@ -151,7 +150,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
     try {
       // Filter out empty selections and tags
       const validTaglines = selects
-        .map((value, idx) => ({ value, sentiment: tags[idx], position: idx }))
+        .map((value, idx) => ({ value, sentiment: sentiments[idx], position: idx }))
         .filter((item) => item.value && item.sentiment);
 
       if (validTaglines.length < 4) return;
@@ -179,8 +178,7 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
         return {
           entityType,
           entityId,
-          // Convert frontend love/loathe to backend LOVE/LOATHE
-          sentiment: item.sentiment === "love" ? "LOVE" : "LOATHE",
+          sentiment: item.sentiment,
           position: item.position,
         };
       });
@@ -208,24 +206,17 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
   };
 
   const selectsLength = selects.filter(Boolean).length;
-  const tagsLength = tags.filter(Boolean).length;
-  const submitDisabled = selectsLength < 4 || tagsLength < 4;
+  const sentimentsLength = sentiments.filter(Boolean).length;
+  const submitDisabled = selectsLength < 4 || sentimentsLength < 4;
 
   return (
     <div className="mt-4 pt-2 border-t-2 border-gray-300">
       {editingTagline ? (
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground mb-4">
-            You must fill out all four rows, selecting an athlete, team, or sport and choosing either{" "}
-            <span className="font-semibold text-green-600">love</span>{" "}
-            <span role="img" aria-label="thumbs up">
-              👍
-            </span>{" "}
-            or <span className="font-semibold text-red-600">loathe</span>{" "}
-            <span role="img" aria-label="thumbs down">
-              👎
-            </span>{" "}
-            for each.
+            You must fill out all four rows, selecting an athlete, team, or sport and choosing either a{" "}
+            <span className="font-semibold text-green-600">positive</span> or{" "}
+            <span className="font-semibold text-red-600">negative</span> sentiment for each row.
           </p>
           <div className="sm:mx-4 space-y-4">
             {[0, 1, 2, 3].map((idx) => (
@@ -233,8 +224,8 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
                 key={idx}
                 value={selects[idx]}
                 onChange={(val) => handleSelectChange(idx, val)}
-                tag={tags[idx]}
-                onTagChange={(tag) => handleTagChange(idx, tag)}
+                sentiment={sentiments[idx]}
+                onSentimentChange={(sentiment) => handleSentimentChange(idx, sentiment)}
                 disabledValues={getDisabledValues(idx)}
                 sportsData={combinedSportsData.length > 0 ? combinedSportsData : sportsData}
                 isLoading={isLoading}
@@ -262,67 +253,28 @@ export function Tagline({ sportsData, isLoading }: TaglineProps) {
   );
 }
 
-type TagType = "love" | "loathe" | null;
-
 interface TaglineRowProps {
   value: string;
   onChange: (value: string) => void;
-  tag: TagType;
-  onTagChange: (tag: TagType) => void;
+  sentiment: TaglineSentiment | null;
+  onSentimentChange: (sentiment: TaglineSentiment | null) => void;
   disabledValues: string[];
   sportsData: SportCategory[];
   isLoading: boolean;
 }
 
-function TaglineRow({ value, onChange, tag, onTagChange, disabledValues, sportsData, isLoading }: TaglineRowProps) {
+function TaglineRow({
+  value,
+  onChange,
+  sentiment,
+  onSentimentChange,
+  disabledValues,
+  sportsData,
+  isLoading,
+}: TaglineRowProps) {
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      {/* Thumbs Up */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={() => onTagChange(tag === "love" ? null : "love")}
-              variant={tag === "love" ? "default" : "outline"}
-              size="icon"
-              className={`${
-                tag === "love"
-                  ? "bg-green-500 text-white border-green-600 hover:bg-green-600"
-                  : "bg-green-100 hover:bg-green-200 border-green-300 text-green-600"
-              }`}
-              aria-label="Thumbs up"
-            >
-              <ThumbsUp className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Love!</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      {/* Thumbs Down */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={() => onTagChange(tag === "loathe" ? null : "loathe")}
-              variant={tag === "loathe" ? "default" : "outline"}
-              size="icon"
-              className={`${
-                tag === "loathe"
-                  ? "bg-red-500 text-white border-red-600 hover:bg-red-600"
-                  : "bg-red-100 hover:bg-red-200 border-red-300 text-red-600"
-              }`}
-              aria-label="Thumbs down"
-            >
-              <ThumbsDown className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Loathe!</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <SentimentDropdown sentiment={sentiment} onChange={onSentimentChange} />
       <SingleSelectDropdown
         selectedValue={value}
         onChange={onChange}
@@ -345,16 +297,20 @@ export function TaglineStatic({ taglines }: TaglineStaticProps) {
       <div className="flex flex-col">
         {taglines
           .sort((a, b) => a.position - b.position)
-          .map((tagline) => (
-            <div key={tagline.id}>
-              {tagline.sentiment === "LOVE" && (
-                <span className="font-semibold text-green-600">Loves {tagline.entityName}</span>
-              )}
-              {tagline.sentiment === "LOATHE" && (
-                <span className="font-semibold text-red-600">Loathes {tagline.entityName}</span>
-              )}
-            </div>
-          ))}
+          .map((tagline) => {
+            const sentimentType = getSentimentType(tagline.sentiment);
+            const displayText = getSentimentDisplay(tagline.sentiment);
+
+            const textColorClass = sentimentType === "positive" ? "text-green-600" : "text-red-600";
+
+            return (
+              <div key={tagline.id}>
+                <span className={`font-semibold ${textColorClass}`}>
+                  {displayText} {tagline.entityName}
+                </span>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
