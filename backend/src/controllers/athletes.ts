@@ -1,30 +1,43 @@
 import { Request, Response } from "express";
-import { Athlete, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const getAthletes = async (req: Request, res: Response) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+    const { sports } = req.query;
 
-    let athletes;
+    let whereClause = {};
 
-    if (limit) {
-      // If limit is specified, get random athletes with limit
-      athletes = await prisma.$queryRaw<Athlete[]>`
-        SELECT * FROM athletes
-        ORDER BY RANDOM()
-        LIMIT ${limit}
-      `;
-    } else {
-      // If no limit is specified, get all athletes
-      athletes = await prisma.athlete.findMany();
+    // If sports are provided (comma-separated sport slugs like "tennis,golf")
+    if (sports) {
+      const sportsArray = (sports as string).split(",");
+      whereClause = {
+        sport: {
+          slug: {
+            in: sportsArray,
+          },
+        },
+      };
     }
 
-    // Sort alphabetically
-    const sortedAthletes = [...athletes].sort((a, b) => a.name.localeCompare(b.name));
+    const athletes = await prisma.athlete.findMany({
+      where: whereClause,
+      include: {
+        sport: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
 
-    res.status(200).json(sortedAthletes);
+    res.status(200).json(athletes);
   } catch (error) {
     console.error("Error fetching athletes:", error);
     res.status(500).json({ error: "Failed to fetch athletes" });

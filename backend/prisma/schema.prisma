@@ -82,6 +82,11 @@ model Athlete {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  // New relations for player vs player games
+  playerOneGames Game[]     @relation("GamePlayerOne")
+  playerTwoGames Game[]     @relation("GamePlayerTwo")
+  athletePicks   GamePick[] @relation("AthleteGamePick")
+
   @@index([sportId])
   @@index([teamId])
   @@map("athletes")
@@ -174,8 +179,10 @@ model Game {
   id           String   @id @default(uuid())
   sweepstakeId String   @map("sweepstake_id")
   sportId      Int      @map("sport_id")
-  teamOneId    Int      @map("team_one_id")
-  teamTwoId    Int      @map("team_two_id")
+  teamOneId    Int?     @map("team_one_id")
+  teamTwoId    Int?     @map("team_two_id")
+  playerOneId  Int?     @map("player_one_id")
+  playerTwoId  Int?     @map("player_two_id")
   startTime    DateTime @map("start_time")
   isFinal      Boolean  @default(false) @map("is_final")
   createdAt    DateTime @default(now()) @map("created_at")
@@ -183,8 +190,10 @@ model Game {
 
   sweepstake Sweepstake @relation(fields: [sweepstakeId], references: [id])
   sport      Sport      @relation(fields: [sportId], references: [id])
-  teamOne    Team       @relation("GameTeamOne", fields: [teamOneId], references: [id])
-  teamTwo    Team       @relation("GameTeamTwo", fields: [teamTwoId], references: [id])
+  teamOne    Team?      @relation("GameTeamOne", fields: [teamOneId], references: [id])
+  teamTwo    Team?      @relation("GameTeamTwo", fields: [teamTwoId], references: [id])
+  playerOne  Athlete?   @relation("GamePlayerOne", fields: [playerOneId], references: [id])
+  playerTwo  Athlete?   @relation("GamePlayerTwo", fields: [playerTwoId], references: [id])
 
   picks GamePick[]
 
@@ -192,6 +201,8 @@ model Game {
   @@index([sportId])
   @@index([teamOneId])
   @@index([teamTwoId])
+  @@index([playerOneId])
+  @@index([playerTwoId])
   @@map("games")
 }
 
@@ -217,18 +228,21 @@ model GamePick {
   id                String   @id @default(uuid())
   sweepstakeEntryId String   @map("sweepstake_entry_id")
   gameId            String   @map("game_id")
-  selectedTeamId    Int      @map("selected_team_id")
+  selectedTeamId    Int?     @map("selected_team_id")
+  selectedAthleteId Int?     @map("selected_athlete_id")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
   sweepstakeEntry SweepstakeEntry @relation(fields: [sweepstakeEntryId], references: [id])
   game            Game            @relation(fields: [gameId], references: [id])
-  selectedTeam    Team            @relation(fields: [selectedTeamId], references: [id])
+  selectedTeam    Team?           @relation(fields: [selectedTeamId], references: [id])
+  selectedAthlete Athlete?        @relation("AthleteGamePick", fields: [selectedAthleteId], references: [id])
 
   @@unique([sweepstakeEntryId, gameId])
   @@index([sweepstakeEntryId])
   @@index([gameId])
   @@index([selectedTeamId])
+  @@index([selectedAthleteId])
   @@map("game_picks")
 }
 

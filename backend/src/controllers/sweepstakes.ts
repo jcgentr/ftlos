@@ -4,6 +4,9 @@ import { AuthenticatedRequest } from "../middleware/auth";
 
 const prisma = new PrismaClient();
 
+// Array of sport slugs that use player vs player format
+const playerBasedSports = ["tennis", "golf"];
+
 export const createSweepstake = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { name, startDate, endDate, prizePool, games } = req.body;
@@ -38,8 +41,28 @@ export const createSweepstake = async (req: AuthenticatedRequest, res: Response)
 
     // Validate games data
     for (const game of games) {
-      if (!game.sportId || !game.teamOneId || !game.teamTwoId || !game.startTime) {
-        res.status(400).json({ error: "Each game must have a sport, two teams, and a start time" });
+      if (!game.sportId || !game.startTime) {
+        res.status(400).json({ error: "Each game must have a sport and a start time" });
+        return;
+      }
+
+      // Convert dates for comparison
+      const gameTime = new Date(game.startTime);
+      const sweepstakeStart = new Date(startDate);
+      const sweepstakeEnd = new Date(endDate);
+
+      // Validate game time is within sweepstake dates
+      if (gameTime < sweepstakeStart) {
+        res.status(400).json({
+          error: `Game cannot start before the sweepstake's start date (${sweepstakeStart.toISOString()})`,
+        });
+        return;
+      }
+
+      if (gameTime > sweepstakeEnd) {
+        res.status(400).json({
+          error: `Game cannot start after the sweepstake's end date (${sweepstakeEnd.toISOString()})`,
+        });
         return;
       }
     }
@@ -66,16 +89,46 @@ export const createSweepstake = async (req: AuthenticatedRequest, res: Response)
 
       // Create all the games
       for (const game of games) {
-        await tx.game.create({
-          data: {
-            sweepstakeId: sweepstake.id,
-            sportId: parseInt(game.sportId.toString()),
-            teamOneId: parseInt(game.teamOneId.toString()),
-            teamTwoId: parseInt(game.teamTwoId.toString()),
-            startTime: new Date(game.startTime),
-            isFinal: Boolean(game.isFinal),
-          },
-        });
+        if (!game.sportSlug) {
+          throw new Error("Each game must have a sport");
+        }
+
+        const isPlayerBasedSport = playerBasedSports.includes(game.sportSlug);
+
+        // Validate fields based on sport type
+        if (isPlayerBasedSport) {
+          // For player-based sports like Tennis and Golf
+          if (!game.playerOneId || !game.playerTwoId) {
+            throw new Error(`Player-based sport (${game.sportSlug}) requires playerOneId and playerTwoId`);
+          }
+
+          await tx.game.create({
+            data: {
+              sweepstakeId: sweepstake.id,
+              sportId: parseInt(game.sportId.toString()),
+              playerOneId: parseInt(game.playerOneId.toString()),
+              playerTwoId: parseInt(game.playerTwoId.toString()),
+              startTime: new Date(game.startTime),
+              isFinal: Boolean(game.isFinal),
+            },
+          });
+        } else {
+          // For team-based sports
+          if (!game.teamOneId || !game.teamTwoId) {
+            throw new Error(`Team-based sport (${game.sportSlug}) requires teamOneId and teamTwoId`);
+          }
+
+          await tx.game.create({
+            data: {
+              sweepstakeId: sweepstake.id,
+              sportId: parseInt(game.sportId.toString()),
+              teamOneId: parseInt(game.teamOneId.toString()),
+              teamTwoId: parseInt(game.teamTwoId.toString()),
+              startTime: new Date(game.startTime),
+              isFinal: Boolean(game.isFinal),
+            },
+          });
+        }
       }
 
       return sweepstake;
@@ -88,7 +141,11 @@ export const createSweepstake = async (req: AuthenticatedRequest, res: Response)
     });
   } catch (error) {
     console.error("Error creating sweepstake:", error);
-    res.status(500).json({ error: "Failed to create sweepstake" });
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Failed to create sweepstake" });
+    }
   }
 };
 
@@ -172,8 +229,31 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
             sport: true,
             teamOne: true,
             teamTwo: true,
+            playerOne: true,
+            playerTwo: true,
+            picks: {
+              where: {
+                sweepstakeEntry: {
+                  user: {
+                    supabaseId: req.user?.sub,
+                  },
+                },
+              },
+              select: {
+                selectedTeamId: true,
+                selectedAthleteId: true,
+              },
+            },
           },
           orderBy: [{ isFinal: "asc" }, { startTime: "asc" }],
+        },
+        entries: {
+          where: {
+            user: {
+              supabaseId: req.user?.sub,
+            },
+          },
+          select: { id: true },
         },
       },
     });
@@ -183,62 +263,59 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
       return;
     }
 
-    // Check if user is authenticated and has existing picks
-    const userId = req.user?.sub;
-    let userPicks: Record<string, number> | null = null;
-
-    if (userId) {
-      const user = await prisma.user.findUnique({
-        where: { supabaseId: userId },
-      });
-
-      if (user) {
-        // Find existing entry and picks
-        const entry = await prisma.sweepstakeEntry.findUnique({
-          where: {
-            userId_sweepstakeId: {
-              userId: user.id,
-              sweepstakeId: sweepstake.id,
-            },
-          },
-          include: {
-            picks: {
-              select: {
-                gameId: true,
-                selectedTeamId: true,
-              },
-            },
-          },
-        });
-
-        if (entry) {
-          userPicks = entry.picks.reduce(
-            (acc, pick) => {
-              acc[pick.gameId] = pick.selectedTeamId;
-              return acc;
-            },
-            {} as Record<string, number>
-          );
-        }
-      }
-    }
-
     // Format the response
-    const formattedGames = sweepstake.games.map((game) => ({
-      id: game.id,
-      sportName: game.sport.name,
-      teamOne: {
-        id: game.teamOne.id,
-        name: game.teamOne.name,
-      },
-      teamTwo: {
-        id: game.teamTwo.id,
-        name: game.teamTwo.name,
-      },
-      startTime: game.startTime,
-      isFinal: game.isFinal,
-      userSelection: userPicks ? userPicks[game.id] : null,
-    }));
+    const formattedGames = sweepstake.games.map((game) => {
+      const isPlayerBased = playerBasedSports.includes(game.sport.slug);
+      const userPick = game.picks[0];
+
+      if (isPlayerBased) {
+        // Handle player-based sports (tennis, golf)
+        return {
+          id: game.id,
+          sportName: game.sport.name,
+          sportSlug: game.sport.slug,
+          isPlayerBased: true,
+          playerOne: game.playerOne
+            ? {
+                id: game.playerOne.id,
+                name: game.playerOne.name,
+              }
+            : null,
+          playerTwo: game.playerTwo
+            ? {
+                id: game.playerTwo.id,
+                name: game.playerTwo.name,
+              }
+            : null,
+          startTime: game.startTime,
+          isFinal: game.isFinal,
+          userSelection: userPick?.selectedAthleteId || null,
+        };
+      } else {
+        // Handle team-based sports
+        return {
+          id: game.id,
+          sportName: game.sport.name,
+          sportSlug: game.sport.slug,
+          isPlayerBased: false,
+          teamOne: game.teamOne
+            ? {
+                id: game.teamOne.id,
+                name: game.teamOne.name,
+              }
+            : null,
+          teamTwo: game.teamTwo
+            ? {
+                id: game.teamTwo.id,
+                name: game.teamTwo.name,
+              }
+            : null,
+          startTime: game.startTime,
+          isFinal: game.isFinal,
+          userSelection: userPick?.selectedTeamId || null,
+        };
+      }
+    });
 
     const regularGames = formattedGames.filter((game) => !game.isFinal);
     const finalGame = formattedGames.find((game) => game.isFinal);
@@ -249,9 +326,10 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
       startDate: sweepstake.startDate,
       endDate: sweepstake.endDate,
       prizePool: sweepstake.prizePool,
+      status: sweepstake.status,
       regularGames,
       finalGame,
-      hasSubmittedPicks: userPicks !== null,
+      hasSubmittedPicks: sweepstake.entries.length > 0,
     });
   } catch (error) {
     console.error("Error fetching sweepstake:", error);
@@ -259,7 +337,7 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
   }
 };
 
-type GamePickSubmission = Pick<PrismaGamePick, "gameId" | "selectedTeamId">;
+type GamePickSubmission = Pick<PrismaGamePick, "gameId" | "selectedTeamId" | "selectedAthleteId">;
 
 export const submitSweepstakePicks = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -287,7 +365,15 @@ export const submitSweepstakePicks = async (req: AuthenticatedRequest, res: Resp
       where: { id: sweepstakeId },
       include: {
         games: {
-          select: { id: true, isFinal: true },
+          select: {
+            id: true,
+            isFinal: true,
+            sport: {
+              select: {
+                slug: true,
+              },
+            },
+          },
         },
       },
     });
@@ -320,6 +406,28 @@ export const submitSweepstakePicks = async (req: AuthenticatedRequest, res: Resp
         res.status(400).json({ error: `Invalid game ID: ${pick.gameId}` });
         return;
       }
+
+      // Get the corresponding game
+      const game = sweepstake.games.find((g) => g.id === pick.gameId);
+      if (!game) continue;
+
+      const isPlayerBasedSport = playerBasedSports.includes(game.sport.slug);
+
+      if (isPlayerBasedSport) {
+        if (!pick.selectedAthleteId) {
+          res.status(400).json({
+            error: `Player-based sport (${game.sport.slug}) requires selecting a player for game ID: ${pick.gameId}`,
+          });
+          return;
+        }
+      } else {
+        if (!pick.selectedTeamId) {
+          res.status(400).json({
+            error: `Team-based sport requires selecting a team for game ID: ${pick.gameId}`,
+          });
+          return;
+        }
+      }
     }
 
     // Create or update the entry and picks
@@ -350,11 +458,17 @@ export const submitSweepstakePicks = async (req: AuthenticatedRequest, res: Resp
 
       // Create new picks
       for (const pick of picks) {
+        const game = sweepstake.games.find((g) => g.id === pick.gameId);
+        if (!game) continue;
+
+        const isPlayerBasedSport = playerBasedSports.includes(game.sport.slug);
+
         await tx.gamePick.create({
           data: {
             sweepstakeEntryId: entry.id,
             gameId: pick.gameId,
-            selectedTeamId: pick.selectedTeamId,
+            selectedTeamId: isPlayerBasedSport ? undefined : pick.selectedTeamId,
+            selectedAthleteId: isPlayerBasedSport ? pick.selectedAthleteId : undefined,
           },
         });
       }

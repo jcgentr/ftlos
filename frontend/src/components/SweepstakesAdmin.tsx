@@ -1,6 +1,6 @@
 // components/admin/SweepstakesAdmin.tsx
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -19,6 +19,20 @@ interface Team {
   id: number;
   name: string;
   sportId: number;
+}
+
+interface Athlete {
+  id: number;
+  name: string;
+  sportId: number;
+  teamId: number;
+  sport: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface User {
@@ -40,18 +54,35 @@ interface User {
 
 interface Game {
   sportId: string;
+  sportSlug?: string;
   teamOneId: string;
   teamTwoId: string;
+  playerOneId: string;
+  playerTwoId: string;
   startTime: string;
   isFinal: boolean;
-  [key: string]: string | boolean | number; // Add index signature
+  [key: string]: string | boolean | number | undefined;
 }
+
+const DEFAULT_GAME: Game = {
+  sportId: "",
+  sportSlug: "",
+  teamOneId: "",
+  teamTwoId: "",
+  playerOneId: "",
+  playerTwoId: "",
+  startTime: "",
+  isFinal: false,
+};
+
+const playerBasedSports = ["tennis", "golf"];
 
 export function SweepstakesAdmin() {
   const navigate = useNavigate();
   const { user, session } = useAuth();
   const [sports, setSports] = useState<Sport[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -60,9 +91,7 @@ export function SweepstakesAdmin() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [prizePool, setPrizePool] = useState("");
-  const [games, setGames] = useState<Game[]>([
-    { sportId: "", teamOneId: "", teamTwoId: "", startTime: "", isFinal: false },
-  ]);
+  const [games, setGames] = useState<Game[]>([DEFAULT_GAME]);
 
   useEffect(() => {
     // Fetch sports and teams data
@@ -70,11 +99,14 @@ export function SweepstakesAdmin() {
       if (!user?.id || !session?.access_token) return;
 
       try {
-        const [sportsRes, teamsRes, userRes] = await Promise.all([
+        const [sportsRes, teamsRes, athletesRes, userRes] = await Promise.all([
           fetch(`${import.meta.env.VITE_API_URL}/api/sports`, {
             headers: { Authorization: `Bearer ${session.access_token}` },
           }),
           fetch(`${import.meta.env.VITE_API_URL}/api/teams`, {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          }),
+          fetch(`${import.meta.env.VITE_API_URL}/api/athletes?sports=tennis,golf`, {
             headers: { Authorization: `Bearer ${session.access_token}` },
           }),
           fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}`, {
@@ -84,6 +116,7 @@ export function SweepstakesAdmin() {
 
         const sportsData = (await sportsRes.json()) as Sport[];
         const teamsData = (await teamsRes.json()) as Team[];
+        const athletesData = (await athletesRes.json()) as Athlete[];
         const userData = (await userRes.json()) as User;
 
         if (!userData.isAdmin) {
@@ -93,6 +126,7 @@ export function SweepstakesAdmin() {
 
         setSports(sportsData);
         setTeams(teamsData);
+        setAthletes(athletesData);
         setIsAdmin(userData.isAdmin === true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -106,18 +140,44 @@ export function SweepstakesAdmin() {
   }, []);
 
   const addGame = () => {
-    setGames([...games, { sportId: "", teamOneId: "", teamTwoId: "", startTime: "", isFinal: false }]);
+    setGames([...games, DEFAULT_GAME]);
   };
 
-  const updateGame = (index: number, field: string, value: string | number | boolean) => {
-    const updatedGames = [...games];
-    updatedGames[index][field] = value;
-    setGames(updatedGames);
-  };
+  const updateGame = useCallback(
+    (index: number, field: string, value: string | number | boolean) => {
+      const updatedGames = [...games];
+      updatedGames[index][field] = value;
+      setGames(updatedGames);
+    },
+    [games]
+  );
 
-  const removeGame = (index: number) => {
-    setGames(games.filter((_, i) => i !== index));
-  };
+  const removeGame = useCallback(
+    (index: number) => {
+      setGames(games.filter((_, i) => i !== index));
+    },
+    [games]
+  );
+
+  const handleSportChange = useCallback(
+    (index: number, value: string) => {
+      const updatedGames = [...games];
+      const sportSlug = sports.find((s) => s.id.toString() === value)?.slug || "";
+
+      updatedGames[index] = {
+        ...updatedGames[index],
+        sportId: value,
+        sportSlug: sportSlug,
+        teamOneId: "",
+        teamTwoId: "",
+        playerOneId: "",
+        playerTwoId: "",
+      };
+
+      setGames(updatedGames);
+    },
+    [games, sports]
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -160,7 +220,7 @@ export function SweepstakesAdmin() {
       setStartDate("");
       setEndDate("");
       setPrizePool("");
-      setGames([{ sportId: "", teamOneId: "", teamTwoId: "", startTime: "", isFinal: false }]);
+      setGames([DEFAULT_GAME]);
     } catch (error) {
       console.error("Error creating sweepstake:", error);
       toast.error("Failed to create sweepstake");
@@ -182,7 +242,12 @@ export function SweepstakesAdmin() {
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-4 rounded border">
         <div>
           <label className="block text-sm font-medium mb-1">Name</label>
-          <Input value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
+          <Input
+            value={name}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            placeholder="Enter sweepstake name"
+            required
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -223,103 +288,18 @@ export function SweepstakesAdmin() {
           <h2 className="text-xl font-bold mb-4">Games</h2>
 
           {games.map((game, index) => (
-            <div key={index} className="border p-4 rounded-md mb-4">
-              <div className="flex justify-between mb-2">
-                <h3 className="font-semibold">Game {index + 1}</h3>
-                <Button type="button" variant="outline" size="sm" onClick={() => removeGame(index)}>
-                  Remove
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Sport</label>
-                  <Select
-                    value={game.sportId.toString()}
-                    onValueChange={(value) => updateGame(index, "sportId", parseInt(value))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a sport" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sports.map((sport) => (
-                        <SelectItem key={sport.id} value={sport.id.toString()}>
-                          {sport.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Game Date & Time</label>
-                  <Input
-                    type="datetime-local"
-                    value={game.startTime}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateGame(index, "startTime", e.target.value)
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Team One</label>
-                  <Select
-                    value={game.teamOneId.toString()}
-                    onValueChange={(value) => updateGame(index, "teamOneId", parseInt(value))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select team one" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {teams
-                        .filter((team) => !game.sportId || team.sportId === parseInt(game.sportId))
-                        .map((team) => (
-                          <SelectItem key={team.id} value={team.id.toString()}>
-                            {team.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Team Two</label>
-                  <Select
-                    value={game.teamTwoId.toString()}
-                    onValueChange={(value) => updateGame(index, "teamTwoId", parseInt(value))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select team two" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {teams
-                        .filter((team) => !game.sportId || team.sportId === parseInt(game.sportId))
-                        .filter((team) => !game.teamOneId || team.id !== parseInt(game.teamOneId))
-                        .map((team) => (
-                          <SelectItem key={team.id} value={team.id.toString()}>
-                            {team.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    id={`game-${index}-final`}
-                    checked={game.isFinal}
-                    onCheckedChange={(checked) => updateGame(index, "isFinal", checked)}
-                  />
-                  <Label htmlFor={`game-${index}-final`}>Final Game</Label>
-                </div>
-              </div>
-            </div>
+            <GameForm
+              key={index}
+              game={game}
+              index={index}
+              updateGame={updateGame}
+              handleSportChange={handleSportChange}
+              removeGame={removeGame}
+              sports={sports}
+              teams={teams}
+              athletes={athletes}
+              isPlayerBased={playerBasedSports.includes(game.sportSlug ?? "")}
+            />
           ))}
 
           <Button type="button" variant="outline" onClick={addGame}>
@@ -334,3 +314,158 @@ export function SweepstakesAdmin() {
     </div>
   );
 }
+
+interface GameFormProps {
+  game: Game;
+  index: number;
+  updateGame: (index: number, field: string, value: string | number | boolean) => void;
+  handleSportChange: (index: number, value: string) => void;
+  removeGame: (index: number) => void;
+  sports: Sport[];
+  teams: Team[];
+  athletes: Athlete[];
+  isPlayerBased: boolean;
+}
+
+const GameForm = React.memo(
+  ({
+    game,
+    index,
+    updateGame,
+    handleSportChange,
+    removeGame,
+    sports,
+    teams,
+    athletes,
+    isPlayerBased,
+  }: GameFormProps) => {
+    return (
+      <div className="border p-4 rounded-md mb-4">
+        <div className="flex justify-between mb-2">
+          <h3 className="font-semibold">Game {index + 1}</h3>
+          <Button type="button" variant="outline" size="sm" onClick={() => removeGame(index)}>
+            Remove
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Sport</label>
+            <Select value={game.sportId} onValueChange={(value) => handleSportChange(index, value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a sport" />
+              </SelectTrigger>
+              <SelectContent>
+                {sports.map((sport) => (
+                  <SelectItem key={sport.id} value={sport.id.toString()}>
+                    {sport.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Game Date & Time</label>
+            <Input
+              type="datetime-local"
+              value={game.startTime}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateGame(index, "startTime", e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        {isPlayerBased ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Player One</label>
+              <Select value={game.playerOneId} onValueChange={(value) => updateGame(index, "playerOneId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select player one" />
+                </SelectTrigger>
+                <SelectContent>
+                  {athletes
+                    .filter((athlete) => athlete.sportId.toString() === game.sportId)
+                    .filter((athlete) => athlete.id.toString() !== game.playerTwoId)
+                    .map((athlete) => (
+                      <SelectItem key={athlete.id} value={athlete.id.toString()}>
+                        {athlete.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Player Two</label>
+              <Select value={game.playerTwoId} onValueChange={(value) => updateGame(index, "playerTwoId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select player two" />
+                </SelectTrigger>
+                <SelectContent>
+                  {athletes
+                    .filter((athlete) => athlete.sportId.toString() === game.sportId)
+                    .filter((athlete) => athlete.id.toString() !== game.playerOneId)
+                    .map((athlete) => (
+                      <SelectItem key={athlete.id} value={athlete.id.toString()}>
+                        {athlete.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Team One</label>
+              <Select value={game.teamOneId} onValueChange={(value) => updateGame(index, "teamOneId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select team one" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams
+                    .filter((team) => team.sportId.toString() === game.sportId)
+                    .filter((team) => team.id.toString() !== game.teamTwoId)
+                    .map((team) => (
+                      <SelectItem key={team.id} value={team.id.toString()}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Team Two</label>
+              <Select value={game.teamTwoId} onValueChange={(value) => updateGame(index, "teamTwoId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select team two" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams
+                    .filter((team) => team.sportId.toString() === game.sportId)
+                    .filter((team) => team.id.toString() !== game.teamOneId)
+                    .map((team) => (
+                      <SelectItem key={team.id} value={team.id.toString()}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="flex items-center gap-3">
+            <Checkbox
+              id={`game-${index}-final`}
+              checked={game.isFinal}
+              onCheckedChange={(checked) => updateGame(index, "isFinal", checked)}
+            />
+            <Label htmlFor={`game-${index}-final`}>Final Game</Label>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);

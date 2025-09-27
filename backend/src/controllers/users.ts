@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, TagSentiment } from "@prisma/client";
 import { AuthenticatedRequest } from "../middleware/auth";
 import { FriendshipStatusResponse, getFriendshipStatusForUsers } from "../utils/friendship";
 
@@ -206,7 +206,7 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
         where: {
           entityType: "SPORT",
           entityId: Number(sportId),
-          sentiment: "LOVE",
+          sentiment: TagSentiment.LOVES,
         },
         select: {
           userId: true,
@@ -238,7 +238,7 @@ export const searchUsers = async (req: AuthenticatedRequest, res: Response) => {
           where: {
             entityType: "TEAM",
             entityId: { in: teamIds },
-            sentiment: "LOVE",
+            sentiment: TagSentiment.LOVES,
           },
           select: {
             userId: true,
@@ -371,7 +371,9 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
     // 2. If user meets criteria, find similar users based on shared interests
 
     // Collect all liked entity IDs from taglines
-    const userLikedEntityIds = currentUser.taglines.filter((t) => t.sentiment === "LOVE").map((t) => t.entityId);
+    const userLikedEntityIds = currentUser.taglines
+      .filter((t) => t.sentiment === TagSentiment.LOVES)
+      .map((t) => t.entityId);
 
     // Collect all highly rated entity IDs from ratings
     const highlyRatedEntityIds = currentUser.ratings.filter((r) => r.rating > RATING_LEVEL).map((r) => r.entityId);
@@ -395,7 +397,7 @@ export const getRecommendedUsers = async (req: AuthenticatedRequest, res: Respon
         prisma.userTagline.findMany({
           where: {
             entityId: { in: allLikedEntityIds },
-            sentiment: "LOVE",
+            sentiment: TagSentiment.LOVES,
             userId: { not: currentUser.id },
           },
           select: {
