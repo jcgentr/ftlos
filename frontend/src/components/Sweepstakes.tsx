@@ -53,14 +53,22 @@ export function Sweepstakes() {
     );
   }
 
+  const sortedActiveSweepstakes = [...activeSweepstakes].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+
+  const sortedPastSweepstakes = [...pastSweepstakes].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+
   return (
     <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto">
       <div>
         <h1 className="text-4xl font-bold mb-4">Active Sweepstakes</h1>
 
-        {activeSweepstakes.length > 0 ? (
+        {sortedActiveSweepstakes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activeSweepstakes.map((sweepstake) => (
+            {sortedActiveSweepstakes.map((sweepstake) => (
               <div key={sweepstake.id} className="border border-gray-300 bg-white rounded-lg max-w-[420px]">
                 <div className="flex justify-between items-center p-4 border-b border-gray-300">
                   <h2 className="text-xl font-semibold flex items-center gap-2">{sweepstake.name}</h2>
@@ -92,9 +100,9 @@ export function Sweepstakes() {
 
       <div className="mt-8 border border-gray-300 bg-white rounded-lg p-4 sm:p-8">
         <h2 className="text-2xl font-semibold mb-4">Past Sweepstakes</h2>
-        {pastSweepstakes.length > 0 ? (
+        {sortedPastSweepstakes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pastSweepstakes.map((sweepstake) => (
+            {sortedPastSweepstakes.map((sweepstake) => (
               <div key={sweepstake.id} className="border border-gray-300 bg-white rounded-lg max-w-[420px]">
                 <div className="flex justify-between items-center p-4 border-b border-gray-300">
                   <h2 className="text-xl font-semibold flex items-center gap-2 truncate">{sweepstake.name}</h2>
@@ -110,6 +118,9 @@ export function Sweepstakes() {
                     <span className="font-bold">Prize Pool:</span>{" "}
                     <span className="text-success">${Number(sweepstake.prizePool).toLocaleString()}</span>
                   </p>
+                  <Link to={`/sweepstakes/${sweepstake.id}/results`}>
+                    <Button className="mt-4">View Results</Button>
+                  </Link>
                 </div>
               </div>
             ))}

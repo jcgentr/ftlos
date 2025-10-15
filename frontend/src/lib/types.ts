@@ -94,3 +94,10 @@ export interface FriendRequest {
 }
 
 export type SortOption = "none" | "asc" | "desc";
+
+export enum SweepstakeStatus {
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+}
+
+export const playerBasedSports = ["tennis", "golf"];

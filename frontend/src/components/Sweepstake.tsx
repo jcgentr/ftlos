@@ -26,6 +26,9 @@ type Game = {
   playerTwo?: Athlete;
   startTime: string;
   isFinal: boolean;
+  isCompleted: boolean;
+  winnerTeamId?: number | null;
+  winnerPlayerId?: number | null;
   userSelection: number | null; // selectedAthleteId or selectedTeamId
 };
 
@@ -219,7 +222,7 @@ export function Sweepstake() {
             <p className="text-primary">Pick winners for regular games plus the mandatory final game.</p>
           </div>
         </div>
-
+        {/* Regular games */}
         {sweepstake.regularGames.length > 0 ? (
           <div className="space-y-4">
             {sweepstake.regularGames.map((game) => (
@@ -234,19 +237,23 @@ export function Sweepstake() {
                     <>
                       <Button
                         variant={selections[game.id] === game.playerOne?.id ? "default" : "outline"}
-                        className={`flex-1 text-lg ${selections[game.id] === game.playerOne?.id ? "shadow-md" : ""}`}
+                        className="flex-1 text-lg relative min-h-[54px]"
                         onClick={() => handleSelection(game.id, game.playerOne!.id)}
-                        disabled={sweepstake.hasSubmittedPicks}
+                        disabled={sweepstake.hasSubmittedPicks || game.isCompleted}
+                        size="lg"
                       >
                         {game.playerOne?.name}
+                        {game.isCompleted && game.winnerPlayerId === game.playerOne?.id && <WinnerBadge />}
                       </Button>
                       <Button
                         variant={selections[game.id] === game.playerTwo?.id ? "default" : "outline"}
-                        className={`flex-1 text-lg ${selections[game.id] === game.playerTwo?.id ? "shadow-md" : ""}`}
+                        className="flex-1 text-lg relative min-h-[54px]"
                         onClick={() => handleSelection(game.id, game.playerTwo!.id)}
-                        disabled={sweepstake.hasSubmittedPicks}
+                        disabled={sweepstake.hasSubmittedPicks || game.isCompleted}
+                        size="lg"
                       >
                         {game.playerTwo?.name}
+                        {game.isCompleted && game.winnerPlayerId === game.playerTwo?.id && <WinnerBadge />}
                       </Button>
                     </>
                   ) : (
@@ -254,23 +261,32 @@ export function Sweepstake() {
                     <>
                       <Button
                         variant={selections[game.id] === game.teamOne?.id ? "default" : "outline"}
-                        className={`flex-1 text-lg ${selections[game.id] === game.teamOne?.id ? "shadow-md" : ""}`}
+                        className="flex-1 text-lg relative min-h-[54px]"
                         onClick={() => handleSelection(game.id, game.teamOne!.id)}
-                        disabled={sweepstake.hasSubmittedPicks}
+                        disabled={sweepstake.hasSubmittedPicks || game.isCompleted}
+                        size="lg"
                       >
                         {game.teamOne?.name}
+                        {game.isCompleted && game.winnerTeamId === game.teamOne?.id && <WinnerBadge />}
                       </Button>
                       <Button
                         variant={selections[game.id] === game.teamTwo?.id ? "default" : "outline"}
-                        className={`flex-1 text-lg ${selections[game.id] === game.teamTwo?.id ? "shadow-md" : ""}`}
+                        className="flex-1 text-lg relative min-h-[54px]"
                         onClick={() => handleSelection(game.id, game.teamTwo!.id)}
-                        disabled={sweepstake.hasSubmittedPicks}
+                        disabled={sweepstake.hasSubmittedPicks || game.isCompleted}
+                        size="lg"
                       >
                         {game.teamTwo?.name}
+                        {game.isCompleted && game.winnerTeamId === game.teamTwo?.id && <WinnerBadge />}
                       </Button>
                     </>
                   )}
                 </div>
+                {game.isCompleted && (
+                  <div className="mt-4">
+                    <p>Game has been completed.</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -279,7 +295,6 @@ export function Sweepstake() {
             <p className="text-primary">No regular games available.</p>
           </div>
         )}
-
         {/* Final game */}
         {sweepstake.finalGame && (
           <div>
@@ -294,52 +309,64 @@ export function Sweepstake() {
                   // Player-based final game UI
                   <>
                     <Button
+                      size="lg"
                       variant={
                         selections[sweepstake.finalGame.id] === sweepstake.finalGame.playerOne?.id
                           ? "default"
                           : "outline"
                       }
-                      className={`flex-1 text-lg ${selections[sweepstake.finalGame.id] === sweepstake.finalGame.playerOne?.id ? "shadow-md" : ""}`}
+                      className="flex-1 text-lg relative min-h-[54px]"
                       onClick={() => handleSelection(sweepstake.finalGame!.id, sweepstake.finalGame!.playerOne!.id)}
                       disabled={sweepstake.hasSubmittedPicks}
                     >
                       {sweepstake.finalGame.playerOne?.name}
+                      {sweepstake.finalGame.isCompleted &&
+                        sweepstake.finalGame.winnerPlayerId === sweepstake.finalGame.playerOne?.id && <WinnerBadge />}
                     </Button>
                     <Button
+                      size="lg"
                       variant={
                         selections[sweepstake.finalGame.id] === sweepstake.finalGame.playerTwo?.id
                           ? "default"
                           : "outline"
                       }
-                      className={`flex-1 text-lg ${selections[sweepstake.finalGame.id] === sweepstake.finalGame.playerTwo?.id ? "shadow-md" : ""}`}
+                      className="flex-1 text-lg relative min-h-[54px]"
                       onClick={() => handleSelection(sweepstake.finalGame!.id, sweepstake.finalGame!.playerTwo!.id)}
                       disabled={sweepstake.hasSubmittedPicks}
                     >
                       {sweepstake.finalGame.playerTwo?.name}
+                      {sweepstake.finalGame.isCompleted &&
+                        sweepstake.finalGame.winnerPlayerId === sweepstake.finalGame.playerTwo?.id && <WinnerBadge />}
                     </Button>
                   </>
                 ) : (
                   // Team-based final game UI
                   <>
                     <Button
+                      size="lg"
                       variant={
                         selections[sweepstake.finalGame.id] === sweepstake.finalGame.teamOne?.id ? "default" : "outline"
                       }
-                      className={`flex-1 text-lg ${selections[sweepstake.finalGame.id] === sweepstake.finalGame.teamOne?.id ? "shadow-md" : ""}`}
+                      className="flex-1 text-lg relative min-h-[54px]"
                       onClick={() => handleSelection(sweepstake.finalGame!.id, sweepstake.finalGame!.teamOne!.id)}
                       disabled={sweepstake.hasSubmittedPicks}
                     >
                       {sweepstake.finalGame.teamOne?.name}
+                      {sweepstake.finalGame.isCompleted &&
+                        sweepstake.finalGame.winnerTeamId === sweepstake.finalGame.teamOne?.id && <WinnerBadge />}
                     </Button>
                     <Button
+                      size="lg"
                       variant={
                         selections[sweepstake.finalGame.id] === sweepstake.finalGame.teamTwo?.id ? "default" : "outline"
                       }
-                      className={`flex-1 text-lg ${selections[sweepstake.finalGame.id] === sweepstake.finalGame.teamTwo?.id ? "shadow-md" : ""}`}
+                      className="flex-1 text-lg relative min-h-[54px]"
                       onClick={() => handleSelection(sweepstake.finalGame!.id, sweepstake.finalGame!.teamTwo!.id)}
                       disabled={sweepstake.hasSubmittedPicks}
                     >
                       {sweepstake.finalGame.teamTwo?.name}
+                      {sweepstake.finalGame.isCompleted &&
+                        sweepstake.finalGame.winnerTeamId === sweepstake.finalGame.teamTwo?.id && <WinnerBadge />}
                     </Button>
                   </>
                 )}
@@ -364,5 +391,13 @@ export function Sweepstake() {
         )}
       </div>
     </div>
+  );
+}
+
+function WinnerBadge() {
+  return (
+    <span className="absolute -top-1 -right-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-600 border border-green-600">
+      WINNER
+    </span>
   );
 }

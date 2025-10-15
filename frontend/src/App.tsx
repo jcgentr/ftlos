@@ -17,6 +17,7 @@ import { ProfileOther } from "./components/ProfileOther";
 import { SweepstakesAdmin } from "./components/SweepstakesAdmin";
 import { ResetPassword } from "./components/ResetPassword";
 import { ChangePassword } from "./components/ChangePassword";
+import { SweepstakeResults } from "./components/SweepstakeResults";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route index element={<Sweepstakes />} />
               <Route path="admin" element={<SweepstakesAdmin />} />
               <Route path=":sweepstakeId" element={<Sweepstake />} />
+              <Route path=":sweepstakeId/results" element={<SweepstakeResults />} />
             </Route>
 
             <Route path="profile">

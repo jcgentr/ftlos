@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient, GamePick as PrismaGamePick } from "@prisma/client";
+import { PrismaClient, GamePick as PrismaGamePick, SweepstakeStatus } from "@prisma/client";
 import { AuthenticatedRequest } from "../middleware/auth";
 
 const prisma = new PrismaClient();
@@ -156,13 +156,13 @@ export const getAllSweepstakes = async (req: Request, res: Response) => {
     // Auto-update expired sweepstakes first
     await prisma.sweepstake.updateMany({
       where: {
-        status: "ACTIVE",
+        status: SweepstakeStatus.ACTIVE,
         endDate: {
           lt: currentDate,
         },
       },
       data: {
-        status: "COMPLETED",
+        status: SweepstakeStatus.COMPLETED,
       },
     });
 
@@ -170,7 +170,7 @@ export const getAllSweepstakes = async (req: Request, res: Response) => {
       // Get active sweepstakes
       prisma.sweepstake.findMany({
         where: {
-          status: "ACTIVE",
+          status: SweepstakeStatus.ACTIVE,
           endDate: {
             gte: currentDate,
           },
@@ -190,7 +190,7 @@ export const getAllSweepstakes = async (req: Request, res: Response) => {
       // Get past sweepstakes
       prisma.sweepstake.findMany({
         where: {
-          status: "COMPLETED",
+          status: SweepstakeStatus.COMPLETED,
         },
         select: {
           id: true,
@@ -289,6 +289,9 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
             : null,
           startTime: game.startTime,
           isFinal: game.isFinal,
+          isCompleted: game.isCompleted,
+          winnerPlayerId: game.winnerPlayerId,
+          winnerTeamId: game.winnerTeamId,
           userSelection: userPick?.selectedAthleteId || null,
         };
       } else {
@@ -312,6 +315,9 @@ export const getSweepstakeById = async (req: AuthenticatedRequest, res: Response
             : null,
           startTime: game.startTime,
           isFinal: game.isFinal,
+          isCompleted: game.isCompleted,
+          winnerTeamId: game.winnerTeamId,
+          winnerPlayerId: game.winnerPlayerId,
           userSelection: userPick?.selectedTeamId || null,
         };
       }
@@ -480,3 +486,156 @@ export const submitSweepstakePicks = async (req: AuthenticatedRequest, res: Resp
     res.status(500).json({ error: "Failed to submit picks" });
   }
 };
+
+export const updateSweepstakeResults = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { gameResults } = req.body;
+    const supabaseId = req.user?.sub;
+
+    if (!Array.isArray(gameResults) || gameResults.length === 0) {
+      res.status(400).json({ error: "gameResults must be a non-empty array" });
+      return;
+    }
+
+    if (!supabaseId) {
+      res.status(401).json({ error: "Authentication required" });
+      return;
+    }
+
+    // Find the user and check if they're an admin
+    const user = await prisma.user.findUnique({
+      where: { supabaseId },
+      select: { id: true, isAdmin: true },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    if (!user.isAdmin) {
+      res.status(403).json({ error: "Unauthorized: Admin access required" });
+      return;
+    }
+
+    // Find the sweepstake
+    const sweepstake = await prisma.sweepstake.findUnique({
+      where: { id },
+      include: {
+        games: {
+          include: {
+            teamOne: true,
+            teamTwo: true,
+            playerOne: true,
+            playerTwo: true,
+          },
+        },
+      },
+    });
+
+    if (!sweepstake) {
+      res.status(404).json({ error: "Sweepstake not found" });
+      return;
+    }
+
+    // Create a map of game IDs for validation
+    const gameMap = new Map();
+    sweepstake.games.forEach((game) => {
+      gameMap.set(game.id, game);
+    });
+
+    // Validate and prepare updates
+    for (const result of gameResults) {
+      const { gameId, winnerTeamId, winnerPlayerId } = result;
+
+      // Require either winnerTeamId or winnerPlayerId but not both
+      if ((!winnerTeamId && !winnerPlayerId) || (winnerTeamId && winnerPlayerId)) {
+        res.status(400).json({
+          error: `For game ${gameId}, either winnerTeamId or winnerPlayerId must be provided, but not both`,
+        });
+        return;
+      }
+
+      // Validate game belongs to this sweepstake
+      if (!gameMap.has(gameId)) {
+        res.status(400).json({ error: `Game ${gameId} does not belong to this sweepstake` });
+        return;
+      }
+
+      const game = gameMap.get(gameId);
+
+      // Validate the winner is part of this game
+      if (winnerTeamId) {
+        const teamId = parseInt(winnerTeamId);
+        if (game.teamOneId !== teamId && game.teamTwoId !== teamId) {
+          res.status(400).json({
+            error: `For game ${gameId}, winning team must be one of the teams in this game`,
+          });
+          return;
+        }
+      }
+
+      if (winnerPlayerId) {
+        const playerId = parseInt(winnerPlayerId);
+        if (game.playerOneId !== playerId && game.playerTwoId !== playerId) {
+          res.status(400).json({
+            error: `For game ${gameId}, winning player must be one of the players in this game`,
+          });
+          return;
+        }
+      }
+    }
+
+    // Process all updates in a transaction
+    await prisma.$transaction(async (tx) => {
+      for (const result of gameResults) {
+        const { gameId, winnerTeamId, winnerPlayerId } = result;
+
+        await tx.game.update({
+          where: { id: gameId },
+          data: {
+            winnerTeamId: winnerTeamId ? parseInt(winnerTeamId) : null,
+            winnerPlayerId: winnerPlayerId ? parseInt(winnerPlayerId) : null,
+            isCompleted: true,
+          },
+        });
+      }
+    });
+
+    const updatedSweepstakeStatus = await updateSweepstakeStatus(id);
+
+    res.status(200).json({
+      message: "Game results updated successfully",
+      sweepstakeCompleted: updatedSweepstakeStatus === SweepstakeStatus.COMPLETED,
+    });
+  } catch (error) {
+    console.error("Error updating game results:", error);
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Failed to update game results" });
+    }
+  }
+};
+
+async function updateSweepstakeStatus(sweepstakeId: string): Promise<string> {
+  const allGames = await prisma.game.findMany({
+    where: { sweepstakeId },
+    select: { id: true, isCompleted: true },
+  });
+
+  const allGamesCompleted = allGames.every((g) => g.isCompleted);
+
+  // If all games are completed, update the sweepstake status
+  if (allGamesCompleted) {
+    const updatedSweepstake = await prisma.sweepstake.update({
+      where: { id: sweepstakeId },
+      data: { status: SweepstakeStatus.COMPLETED },
+      select: { status: true },
+    });
+    return updatedSweepstake.status;
+  }
+
+  return SweepstakeStatus.ACTIVE;
+}

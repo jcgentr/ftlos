@@ -5,6 +5,7 @@ import {
   getAllSweepstakes,
   getSweepstakeById,
   submitSweepstakePicks,
+  updateSweepstakeResults,
 } from "../controllers/sweepstakes";
 
 const router = Router();
@@ -13,5 +14,6 @@ router.get("/", authMiddleware, getAllSweepstakes);
 router.get("/:id", authMiddleware, getSweepstakeById);
 router.post("/", authMiddleware, createSweepstake);
 router.post("/:id/picks", authMiddleware, submitSweepstakePicks);
+router.patch("/:id/results", authMiddleware, updateSweepstakeResults);
 
 export default router;
