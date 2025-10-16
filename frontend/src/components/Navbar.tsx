@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
-import { LogIn, LogOut, Menu, Ticket, Trophy, User, UserPlus, Users, X } from "lucide-react";
+import { LogIn, LogOut, Menu, Newspaper, Ticket, Trophy, User, UserPlus, Users, X } from "lucide-react";
 import logoImage from "/logo.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,9 +13,9 @@ export function Navbar() {
   // Handle screen resize
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 850);
       // Close menu when resizing to desktop
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 850) {
         setIsOpen(false);
       }
     };
@@ -36,6 +36,17 @@ export function Navbar() {
 
   const MainNavItems = () => (
     <>
+      <li>
+        <NavLink
+          to="/feed"
+          className={({ isActive }) => (isActive ? "text-primary" : "text-muted-foreground")}
+          onClick={() => setIsOpen(false)}
+        >
+          <Button variant="link" className="text-inherit text-base hover:text-primary">
+            <Newspaper /> <span>Feed</span>
+          </Button>
+        </NavLink>
+      </li>
       <li>
         <NavLink
           to="/fans"

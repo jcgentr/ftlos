@@ -101,3 +101,38 @@ export enum SweepstakeStatus {
 }
 
 export const playerBasedSports = ["tennis", "golf"];
+
+export interface User {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  email: string;
+  supabaseId: string;
+  location: string | null;
+  birthDate: string | null;
+  favoriteSports: string | null;
+  isConnecting: boolean;
+  createdAt: string;
+  updatedAt: string;
+  isAdmin: boolean | null;
+}
+
+export interface Post {
+  id: string;
+  content: string;
+  userId: string;
+  user: UserPartial;
+  createdAt: string;
+  updatedAt: string;
+  likeCount: number;
+  isLikedByCurrentUser: boolean;
+}
+
+export interface UserPartial {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  supabaseId: string;
+}

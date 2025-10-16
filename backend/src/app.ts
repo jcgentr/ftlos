@@ -11,6 +11,7 @@ import taglinesRoutes from "./routes/taglines";
 import rankingsRoutes from "./routes/rankings";
 import sweepstakesRoutes from "./routes/sweepstakes";
 import friendsRoutes from "./routes/friends";
+import postsRoutes from "./routes/posts";
 import { FRONTEND_URL } from "./config";
 
 const app = express();
@@ -35,5 +36,6 @@ app.use("/api/taglines", taglinesRoutes);
 app.use("/api/rankings", rankingsRoutes);
 app.use("/api/sweepstakes", sweepstakesRoutes);
 app.use("/api/friends", friendsRoutes);
+app.use("/api/posts", postsRoutes);
 
 export default app;

@@ -18,6 +18,7 @@ import { SweepstakesAdmin } from "./components/SweepstakesAdmin";
 import { ResetPassword } from "./components/ResetPassword";
 import { ChangePassword } from "./components/ChangePassword";
 import { SweepstakeResults } from "./components/SweepstakeResults";
+import { Feed } from "./components/Feed";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           {/* protected routes */}
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
+            <Route path="feed" element={<Feed />} />
             <Route path="fans" element={<Fans />} />
             <Route path="leaderboard" element={<Rankings />} />
             <Route path="change-password" element={<ChangePassword />} />
