@@ -8,6 +8,8 @@ import { User } from "lucide-react";
 import { TaglineStatic } from "./Tagline";
 import { FriendRequestButton } from "./FriendRequestButton";
 import { FriendsListOther } from "./FriendsListOther";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { ProfilePosts } from "./ProfilePosts";
 
 export function ProfileOther() {
   const { profileId } = useParams();
@@ -121,42 +123,54 @@ export function ProfileOther() {
           </div>
         </div>
         <h1 className="text-4xl font-bold my-4">{!profile.firstName && !profile.lastName ? "Profile" : fullName}</h1>
-        <div className="flex justify-between items-center flex-wrap gap-2">
-          <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
-            {profile.location || "Location not set"}
-          </div>
-          <div className="flex gap-2 items-center flex-wrap">
-            <div
-              className={`px-3 py-1 rounded-lg text-sm border ${
-                profile.isConnecting
-                  ? "bg-green-100 text-green-700 border-green-700"
-                  : "bg-red-100 text-red-700 border-red-700"
-              }`}
-            >
-              {profile.isConnecting ? "Connecting" : "Not Connecting"}
+
+        <Tabs defaultValue="about">
+          <TabsList className="w-full mb-2">
+            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+          </TabsList>
+          <TabsContent value="about">
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
+                {profile.location || "Location not set"}
+              </div>
+              <div className="flex gap-2 items-center flex-wrap">
+                <div
+                  className={`px-3 py-1 rounded-lg text-sm border ${
+                    profile.isConnecting
+                      ? "bg-green-100 text-green-700 border-green-700"
+                      : "bg-red-100 text-red-700 border-red-700"
+                  }`}
+                >
+                  {profile.isConnecting ? "Connecting" : "Not Connecting"}
+                </div>
+                {profile.friendshipStatus && (
+                  <FriendRequestButton
+                    userId={profile.id}
+                    friendshipStatus={profile.friendshipStatus}
+                    onFriendshipChange={handleFriendshipChange}
+                  />
+                )}
+              </div>
             </div>
-            {profile.friendshipStatus && (
-              <FriendRequestButton
-                userId={profile.id}
-                friendshipStatus={profile.friendshipStatus}
-                onFriendshipChange={handleFriendshipChange}
-              />
+
+            <div className="mt-4 py-2 border-t-2 border-gray-300">
+              <TaglineStatic taglines={userTaglines} />
+            </div>
+
+            <div className="mb-2 pt-4 border-t-2 border-gray-300">
+              <h2 className="text-2xl font-semibold mb-2">Ratings</h2>
+              <RatingTableStatic ratings={userRatings} />
+            </div>
+
+            {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
+              <FriendsListOther userId={profile.id} userName={fullName} />
             )}
-          </div>
-        </div>
-
-        <div className="mt-4 py-2 border-t-2 border-gray-300">
-          <TaglineStatic taglines={userTaglines} />
-        </div>
-
-        <div className="mb-2 pt-4 border-t-2 border-gray-300">
-          <h2 className="text-2xl font-semibold mb-2">Ratings</h2>
-          <RatingTableStatic ratings={userRatings} />
-        </div>
-
-        {profile.friendshipStatus === FriendshipStatus.FRIENDS && (
-          <FriendsListOther userId={profile.id} userName={fullName} />
-        )}
+          </TabsContent>
+          <TabsContent value="posts">
+            <ProfilePosts isOwnProfile={false} userId={profile.supabaseId} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

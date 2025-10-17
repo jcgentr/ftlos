@@ -8,6 +8,8 @@ import { Tagline } from "./Tagline";
 import { ProfileRatings } from "./ProfileRatings";
 import { useSportsData } from "@/hooks/useSportsData";
 import { FriendsList } from "./FriendsList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { ProfilePosts } from "./ProfilePosts";
 
 export function Profile() {
   const { profile, loading, updateProfile } = useUserProfile();
@@ -55,38 +57,49 @@ export function Profile() {
         <h1 className="text-4xl font-bold my-4">
           {!profile.firstName && !profile.lastName ? "Profile" : `${profile.firstName} ${profile.lastName}`.trim()}
         </h1>
-        <div className="flex justify-between items-center flex-wrap gap-2">
-          <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
-            {profile.location || "Location not set"}
-          </div>
-          <div className="flex gap-2 items-center flex-wrap">
-            <div
-              className={`px-3 py-1 rounded-lg text-sm border ${
-                profile.isConnecting
-                  ? "bg-green-100 text-green-700 border-green-700"
-                  : "bg-red-100 text-red-700 border-red-700"
-              }`}
-            >
-              {profile.isConnecting ? "Connecting" : "Not Connecting"}
+
+        <Tabs defaultValue="about">
+          <TabsList className="w-full mb-2">
+            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+          </TabsList>
+          <TabsContent value="about">
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <div className="bg-gray-100 text-gray-700 border border-gray-700 px-3 py-1 rounded-lg text-sm">
+                {profile.location || "Location not set"}
+              </div>
+              <div className="flex gap-2 items-center flex-wrap">
+                <div
+                  className={`px-3 py-1 rounded-lg text-sm border ${
+                    profile.isConnecting
+                      ? "bg-green-100 text-green-700 border-green-700"
+                      : "bg-red-100 text-red-700 border-red-700"
+                  }`}
+                >
+                  {profile.isConnecting ? "Connecting" : "Not Connecting"}
+                </div>
+                <Button
+                  onClick={handleToggleConnecting}
+                  disabled={updating}
+                  size="sm"
+                  className={`${profile.isConnecting ? "bg-red-500 hover:bg-red-600" : "bg-success hover:bg-success-lighter"} transition-all`}
+                >
+                  {updating ? "Updating..." : profile.isConnecting ? "Stop Connecting" : "Start Connecting"}
+                </Button>
+                <Link to="/profile/edit">
+                  <Button size="sm">Edit Profile</Button>
+                </Link>
+              </div>
             </div>
-            <Button
-              onClick={handleToggleConnecting}
-              disabled={updating}
-              size="sm"
-              className={`${profile.isConnecting ? "bg-red-500 hover:bg-red-600" : "bg-success hover:bg-success-lighter"} transition-all`}
-            >
-              {updating ? "Updating..." : profile.isConnecting ? "Stop Connecting" : "Start Connecting"}
-            </Button>
-            <Link to="/profile/edit">
-              <Button size="sm">Edit Profile</Button>
-            </Link>
-          </div>
-        </div>
-        <Tagline sportsData={sportsData} isLoading={sportsLoading} />
 
-        <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
-
-        <FriendsList />
+            <Tagline sportsData={sportsData} isLoading={sportsLoading} />
+            <ProfileRatings sportsData={sportsData} isLoading={sportsLoading} />
+            <FriendsList />
+          </TabsContent>
+          <TabsContent value="posts">
+            <ProfilePosts isOwnProfile={true} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

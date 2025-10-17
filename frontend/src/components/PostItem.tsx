@@ -21,9 +21,10 @@ interface Post {
 
 interface PostItemProps {
   post: Post;
+  isProfilePage?: boolean;
 }
 
-export const PostItem = forwardRef<HTMLDivElement, PostItemProps>(({ post }, ref) => {
+export const PostItem = forwardRef<HTMLDivElement, PostItemProps>(({ post, isProfilePage = false }, ref) => {
   const { user: currentUser, session } = useAuth();
   const [isLiking, setIsLiking] = useState(false);
   const [isLiked, setIsLiked] = useState(post.isLikedByCurrentUser);
@@ -69,20 +70,33 @@ export const PostItem = forwardRef<HTMLDivElement, PostItemProps>(({ post }, ref
   return (
     <div ref={ref} className="py-4 px-2 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
       <div className="flex gap-3">
-        <Link to={profilePath}>
-          <Avatar className="h-10 w-10 shrink-0 cursor-pointer">
+        {isProfilePage ? (
+          <Avatar className="h-10 w-10 shrink-0">
             <AvatarImage src={post.user.profileImageUrl ?? undefined} alt={post.user.firstName || "User"} />
             <AvatarFallback>{getInitials(post.user)}</AvatarFallback>
           </Avatar>
-        </Link>
+        ) : (
+          <Link to={profilePath}>
+            <Avatar className="h-10 w-10 shrink-0 cursor-pointer">
+              <AvatarImage src={post.user.profileImageUrl ?? undefined} alt={post.user.firstName || "User"} />
+              <AvatarFallback>{getInitials(post.user)}</AvatarFallback>
+            </Avatar>
+          </Link>
+        )}
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1">
-            <Link to={profilePath} className="hover:underline">
+            {isProfilePage ? (
               <span className="font-semibold text-sm">
                 {post.user.firstName} {post.user.lastName}
               </span>
-            </Link>
+            ) : (
+              <Link to={profilePath} className="hover:underline">
+                <span className="font-semibold text-sm">
+                  {post.user.firstName} {post.user.lastName}
+                </span>
+              </Link>
+            )}
             <span className="text-gray-500 dark:text-gray-400 text-sm">· {formattedDate}</span>
           </div>
 

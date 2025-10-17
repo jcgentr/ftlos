@@ -1,20 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PostComposer } from "./PostComposer";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Post, User } from "@/lib/types";
+import { Post } from "@/lib/types";
 import { PostItem } from "./PostItem";
 import { ScrollToTopButton } from "./ScrollToTopBottom";
+import { useParams } from "react-router";
 
-export function Feed() {
+interface ProfilePostsProps {
+  isOwnProfile?: boolean;
+  userId?: string;
+}
+
+export function ProfilePosts({ isOwnProfile = true, userId }: ProfilePostsProps) {
   const { user, session } = useAuth();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const params = useParams();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const observer = useRef<IntersectionObserver | null>(null);
+
+  // Determine which user's posts to fetch
+  const targetUserId = isOwnProfile ? user?.id : userId || params.profileId;
 
   const lastPostRef = useCallback(
     (node: HTMLDivElement) => {
@@ -51,11 +59,14 @@ export function Feed() {
       }
       params.append("pageSize", "10");
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/posts?${params.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/posts/user/${targetUserId}?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to load posts: ${response.status}`);
@@ -88,27 +99,12 @@ export function Feed() {
   };
 
   useEffect(() => {
-    const getUser = async () => {
-      if (!user?.id || !session?.access_token) return;
-
-      setLoading(true);
-      try {
-        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-
-        const userData = (await userRes.json()) as User;
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error("Error checking admin status:", error);
-        toast.error("Failed to verify admin status");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUser();
-  }, []);
+    // Reset pagination when user changes
+    setPage(1);
+    setHasMorePosts(true);
+    setNextCursor(null);
+    setPosts([]);
+  }, [targetUserId]);
 
   useEffect(() => {
     if (page === 1) {
@@ -120,31 +116,22 @@ export function Feed() {
     }
   }, [page]);
 
-  const handleNewPost = (newPost: Post) => {
-    setPosts((prev) => {
-      // Check if it already exists (unlikely for a new post, but good practice)
-      if (prev.some((p) => p.id === newPost.id)) {
-        return prev;
-      }
-      return [newPost, ...prev];
-    });
-  };
-
   return (
-    <div className="container max-w-2xl mx-auto py-6 px-4">
-      <h1 className="text-4xl font-bold mb-4">Feed</h1>
-
-      <PostComposer onPostCreated={handleNewPost} user={currentUser} />
-
+    <div className="container max-w-2xl mx-auto">
       <div className="space-y-4">
         {loading && page === 1 ? (
           <div className="text-center py-10">Loading posts...</div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground">No posts yet. Be the first to post something!</div>
+          <div className="text-center py-10 text-muted-foreground">No posts yet.</div>
         ) : (
           <div className="divide-y divide-gray-200 border border-gray-200 rounded-lg p-4 mb-4 bg-background">
             {posts.map((post, index) => (
-              <PostItem ref={posts.length === index + 1 ? lastPostRef : null} key={post.id} post={post} />
+              <PostItem
+                ref={posts.length === index + 1 ? lastPostRef : null}
+                key={post.id}
+                post={post}
+                isProfilePage={true}
+              />
             ))}
             {loading && <div className="text-center py-4">Loading more posts...</div>}
             {!hasMorePosts && posts.length > 0 && (
